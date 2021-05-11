@@ -54,6 +54,6 @@ touch "${db_file}";
 
 log_msg "Importing data";
 awk '{ gsub(/^<|>$/, "", $1); sub(/ /, "\t", $0); print($0) }' <"${target_file}" >"${temp_dir}/data.tsv" | sqlite3 "${db_file}" ".mode tabs
-.import '|cat -' ${temp_dir}/data.tsv"
+.import '|cat -' data"
 
 log_msg "Complete";
