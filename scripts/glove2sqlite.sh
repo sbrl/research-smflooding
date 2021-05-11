@@ -40,4 +40,5 @@ touch "${db_file}";
 
 sqlite3 "${db_file}" 'CREATE TABLE IF NOT EXISTS data (key TEXT, value TEXT)';
 
-awk '{ gsub(/^<|>$/, "", $1); sub(/ /, "\t", $0); print($0) }' <"${target_file}" | sqlite3 "${db_file}" '.mode tabs; .import /dev/stdin data;';
+awk '{ gsub(/^<|>$/, "", $1); sub(/ /, "\t", $0); print($0) }' <"${target_file}" | sqlite3 "${db_file}" '.mode tabs
+.import /dev/stdin data';
