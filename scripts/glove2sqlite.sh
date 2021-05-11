@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# To convert all the text files in the current directory:
+# find . -iname '*.txt' -print0 | xargs -0 -n1 -P "$(nproc)" ~/Documents/repos/PhD-Social-Media/scripts/glove2sqlite.sh
+
+
 target_file="${1}";
 
 if [[ -z "${target_file}" ]]; then
