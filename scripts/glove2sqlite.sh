@@ -50,10 +50,10 @@ log_msg() {
 
 log_msg "Creating database";
 touch "${db_file}";
-# sqlite3 "${db_file}" 'CREATE TABLE IF NOT EXISTS data (key TEXT, value TEXT)';
+sqlite3 "${db_file}" 'CREATE TABLE IF NOT EXISTS data (key TEXT, value TEXT)';
 
 log_msg "Importing data";
-awk '{ gsub(/^<|>$/, "", $1); sub(/ /, "\t", $0); print($0) }' <"${target_file}" >"${temp_dir}/data.tsv" | sqlite3 "${db_file}" ".mode tabs
+awk 'BEGIN { print("BEGIN TRANSACTION;") } { gsub(/^<|>$/, "", $1); sub(/ /, "\t", $0); match($0, /\t(.*)/, arr); gsub(/'"'"'/, "'"'"''"'"'", $1); print("INSERT INTO data VALUES ('"'"'" $1 "'"'"', '"'"'" arr[1] "'"'"');") } END { print("COMMIT TRANSACTION;") }' <"${target_file}" >"${temp_dir}/data.tsv" | sqlite3 "${db_file}" ".mode tabs
 .import '|cat -' data"
 
 log_msg "Complete";
