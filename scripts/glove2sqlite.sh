@@ -50,17 +50,10 @@ log_msg() {
 
 log_msg "Creating database";
 touch "${db_file}";
-sqlite3 "${db_file}" 'CREATE TABLE IF NOT EXISTS data (key TEXT, value TEXT)';
-
-log_msg "Starting awk";
-mkfifo "${temp_dir}/data.tsv";
-awk '{ gsub(/^<|>$/, "", $1); sub(/ /, "\t", $0); print($0) }' <"${target_file}" >"${temp_dir}/data.tsv" &
-
-log_msg "Starting sqlite3 import";
-sqlite3 "${db_file}" ".mode tabs
-.import /dev/stdin ${temp_dir}/data.tsv" &
+# sqlite3 "${db_file}" 'CREATE TABLE IF NOT EXISTS data (key TEXT, value TEXT)';
 
 log_msg "Importing data";
+awk '{ gsub(/^<|>$/, "", $1); sub(/ /, "\t", $0); print($0) }' <"${target_file}" >"${temp_dir}/data.tsv" | sqlite3 "${db_file}" ".mode tabs
+.import '|cat -' ${temp_dir}/data.tsv"
 
-wait
 log_msg "Complete";
