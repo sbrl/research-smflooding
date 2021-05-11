@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# 
-
 target_file="${1}";
 
 if [[ -z "${target_file}" ]]; then
@@ -36,9 +34,33 @@ if [[ -e "${db_file}" ]]; then
 	exit 2;
 fi
 
-touch "${db_file}";
+###############################################################################
 
+temp_dir="$(mktemp --tmpdir -d "glove2sqlite-XXXXXXX")";
+on_exit() {
+	rm -rf "${temp_dir}";
+}
+trap on_exit EXIT;
+
+log_msg() {
+	"${SECONDS} >>> $*";
+}
+
+###############################################################################
+
+log_msg "Creating database";
+touch "${db_file}";
 sqlite3 "${db_file}" 'CREATE TABLE IF NOT EXISTS data (key TEXT, value TEXT)';
 
-awk '{ gsub(/^<|>$/, "", $1); sub(/ /, "\t", $0); print($0) }' <"${target_file}" | sqlite3 "${db_file}" '.mode tabs
-.import /dev/stdin data';
+log_msg "Starting awk";
+mkfifo "${temp_dir}/data.tsv";
+awk '{ gsub(/^<|>$/, "", $1); sub(/ /, "\t", $0); print($0) }' <"${target_file}" >"${temp_dir}/data.tsv" &
+
+log_msg "Starting sqlite3 import";
+sqlite3 "${db_file}" ".mode tabs
+.import /dev/stdin ${temp_dir}/data.tsv" &
+
+log_msg "Importing data";
+
+wait
+log_msg "Complete";
