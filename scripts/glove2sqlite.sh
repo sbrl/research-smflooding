@@ -50,7 +50,7 @@ log_msg() {
 
 log_msg "Creating database";
 touch "${db_file}";
-# sqlite3 "${db_file}" 'CREATE TABLE IF NOT EXISTS data (key TEXT, value TEXT)';
+sqlite3 "${db_file}" 'CREATE TABLE IF NOT EXISTS data (key TEXT, value TEXT)';
 
 log_msg "Importing data";
 awk '{ gsub(/^<|>$/, "", $1); sub(/ /, "\t", $0); print($0) }' <"${target_file}" | sqlite3 "${db_file}" ".mode tabs
