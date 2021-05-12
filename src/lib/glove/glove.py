@@ -39,6 +39,7 @@ class GloVe:
             if i % 10000 == 0:
                 print(f"Loading GloVe from '{self.filepath}': {i}", end="\r")
         
+        handle.close()
         logging.info(f"GloVe: Loaded embeddings in {round(time.time() - start, 3)}s.")
     
     def lookup(self, token):
