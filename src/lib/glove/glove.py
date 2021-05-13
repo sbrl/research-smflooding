@@ -1,5 +1,6 @@
 import time
 import io
+import sys
 import logging
 import tensorflow as tf
 from ..polyfills.string import removeprefix, removesuffix
@@ -28,6 +29,7 @@ class GloVe:
 	
 	def load(self):
 		"""Loads the GloVe database from a given file."""
+		print()
 		start = time.time()
 		handle = io.open(self.filepath, "r")
 		for i, line in enumerate(handle):
@@ -39,10 +41,10 @@ class GloVe:
 				parts[1].split(" ")
 			))
 			if i % 10000 == 0:
-				print(f"Loading GloVe from '{self.filepath}': {i}", end="\r")
+				sys.stderr.write(f"\rLoading GloVe from '{self.filepath}': {i}...")
 		
 		handle.close()
-		logging.info(f"GloVe: Loaded embeddings in {round(time.time() - start, 3)}s.")
+		sys.stderr.write(f" done in {round(time.time() - start, 3)}s.\n")
 	
 	def lookup(self, token: str):
 		"""Looks up the given token in the loaded embeddings."""
