@@ -1,11 +1,10 @@
-#!/usr/bin/env python3
 import time
 import io
-import sys
 import logging
 import tensorflow as tf
+from ..polyfills.string import removeprefix, removesuffix
 
-from normalise_text import normalise as normalise_text
+from .normalise_text import normalise as normalise_text
 
 
 class GloVe:
@@ -33,9 +32,9 @@ class GloVe:
 		handle = io.open(self.filepath, "r")
 		for i, line in enumerate(handle):
 			parts = line.split(" ", maxsplit=1)
-			key = parts[0].lstrip("<").rstrip(">")
 			
-			self.data[key] = list(map(
+			# We do NOT strip < and > here, because we do a lookup later on that.
+			self.data[parts[0]] = list(map(
 				lambda el: float(el),
 				parts[1].split(" ")
 			))
@@ -45,15 +44,25 @@ class GloVe:
 		handle.close()
 		logging.info(f"GloVe: Loaded embeddings in {round(time.time() - start, 3)}s.")
 	
-	def lookup(self, token):
+	def lookup(self, token: str):
 		"""Looks up the given token in the loaded embeddings."""
-		if token not in self.data:
-			return None
+		key = token
 		
-		return self.data[token]
+		if key not in self.data:
+			key = self.strip_outer(token)	# Try removing < and >
+		if key not in self.data:
+			key = f"<{token}>"				# Try wrapping in < and >
+		if key not in self.data:
+			return None						# Give up
 		
+		return self.data[key]				# We found it!
 	
-	def _tokenise(self, str):
+	def strip_outer(self, str: str) -> str:
+		"""Strips < and > from the given input string."""
+		return removesuffix(removeprefix(str, "<"), ">")
+	
+	def _tokenise(self, str: str):
+		"""Splits the input string into tokens using Keras."""
 		return tf.keras.preprocessing.text.text_to_word_sequence(
 			self._normalise(str),
 			filters = ", \t\n",
@@ -61,6 +70,7 @@ class GloVe:
 		)
 	
 	def _normalise(self, str):
+		"""Normalises input text to be suitable to GloVe lookup."""
 		return normalise_text(str)
 	
 	def tweetvision(self, str):
@@ -90,33 +100,3 @@ class GloVe:
 			result.append(embedding)
 		
 		return result
-
-
-if __name__ == "__main__":
-	
-	if len(sys.argv) < 3:
-		print("""./glove.py
-This script handles preprocessing text and convertin it to pretrained GloVe embeddings.
-It is intended to be imported as a class, but a CLI is provided for convenience.
-
-Usage:
-	path/to/glove.py <gloveloc> <text> [<mode=tweetvision>]
-
-	<gloveloc>	The path to the pretrained GloVe word vectors text file.
-	<text>		The text to process.
-	<mode>		Optional. The operation mode - defaults to tweetvision, which
-				displays what the model will see the text as an array of
-				strings. Specify "embeddings" here (without quotes) to display
-				the actual word vectors instead.
-""")
-		exit(0)
-	
-	_, gloveloc, text = sys.argv
-	mode = sys.argv[3] if len(sys.argv) >= 4 else "tweetvision"
-	
-	glove = GloVe(gloveloc)
-	
-	result = glove._tokenise(text) if mode == "tweetvision" else glove.embeddings(text)
-	
-	print()
-	print(result)
