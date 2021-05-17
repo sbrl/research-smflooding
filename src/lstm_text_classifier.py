@@ -6,7 +6,6 @@ import logging
 import json
 # import tensorflow as tf
 
-from lib.glove.glove import GloVe
 
 
 def main():
@@ -25,21 +24,9 @@ def main():
     
     ###############################################################################
     
-    glove = GloVe(args.glove)
-    longest = 0
-
-    handle = io.open(args.tweets_jsonl, "r")
-    for i, line in enumerate(handle):
-        obj = json.loads(line)
-        result = glove.tweetvision(obj["text"])
-        
-        if len(result) > longest:
-            longest = len(result)
-            logging.info(f"\n\n\n\nTweet #{i} has length of {longest}:")
-            logging.info("INPUT:")
-            logging.info(obj["text"])
-            logging.info("\nOUTPUT:")
-            logging.info(result)
+    # args.glove
+    # TODO: Import model, write and instantiate instance of data preprocessing class.
+    # Investigate keras sequence for dataset management - apparently the batch size is specified there.
 
 
     # print(tf.constant(glove.convert(args.input_string)))
