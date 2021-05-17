@@ -1,0 +1,14 @@
+# Overwritten by the CLI arg
+output = ""
+
+[model]
+lstm_units = [ 100 ]
+
+[data]
+sequence_length = 100
+categories = 2
+
+[train]
+batch_size = 64
+epochs = 50
+validation_data_percent = 0.2
