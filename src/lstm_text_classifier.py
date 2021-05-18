@@ -35,6 +35,7 @@ def main():
     dataset = TweetsData()
     ai = LSTMTweetClassifier()
     
+    # TODO: Train the model here
     # print(tf.constant(glove.convert(args.input_string)))
 
 
