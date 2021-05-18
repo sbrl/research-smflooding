@@ -4,10 +4,13 @@ from ..io.settings import settings_get
 
 class CategoryCalculator:
     """Calculates the category of a given string of text based on the number of occurences of category items."""
+    
     def __init__(self):
+        """Creates a new CategoryCalculator instance."""
         self.settings = settings_get()
         
         self.load()
+    
     
     def load(self):
         """Loads the category data into memory."""
@@ -35,7 +38,7 @@ class CategoryCalculator:
         weights = {}
         
         for category in self.categories:
-            for glyph in category.glyph:
+            for glyph in category.glyphs:
                 weights[category.i] += text.count(glyph)
         
         max_i = None
