@@ -1,12 +1,22 @@
 # Overwritten by the CLI arg
 output = ""
 
-[model]
-lstm_units = [ 100 ]
-
 [data]
 sequence_length = 100
 categories = 2
+
+[data.paths]
+# Path to the tweets.jsonl file to read
+input = ""
+# Path to the categories.tsv file
+categories = ""
+# Path to the pretrained GloVe .txt file to use
+glove = ""
+
+
+[model]
+lstm_units = [ 100 ]
+
 
 [train]
 batch_size = 64

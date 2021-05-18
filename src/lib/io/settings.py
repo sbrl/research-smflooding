@@ -23,10 +23,12 @@ def read_settings_toml(filepath_default: str, filepath_custom: str):
 
 def settings_get():
 	"""Returns the settings object. You should call load() first."""
+	global settings
+	
 	return settings
 
 
-def load(filepath_custom: str):
+def settings_load(filepath_custom: str):
 	"""
 	Loads the settings from the specified custom config file.
 	Said settings are applied over the default config file and saving them to

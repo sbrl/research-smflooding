@@ -14,12 +14,9 @@ class LSTMTweetClassifier:
         self.make_model()
         self.settings = settings_get()
         
-        self.dir_tensorboard = os.path.join(self.settings.output,
-            "tensorboard")
-        self.dir_checkpoints = os.path.join(self.settings.output,
-            "checkpoints")
-        self.filepath_tsvlog = os.path.join(self.settings.output,
-            "metrics.tsv")
+        self.dir_tensorboard = os.path.join(self.settings.output, "tensorboard")
+        self.dir_checkpoints = os.path.join(self.settings.output, "checkpoints")
+        self.filepath_tsvlog = os.path.join(self.settings.output, "metrics.tsv")
         
         
         if not os.path.exists(self.dir_checkpoints):
