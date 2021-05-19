@@ -1,5 +1,6 @@
 import os
 import toml
+from types import SimpleNamespace
 from ..polyfills.dictionary import merge
 
 settings = None
@@ -18,7 +19,9 @@ def read_settings_toml(filepath_default: str, filepath_custom: str):
 	
 	merge(settings_custom, settings_default)
 	
-	return settings_default
+	# ** = spread operator, I think
+	# Ref https://stackoverflow.com/a/36908/1460422
+	return SimpleNamespace(**settings_default)
 
 
 def settings_get():
