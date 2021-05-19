@@ -11,8 +11,8 @@ class LSTMTweetClassifier:
     
     def __init__(self):
         """Initialises a new LSTMTweetClassifier."""
-        self.make_model()
         self.settings = settings_get()
+        self.make_model()
         
         self.dir_tensorboard = os.path.join(self.settings.output, "tensorboard")
         self.dir_checkpoints = os.path.join(self.settings.output, "checkpoints")
