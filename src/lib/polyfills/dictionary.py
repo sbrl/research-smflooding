@@ -27,6 +27,6 @@ def make_namespace(dictionary):
 	
 	for key in dictionary:
 		if dictionary[key] is dict:
-			result[key] = make_namespace(**dictionary[key])
+			result[key] = make_namespace(dictionary[key])
 	
 	return result
