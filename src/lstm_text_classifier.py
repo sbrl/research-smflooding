@@ -21,14 +21,14 @@ def main():
     
     args = parser.parse_args()
     
-    if not Path(args.config).is_file():
-        print("Error: File at '" + args.config + "' does not exist.")
+    if not Path(args["config"]).is_file():
+        print("Error: File at '" + args["config"] + "' does not exist.")
         exit(1)
     
-    settings_load(args.config)
+    settings_load(args["config"])
     
     settings = settings_get()
-    settings.output = args.output
+    settings.output = args["output"]
     
     ###############################################################################
     
