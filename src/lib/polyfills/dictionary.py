@@ -22,8 +22,11 @@ def make_namespace(dictionary):
 	** = spread operator, I think
 	Ref https://stackoverflow.com/a/36908/1460422
 	"""
+	
+	result = SimpleNamespace(**dictionary)
+	
 	for key in dictionary:
 		if dictionary[key] is dict:
-			dictionary[key] = SimpleNamespace(**dictionary[key])
+			result[key] = SimpleNamespace(**dictionary[key])
 	
-	return SimpleNamespace(**dictionary[key])
+	return result
