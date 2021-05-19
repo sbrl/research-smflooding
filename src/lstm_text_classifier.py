@@ -21,8 +21,8 @@ def main():
     
     args = parser.parse_args()
     
-    if not Path(args.tweets_jsonl).is_file():
-        print("Error: File at '" + args.tweets_jsonl + "' does not exist.")
+    if not Path(args.config).is_file():
+        print("Error: File at '" + args.config + "' does not exist.")
         exit(1)
     
     settings_load(args.config)
