@@ -52,7 +52,7 @@ class LSTMTweetClassifier:
                 filename=self.filepath_tsvlog,
                 separator="\t"
             ),
-            tf.keras.callbacks.ProgBarLogger(),
+            tf.keras.callbacks.ProgbarLogger(),
             tf.keras.callbacks.TensorBoard(
                 log_dir=self.dir_tensorboard,
                 histogram_freq=1,
