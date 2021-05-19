@@ -15,7 +15,7 @@ def read_settings_toml(filepath_default: str, filepath_custom: str):
 	"""
 	
 	settings_default = toml.load(filepath_default)
-	settings_custom = toml.load(filepath_custom) if os.path.exists(filepath_custom) else {}
+	settings_custom = toml.load(filepath_custom)
 	
 	merge(settings_custom, settings_default)
 	
