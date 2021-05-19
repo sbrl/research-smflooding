@@ -23,10 +23,9 @@ def make_namespace(dictionary):
 	Ref https://stackoverflow.com/a/36908/1460422
 	"""
 	
-	result = SimpleNamespace(**dictionary)
-	
 	for key in dictionary:
 		if isinstance(dictionary[key], dict):
-			result[key] = make_namespace(dictionary[key])
+			dictionary[key] = make_namespace(dictionary[key])
 	
-	return result
+	
+	return SimpleNamespace(**dictionary)
