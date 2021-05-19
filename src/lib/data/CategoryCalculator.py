@@ -23,7 +23,7 @@ class CategoryCalculator:
             i += 1
             parts = line.strip().split("\t")
             
-            self.append({
+            self.categories.append({
                 "i": i,
                 "name": parts[0],
                 "glyphs": list(parts[1])
