@@ -20,7 +20,7 @@ class LSTMTweetClassifier:
         
         
         if not os.path.exists(self.dir_checkpoints):
-            os.mkdirs(self.dir_checkpoints, 0o750)
+            os.makedirs(self.dir_checkpoints, 0o750)
     
     
     def make_model(self):
