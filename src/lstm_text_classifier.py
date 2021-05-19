@@ -6,7 +6,7 @@ import logging
 import json
 # import tensorflow as tf
 
-from ..io.settings import settings_get, settings_load
+from lib.io.settings import settings_get, settings_load
 from lib.data.TweetsData import TweetsData
 from lib.ai.LSTMTweetClassifier import LSTMTweetClassifier
 
@@ -34,6 +34,8 @@ def main():
     
     dataset = TweetsData()
     ai = LSTMTweetClassifier()
+    
+    ai.train(dataset)
     
     # TODO: Train the model here
     # print(tf.constant(glove.convert(args.input_string)))

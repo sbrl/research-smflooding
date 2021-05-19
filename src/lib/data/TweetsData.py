@@ -5,7 +5,7 @@ import tensorflow as tf
 
 from ..io.settings import settings_get
 from ..glove.glove import GloVe
-from CategoryCalculator import CategoryCalculator
+from .CategoryCalculator import CategoryCalculator
 
 
 class TweetsData(tf.data.Dataset):
