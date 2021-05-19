@@ -26,7 +26,7 @@ def make_namespace(dictionary):
 	result = SimpleNamespace(**dictionary)
 	
 	for key in dictionary:
-		if dictionary[key] is dict:
+		if isinstance(dictionary[key], dict):
 			result[key] = make_namespace(dictionary[key])
 	
 	return result
