@@ -6,8 +6,10 @@ sequence_length = 100
 categories = 2
 
 [data.paths]
-# Path to the tweets.jsonl file to read
-input = ""
+# Path to the tweets.jsonl file to train on
+input_train = ""
+# Same as input_train, but for validation
+input_validate = ""
 # Path to the categories.tsv file
 categories = ""
 # Path to the pretrained GloVe .txt file to use

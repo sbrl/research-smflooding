@@ -61,13 +61,13 @@ class LSTMTweetClassifier:
             )
         ]
     
-    def train(self, data):
+    def train(self, data_train, data_validate):
         """Trains the model on the given data."""
         return self.model.fit(
-            data,
+            data_train,
+            validation_data=data_validate,
             # The batch size is specified as part of the keras.utils.Sequence/dataset/generator objetc
             epochs = self.settings.train.epochs,
-            validation_split=self.settings.train.validation_data_percent,
             callbacks=self.make_callbacks()
         )
     
