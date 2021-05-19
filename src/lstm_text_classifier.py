@@ -30,6 +30,16 @@ def main():
     settings = settings_get()
     settings.output = args.output
     
+    if not settings.data.paths.glove:
+        print("Error: No path to the pre-trained glove txt file specified (data.paths.glove)")
+        exit(1)
+    if not settings.data.paths.categories:
+        print("Error: No path to the categories file specified (data.paths.categories)")
+        exit(1)
+    if not settings.data.paths.input:
+        print("Error: No path to the input tweets jsonl file specified (data.paths.input)")
+        exit(1)
+    
     ###############################################################################
     
     dataset = TweetsData()
