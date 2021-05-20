@@ -29,7 +29,7 @@ class LSTMTweetClassifier:
 		# Useful link: https://github.com/fgafarov/learn-neural-networks/blob/master/sequence_classification_LSTM.py
 		self.model = tf.keras.Sequential()
 		for units in self.settings.model.lstm_units:
-			logging.info(f"LSTMTweetClassifier: Adding LSTM layer with {units}")
+			logging.info(f"LSTMTweetClassifier: Adding LSTM layer with {units} units")
 			self.model.add(tf.keras.layers.LSTM(units))
 		self.model.add(tf.keras.layers.Dense(self.settings.data.categories, activation = "softmax"))
 		self.model.compile(
@@ -66,7 +66,7 @@ class LSTMTweetClassifier:
 		return self.model.fit(
 			data_train,
 			validation_data=data_validate,
-			# The batch size is specified as part of the keras.utils.Sequence/dataset/generator objetc
+			# The batch size is specified as part of the keras.utils.Sequence/dataset/generator object
 			epochs = self.settings.train.epochs,
 			callbacks=self.make_callbacks()
 		)
