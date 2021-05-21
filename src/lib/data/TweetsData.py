@@ -1,5 +1,6 @@
 import io
 import json
+from functools import partial
 
 import tensorflow as tf
 
@@ -56,7 +57,7 @@ class TweetsData(tf.data.Dataset):
 		
 		
 		return tf.data.Dataset.from_generator(
-			this_class._generator,
+			partial(this_class._generator, filepath_input),
 			output_signature=(
 				tf.TensorSpec(shape=(
 					settings.data.sequence_length,
@@ -68,6 +69,5 @@ class TweetsData(tf.data.Dataset):
 					),
 					dtype="int32"
 				)
-			),
-			args = ( filepath_input )
+			)
 		).batch(settings.train.batch_size).prefetch(tf.data.AUTOTUNE)
