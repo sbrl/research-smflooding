@@ -35,7 +35,10 @@ class LSTMTweetClassifier:
 		self.model.compile(
 			optimizer="Adam",
 			loss="CategoricalCrossentropy",
-			steps_per_execution = 1 # Raise this to do multiple batches per execution - good for smaller models
+			metrics=["accuracy"],
+			# Raise this to do multiple batches per execution - good for smaller models
+			# Unfortunately this requires specifying number of items in the dataset
+			steps_per_execution = 1
 		)
 	
 	def make_callbacks(self):

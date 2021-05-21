@@ -21,6 +21,7 @@ lstm_units = [ 100 ]
 
 
 [train]
+shuffle_buffer = 10000
 batch_size = 64
 epochs = 50
 validation_data_percent = 0.2
