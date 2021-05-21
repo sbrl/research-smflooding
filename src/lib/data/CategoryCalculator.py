@@ -1,13 +1,12 @@
 import io
-from ..io.settings import settings_get
 
 
 class CategoryCalculator:
 	"""Calculates the category of a given string of text based on the number of occurences of category items."""
 	
-	def __init__(self):
+	def __init__(self, filepath_cats):
 		"""Creates a new CategoryCalculator instance."""
-		self.settings = settings_get()
+		self.filepath_cats = filepath_cats
 		
 		self.count = None
 		self.load()
@@ -15,7 +14,7 @@ class CategoryCalculator:
 	
 	def load(self):
 		"""Loads the category data into memory."""
-		handle = io.open(self.settings.data.paths.categories, "r")
+		handle = io.open(self.filepath_cats, "r")
 		
 		self.categories = []
 		self.markers = ""

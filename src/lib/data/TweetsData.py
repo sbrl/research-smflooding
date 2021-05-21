@@ -77,7 +77,7 @@ class TweetsData(tf.data.Dataset):
 		"""Returns a new tensorflow dataset object."""
 		global glove, cats
 		settings = settings_get()
-		cats = CategoryCalculator()
+		cats = CategoryCalculator(settings.data.paths.categories)
 		
 		# Globalise the instance
 		if glove is None:
