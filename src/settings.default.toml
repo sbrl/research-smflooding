@@ -25,3 +25,5 @@ shuffle_buffer = 10000
 batch_size = 64
 epochs = 50
 validation_data_percent = 0.2
+
+tensorboard_update_freq = 512	# Every N batches, or specify "epoch" instead

@@ -49,7 +49,7 @@ class LSTMTweetClassifier:
 					self.dir_checkpoints,
 					"checkpoint_e{epoch:d}_acc{val_acc:.3f}.hdf5"
 				),
-				monitor="val_acc"
+				monitor="val_loss"
 			),
 			tf.keras.callbacks.CSVLogger(
 				filename=self.filepath_tsvlog,
@@ -60,7 +60,7 @@ class LSTMTweetClassifier:
 				log_dir=self.dir_tensorboard,
 				histogram_freq=1,
 				write_images=True,
-				update_freq="epoch"
+				update_freq=self.settings.train.tensorboard_update_freq
 			)
 		]
 	
