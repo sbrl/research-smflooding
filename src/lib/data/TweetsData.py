@@ -40,10 +40,7 @@ class TweetsData(tf.data.Dataset):
 					),
 					dtype="float32"
 				),
-				tf.constant(
-					next_cats,
-					dtype="float32"
-				)
+				tf.one_hot(next_cats, cats.count, dtype="int32")
 			)
 	
 	
@@ -64,7 +61,13 @@ class TweetsData(tf.data.Dataset):
 				tf.TensorSpec(shape=(
 					settings.data.sequence_length,
 					glove.word_vector_length()
-				), dtype="float32")
+				), dtype="float32"),
+				tf.TensorSpec(
+					shape=(
+						cats.count
+					),
+					dtype="int32"
+				)
 			),
 			args = ( filepath_input )
 		).batch(settings.train.batch_size).prefetch(tf.data.AUTOTUNE)

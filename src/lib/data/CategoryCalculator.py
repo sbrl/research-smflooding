@@ -9,6 +9,7 @@ class CategoryCalculator:
         """Creates a new CategoryCalculator instance."""
         self.settings = settings_get()
         
+        self.count = None
         self.load()
     
     
@@ -29,6 +30,8 @@ class CategoryCalculator:
                 "glyphs": list(parts[1])
             })
         
+        
+        self.count = i + 1
     
     def get_category_index(self, text: str):
         """
