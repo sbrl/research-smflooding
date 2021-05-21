@@ -51,9 +51,6 @@ def main():
 	ai = LSTMTweetClassifier()
 	ai.train(dataset_train, dataset_validate)
 	
-	# TODO: Train the model here
-	# print(tf.constant(glove.convert(args.input_string)))
-
 
 if __name__ == "__main__":
 	main()
