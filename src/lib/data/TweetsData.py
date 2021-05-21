@@ -1,6 +1,5 @@
 import io
 import json
-import logging
 from functools import partial
 import numpy
 
@@ -39,11 +38,11 @@ class TweetsData(tf.data.Dataset):
 			
 			# print(f"[DEBUG] next_cat = {next_cat}, total so far = {stats[next_cat]}")
 			
-			if i % 10000 == 0:
+			if i > 1 and i % 10000 == 0:
 				msg = ""
 				for catid in stats:
 					msg += f"{cats.index2name(catid)} = {stats[catid]} tweets "
-				logging.info(f"[TweetsData] stats: {msg}")
+				print(f" [TweetsData] stats: {msg}")
 			
 			if next_cat is None:
 				continue
