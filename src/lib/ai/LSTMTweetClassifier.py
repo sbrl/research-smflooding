@@ -47,9 +47,9 @@ class LSTMTweetClassifier:
 			tf.keras.callbacks.ModelCheckpoint(
 				filepath=os.path.join(
 					self.dir_checkpoints,
-					"checkpoint_e{epoch:d}_acc{val_acc:.3f}.hdf5"
+					"checkpoint_e{epoch:d}_acc{val_accuracy:.3f}.hdf5"
 				),
-				monitor="val_loss"
+				monitor="val_accuracy"
 			),
 			tf.keras.callbacks.CSVLogger(
 				filename=self.filepath_tsvlog,
