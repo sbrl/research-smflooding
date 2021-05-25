@@ -13,7 +13,7 @@ class LSTMTweetClassifier:
 	def __init__(self, container):
 		"""Initialises a new LSTMTweetClassifier."""
 		self.settings = settings_get()
-		self.settings.container = container
+		self.container = container
 		self.make_model()
 		
 		self.dir_tensorboard = os.path.join(self.settings.output, "tensorboard")
