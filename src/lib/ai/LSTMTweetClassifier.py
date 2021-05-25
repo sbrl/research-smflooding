@@ -28,8 +28,11 @@ class LSTMTweetClassifier:
 		# TODO: Implement a model here.
 		# Useful link: https://github.com/fgafarov/learn-neural-networks/blob/master/sequence_classification_LSTM.py
 		self.model = tf.keras.Sequential()
-		for units in self.settings.model.lstm_units:
+		for units in self.settings.model.lstm_units[:-1]:
 			logging.info(f"LSTMTweetClassifier: Adding LSTM layer with {units} units")
+			self.model.add(tf.keras.layers.LSTM(units, return_sequences=True))
+		else:
+			logging.info(f"LSTMTweetClassifier: Adding final LSTM layer with {units} units")
 			self.model.add(tf.keras.layers.LSTM(units))
 		self.model.add(tf.keras.layers.Dense(self.settings.data.categories, activation = "softmax"))
 		self.model.compile(
