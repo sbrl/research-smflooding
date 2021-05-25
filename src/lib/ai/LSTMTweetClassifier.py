@@ -10,9 +10,10 @@ from ..io.settings import settings_get
 class LSTMTweetClassifier:
 	"""Core LSTM-based model to classify tweets."""
 	
-	def __init__(self):
+	def __init__(self, container):
 		"""Initialises a new LSTMTweetClassifier."""
 		self.settings = settings_get()
+		self.settings.container = container
 		self.make_model()
 		
 		self.dir_tensorboard = os.path.join(self.settings.output, "tensorboard")
@@ -49,7 +50,7 @@ class LSTMTweetClassifier:
 		self.model.build((
 			None,
 			self.settings.data.sequence_length,
-			self.settings.__glove_word_vector_length
+			self.container.glove_word_vector_length
 		))
 		self.model.summary()
 	

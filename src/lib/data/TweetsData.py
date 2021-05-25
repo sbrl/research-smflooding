@@ -73,7 +73,7 @@ class TweetsData(tf.data.Dataset):
 		
 	
 	
-	def __new__(this_class, filepath_input):
+	def __new__(this_class, filepath_input, container):
 		"""Returns a new tensorflow dataset object."""
 		global glove, cats
 		settings = settings_get()
@@ -83,7 +83,7 @@ class TweetsData(tf.data.Dataset):
 		if glove is None:
 			glove = GloVe(settings.data.paths.glove)
 		
-		settings.__glove_word_vector_length = glove.word_vector_length()
+		container.glove_word_vector_length = glove.word_vector_length()
 		
 		return tf.data.Dataset.from_generator(
 			partial(this_class._generator, filepath_input),

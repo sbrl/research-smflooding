@@ -45,10 +45,12 @@ def main():
 	
 	###############################################################################
 	
-	dataset_train		= TweetsData(settings.data.paths.input_train)
-	dataset_validate	= TweetsData(settings.data.paths.input_validate)
+	container = {}
 	
-	ai = LSTMTweetClassifier()
+	dataset_train		= TweetsData(settings.data.paths.input_train, container)
+	dataset_validate	= TweetsData(settings.data.paths.input_validate, container)
+	
+	ai = LSTMTweetClassifier(container)
 	ai.train(dataset_train, dataset_validate)
 	
 
