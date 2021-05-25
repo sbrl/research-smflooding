@@ -1,4 +1,5 @@
 import os
+import sys
 
 import logging
 import tensorflow as tf
@@ -18,6 +19,9 @@ class LSTMTweetClassifier:
 		self.dir_checkpoints = os.path.join(self.settings.output, "checkpoints")
 		self.filepath_tsvlog = os.path.join(self.settings.output, "metrics.tsv")
 		
+		if not self.settings.__glove_word_vector_length:
+			sys.stderr.write("Error: Please initialise the dataset object before initialising the model.\n")
+			exit(1)
 		
 		if not os.path.exists(self.dir_checkpoints):
 			os.makedirs(self.dir_checkpoints, 0o750)
@@ -42,6 +46,11 @@ class LSTMTweetClassifier:
 			# Unfortunately this requires specifying number of items in the dataset
 			steps_per_execution = 1
 		)
+		self.model.build((
+			None,
+			self.settings.data.sequence_length,
+			self.settings.__glove_word_vector_length
+		))
 		self.model.summary()
 	
 	
