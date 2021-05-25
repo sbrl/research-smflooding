@@ -20,7 +20,7 @@ class LSTMTweetClassifier:
 		self.dir_checkpoints = os.path.join(self.settings.output, "checkpoints")
 		self.filepath_tsvlog = os.path.join(self.settings.output, "metrics.tsv")
 		
-		if not self.settings.__glove_word_vector_length:
+		if not self.container["glove_word_vector_length"]:
 			sys.stderr.write("Error: Please initialise the dataset object before initialising the model.\n")
 			exit(1)
 		
