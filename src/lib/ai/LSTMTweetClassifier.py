@@ -25,7 +25,6 @@ class LSTMTweetClassifier:
 	
 	def make_model(self):
 		"""Reinitialises the model."""
-		# TODO: Implement a model here.
 		# Useful link: https://github.com/fgafarov/learn-neural-networks/blob/master/sequence_classification_LSTM.py
 		self.model = tf.keras.Sequential()
 		for units in self.settings.model.lstm_units[:-1]:
@@ -43,6 +42,8 @@ class LSTMTweetClassifier:
 			# Unfortunately this requires specifying number of items in the dataset
 			steps_per_execution = 1
 		)
+		self.model.summary()
+	
 	
 	def make_callbacks(self):
 		"""Generates a list of callbacks to be called when a model is training."""
