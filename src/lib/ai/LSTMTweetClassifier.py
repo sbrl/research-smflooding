@@ -50,7 +50,7 @@ class LSTMTweetClassifier:
 		self.model.build((
 			None,
 			self.settings.data.sequence_length,
-			self.container.glove_word_vector_length
+			self.container["glove_word_vector_length"]
 		))
 		self.model.summary()
 	

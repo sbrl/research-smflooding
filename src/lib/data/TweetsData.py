@@ -83,7 +83,7 @@ class TweetsData(tf.data.Dataset):
 		if glove is None:
 			glove = GloVe(settings.data.paths.glove)
 		
-		container.glove_word_vector_length = glove.word_vector_length()
+		container["glove_word_vector_length"] = glove.word_vector_length()
 		
 		return tf.data.Dataset.from_generator(
 			partial(this_class._generator, filepath_input),
