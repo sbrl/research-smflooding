@@ -1,5 +1,5 @@
 # / removed from being the last param, ref https://stackoverflow.com/a/56514307
-def removeprefix(self: str, prefix: str, /) -> str:
+def removeprefix(self: str, prefix: str) -> str:
     """
     Removes a prefix from a string.
     Polyfills string.removeprefix(), which is introduced in Python 3.9+.
