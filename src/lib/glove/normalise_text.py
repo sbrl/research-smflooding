@@ -25,7 +25,9 @@ def hashtag(text):
 	if hashtag_body.isupper():
 		result = " {} ".format(hashtag_body.lower())
 	else:
-		result = " ".join(["<hashtag>"] + re.split(r"(?=[A-Z])", hashtag_body, flags=FLAGS))
+		# Was re.split(r"(?=[A-Z])", hashtag_body, flags=FLAGS)
+		# ref https://stackoverflow.com/a/2277363/1460422
+		result = " ".join(["<hashtag>"] + re.findall("^[a-z]+|[A-Z][^A-Z]*", hashtag_body, flags=FLAGS))
 	return result
 
 
