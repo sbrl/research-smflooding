@@ -1,3 +1,4 @@
+# / removed from being the last param, ref https://stackoverflow.com/a/56514307
 def removeprefix(self: str, prefix: str, /) -> str:
     """
     Removes a prefix from a string.
@@ -10,7 +11,8 @@ def removeprefix(self: str, prefix: str, /) -> str:
         return self[:]
 
 
-def removesuffix(self: str, suffix: str, /) -> str:
+# / removed from being the last param, ref https://stackoverflow.com/a/56514307
+def removesuffix(self: str, suffix: str) -> str:
     """
     Removes a suffix from a string.
     Polyfills string.removesuffix(), which is introduced in Python 3.9+.
