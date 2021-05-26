@@ -1,5 +1,0 @@
-[data.paths]
-input_train		= "/mnt/research-data/main/twitter/tweets-all_train.jsonl"
-input_validate	= "/mnt/research-data/main/twitter/tweets-all_validate.jsonl"
-glove			= "/mnt/research-data/main/glove/glove.twitter.27B.25d.txt"
-categories		= "/mnt/research-data/main/twitter/emoji-cats-2.tsv"

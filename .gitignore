@@ -1,5 +1,6 @@
 datasets/
 output/
+configs/
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,node,git
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,node,git
