@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+#SBATCH -J TweetAI
+#SBATCH -N 1
+#SBATCH -n 28
+#SBATCH -o %N.%j.%a.out
+#SBATCH -e %N.%j.%a.err
+#SBATCH -p gpu05
+#SBATCH --time=5-00:00:00
+#SBATCH --exclusive
+
+module load utilities/multi
+module load readline/7.0
+module load gcc/10.2.0
+module load cuda/11.0.3
+
+module load python/anaconda/4.6/miniconda/3.7
+
+
+show_help() {
+	echo -e "Usage:" >&2;
+	echo -e "    CODE='RUN_CODE_NAME' CONFIG='path/to/config.toml' sbatch slurm.job" >&2;
+	echo -e "" >&2;
+	echo -e "....where:" >&2;
+	echo -e "    CODE    The run code name to use for the output directory" >&2;
+	echo -e "    CONFIG  The filepath to the config file containing the parameters for this run" >&2;
+	exit;
+}
+
+if [[ -z "${CODE}" ]]; then
+	echo -e "Error: No CODE environment variable specified.\n" >&2;
+	show_help;
+fi
+if [[ -z "${CONFIG}" ]]; then
+	echo -e "Error: No CONFIG environment variable specified.\n" >&2;
+	show_help;
+fi
+
+if [[ ! -e "${CONFIG}" ]]; then
+	echo -e "Error: The config file apth '${CONFIG}' doesn't exist.";
+	exit 1;
+fi
+
+dir_output="output/$(date -u --rfc-3339=date)_${CODE}";
+
+conda run -n py38 src/lstm_text_classifier.py --config "${CONFIG}" --output "${dir_output}";
