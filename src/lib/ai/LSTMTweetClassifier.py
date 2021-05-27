@@ -1,9 +1,12 @@
 import os
+import io
 import sys
+import json
 
 import logging
 import tensorflow as tf
 
+from ..polyfills.io import write_file_sync
 from ..io.summarywriter import summarywriter
 from ..io.settings import settings_get
 
@@ -21,6 +24,7 @@ class LSTMTweetClassifier:
 		self.dir_checkpoints = os.path.join(self.settings.output, "checkpoints")
 		self.filepath_tsvlog = os.path.join(self.settings.output, "metrics.tsv")
 		self.filepath_summary = os.path.join(self.settings.output, "summary.txt")
+		self.filepath_settings = os.path.join(self.settings.output, "settings.json")
 		
 		if not self.container["glove_word_vector_length"]:
 			sys.stderr.write("Error: Please initialise the dataset object before initialising the model.\n")
@@ -55,6 +59,8 @@ class LSTMTweetClassifier:
 			self.container["glove_word_vector_length"]
 		))
 		
+		# Write the settings and the model summary to disk
+		write_file_sync(self.filepath_settings, json.dumps(self.settings))
 		summarywriter(self.model, self.filepath_summary)
 	
 	
