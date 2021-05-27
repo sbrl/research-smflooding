@@ -18,13 +18,16 @@ class LSTMTweetClassifier:
 		"""Initialises a new LSTMTweetClassifier."""
 		self.settings = settings_get()
 		self.container = container
-		self.make_model()
+		
 		
 		self.dir_tensorboard = os.path.join(self.settings.output, "tensorboard")
 		self.dir_checkpoints = os.path.join(self.settings.output, "checkpoints")
 		self.filepath_tsvlog = os.path.join(self.settings.output, "metrics.tsv")
 		self.filepath_summary = os.path.join(self.settings.output, "summary.txt")
 		self.filepath_settings = os.path.join(self.settings.output, "settings.json")
+		
+		
+		self.make_model()
 		
 		if not self.container["glove_word_vector_length"]:
 			sys.stderr.write("Error: Please initialise the dataset object before initialising the model.\n")
