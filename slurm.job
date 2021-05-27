@@ -2,6 +2,7 @@
 #SBATCH -J TweetAI
 #SBATCH -N 1
 #SBATCH -n 28
+#SBATCH --gres=gpu:1
 #SBATCH -o %N.%j.%a.out
 #SBATCH -e %N.%j.%a.err
 #SBATCH -p gpu05
