@@ -27,14 +27,16 @@ class LSTMTweetClassifier:
 		self.filepath_settings = os.path.join(self.settings.output, "settings.json")
 		
 		
-		self.make_model()
+		if not os.path.exists(self.dir_checkpoints):
+			os.makedirs(self.dir_checkpoints, 0o750)
+		
 		
 		if not self.container["glove_word_vector_length"]:
 			sys.stderr.write("Error: Please initialise the dataset object before initialising the model.\n")
 			exit(1)
 		
-		if not os.path.exists(self.dir_checkpoints):
-			os.makedirs(self.dir_checkpoints, 0o750)
+		
+		self.make_model()
 	
 	
 	def make_model(self):
