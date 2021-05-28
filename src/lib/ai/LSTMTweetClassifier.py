@@ -63,7 +63,7 @@ class LSTMTweetClassifier:
 		))
 		
 		# Write the settings and the model summary to disk
-		write_file_sync(self.filepath_settings, self.settings.__source)
+		write_file_sync(self.filepath_settings, self.settings.source)
 		summarywriter(self.model, self.filepath_summary)
 	
 	
