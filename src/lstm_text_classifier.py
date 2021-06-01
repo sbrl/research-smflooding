@@ -15,9 +15,11 @@ from lib.ai.LSTMTweetClassifier import LSTMTweetClassifier
 def main():
 	"""Main entrypoint."""
 	logging.basicConfig(level=logging.NOTSET)
-	log_handle = logging.StreamHandle(sys.stdout)
+	log_handle = logging.StreamHandler(sys.stdout)
 	log_handle.setLevel(logging.INFO)
 	logging.addHandler(log_handle)
+	
+	logging.info("lstm_text_classifier init! Here we go")
 	
 	parser = argparse.ArgumentParser(description="This program calculates trains a tweet classification model.")
 	parser.add_argument("--config", "-c", help="Filepath to the TOML config file to load.", required=True)
