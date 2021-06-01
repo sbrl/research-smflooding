@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import io
 import sys
+import os
 from pathlib import Path
 import argparse
 import logging
@@ -12,15 +13,23 @@ from lib.data.TweetsData import TweetsData
 from lib.ai.LSTMTweetClassifier import LSTMTweetClassifier
 
 
-def main():
-	"""Main entrypoint."""
-	logging.basicConfig(level=logging.NOTSET)
-	log_handle = logging.StreamHandler(sys.stdout)
-	log_handle.setLevel(logging.INFO)
-	logger_instance = logging.getLogger()
-	logger_instance.addHandler(log_handle)
+def init_logging(filepath_output):
+	"""Initialises the logging subsystem."""
+	
+	# Log to a file - ref https://github.com/conda/conda/issues/9412
+	logging.basicConfig(level=logging.INFO, filename=filepath_output)
 	
 	logging.info("lstm_text_classifier init! Here we go")
+	sys.stderr.write(f"Writing logs to {filepath_output}")
+	
+	handle = io.open("/dev/tty", "w")
+	handle.write(f"lstm_tweet_classifier: Writing logs to {filepath_output}")
+	handle.close()
+	sys.stderr.write(f"lstm_tweet_classifier: Writing logs to {filepath_output}")
+
+
+def main():
+	"""Main entrypoint."""
 	
 	parser = argparse.ArgumentParser(description="This program calculates trains a tweet classification model.")
 	parser.add_argument("--config", "-c", help="Filepath to the TOML config file to load.", required=True)
@@ -36,6 +45,10 @@ def main():
 	
 	settings = settings_get()
 	settings.output = args.output
+	init_logging(os.path.join(
+		settings.output,
+		"lstm_text_classifier.log"
+	))
 	
 	if not settings.data.paths.glove:
 		print("Error: No path to the pre-trained glove txt file specified (data.paths.glove)")
