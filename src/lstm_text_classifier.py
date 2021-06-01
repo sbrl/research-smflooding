@@ -22,9 +22,6 @@ def init_logging(filepath_output):
 	logging.info("lstm_text_classifier init! Here we go")
 	sys.stderr.write(f"Writing logs to {filepath_output}")
 	
-	handle = io.open("/dev/tty", "w")
-	handle.write(f"lstm_tweet_classifier: Writing logs to {filepath_output}")
-	handle.close()
 	sys.stderr.write(f"lstm_tweet_classifier: Writing logs to {filepath_output}")
 
 
