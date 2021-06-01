@@ -19,10 +19,8 @@ def init_logging(filepath_output):
 	# Log to a file - ref https://github.com/conda/conda/issues/9412
 	logging.basicConfig(level=logging.INFO, filename=filepath_output)
 	
-	logging.info("lstm_text_classifier init! Here we go")
-	sys.stderr.write(f"Writing logs to {filepath_output}")
-	
 	sys.stderr.write(f"lstm_tweet_classifier: Writing logs to {filepath_output}")
+	logging.info("lstm_text_classifier init! Here we go")
 
 
 def main():
