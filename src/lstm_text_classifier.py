@@ -17,7 +17,8 @@ def main():
 	logging.basicConfig(level=logging.NOTSET)
 	log_handle = logging.StreamHandler(sys.stdout)
 	log_handle.setLevel(logging.INFO)
-	logging.addHandler(log_handle)
+	logger_this = logging.getLogger(__name__)
+	logger_this.addHandler(log_handle)
 	
 	logging.info("lstm_text_classifier init! Here we go")
 	
