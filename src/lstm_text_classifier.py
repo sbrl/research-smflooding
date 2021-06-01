@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import io
+import sys
 from pathlib import Path
 import argparse
 import logging
@@ -13,7 +14,10 @@ from lib.ai.LSTMTweetClassifier import LSTMTweetClassifier
 
 def main():
 	"""Main entrypoint."""
-	logging.basicConfig(level=logging.INFO)
+	logging.basicConfig(level=logging.NOTSET)
+	log_handle = logging.StreamHandle(sys.stdout)
+	log_handle.setLevel(logging.INFO)
+	logging.addHandler(log_handle)
 	
 	parser = argparse.ArgumentParser(description="This program calculates trains a tweet classification model.")
 	parser.add_argument("--config", "-c", help="Filepath to the TOML config file to load.", required=True)
