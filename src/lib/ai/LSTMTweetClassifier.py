@@ -24,7 +24,7 @@ class LSTMTweetClassifier:
 		self.dir_checkpoints = os.path.join(self.settings.output, "checkpoints")
 		self.filepath_tsvlog = os.path.join(self.settings.output, "metrics.tsv")
 		self.filepath_summary = os.path.join(self.settings.output, "summary.txt")
-		self.filepath_settings = os.path.join(self.settings.output, "settings.json")
+		self.filepath_settings = os.path.join(self.settings.output, "settings.toml")
 		
 		
 		if not os.path.exists(self.dir_checkpoints):

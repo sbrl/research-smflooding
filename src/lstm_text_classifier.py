@@ -6,7 +6,8 @@ from pathlib import Path
 import argparse
 import logging
 import json
-# import tensorflow as tf
+
+import tensorflow as tf
 
 from lib.io.settings import settings_get, settings_load
 from lib.data.TweetsData import TweetsData
@@ -38,6 +39,8 @@ def main():
 	parser.add_argument("--config", "-c", help="Filepath to the TOML config file to load.", required=True)
 	parser.add_argument("--output", "-o", help="Path to output directory to write output to (will be automatically created if it doesn't exist)", required=True)
 	parser.add_argument("--log-stdout", help="Log to stdout, rather than a log file", action="store_true")
+	parser.add_argument("--only-gpu",
+		help="If the GPU is not available, eexit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	
 	args = parser.parse_args()
 	
@@ -56,6 +59,14 @@ def main():
 			settings.output,
 			"lstm_text_classifier.log"
 		))
+	
+	gpus = tf.config.list_physical_devices('GPU')
+	logging.info(f"lstm_text_classifier: Available gpus: {gpus}")
+	
+	if not gpus and args.only_gpu:
+		logging.info("No GPUs detected, exiting because --only-gpu was specified")
+		os.exit(1)
+	
 	
 	if not settings.data.paths.glove:
 		print("Error: No path to the pre-trained glove txt file specified (data.paths.glove)")
