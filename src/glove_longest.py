@@ -23,7 +23,7 @@ def main():
     if not Path(args.tweets_jsonl).is_file():
         print("Error: File at '" + args.tweets_jsonl + "' does not exist.")
         exit(1)
-
+    
     ###############################################################################
 
     glove = GloVe(args.glove)
