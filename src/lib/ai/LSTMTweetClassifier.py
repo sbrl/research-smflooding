@@ -50,7 +50,7 @@ class LSTMTweetClassifier:
 			))
 		else:
 			logging.info(f"LSTMTweetClassifier: Adding final LSTM layer with {units} units")
-			self.model.add(tf.layers.keras.Bidirectional(
+			self.model.add(tf.keras.layers.Bidirectional(
 				tf.keras.layers.LSTM(units)
 			))
 		self.model.add(tf.keras.layers.Dense(self.settings.data.categories, activation = "softmax"))
