@@ -52,6 +52,7 @@ def main():
 	settings_load(args.config)
 	
 	settings = settings_get()
+	settings.model.nobidi = args.nobidi
 	settings.output = args.output
 	if args.log_stdout:
 		init_logging(None)
