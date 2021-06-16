@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+src/lstm_text_classifier.py --config configs/g200a128,128c2pn.toml --output /data/output-social-media/20210616-128,128-unbalancedvalidate --only-gpu --log-stdout
