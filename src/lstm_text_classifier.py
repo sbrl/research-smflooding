@@ -42,6 +42,7 @@ def main():
 	parser.add_argument("--only-gpu",
 		help="If the GPU is not available, exit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	parser.add_argument("--nobidi", help="Don't add the Bidirectional wrapper to the LSTM layers", action="store_true")
+	parser.add_argument("--batchnorm", help="Enable Batch Normalisation", action="store_true")
 	
 	args = parser.parse_args()
 	
@@ -52,7 +53,10 @@ def main():
 	settings_load(args.config)
 	
 	settings = settings_get()
-	settings.model.nobidi = args.nobidi
+	if args.nobidi:
+		settings.model.bidirectional = False
+	if args.batchnorm:
+		settings.model.batch_normalisation = True
 	settings.output = args.output
 	if args.log_stdout:
 		init_logging(None)

@@ -50,6 +50,8 @@ class LSTMTweetClassifier:
 				logging.info("LSTMTweetClassifier: Adding Bidirectional wrapper")
 				lstm = tf.keras.layers.Bidirectional(lstm)
 			self.model.add(lstm)
+			if self.settings.model.batch_normalisation:
+				self.model.add(tf.keras.layers.BatchNormalization())
 		else:
 			logging.info(f"LSTMTweetClassifier: Adding final LSTM layer with {units} units")
 			lstm = tf.keras.layers.LSTM(units)
@@ -57,6 +59,9 @@ class LSTMTweetClassifier:
 				logging.info("LSTMTweetClassifier: Adding Bidirectional wrapper")
 				lstm = tf.keras.layers.Bidirectional(lstm)
 			self.model.add(lstm)
+			if self.settings.model.batch_normalisation:
+				self.model.add(tf.keras.layers.BatchNormalization())
+			
 		self.model.add(tf.keras.layers.Dense(self.settings.data.categories, activation = "softmax"))
 		self.model.compile(
 			optimizer="Adam",
