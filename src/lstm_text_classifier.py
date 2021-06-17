@@ -53,9 +53,9 @@ def main():
 	settings_load(args.config)
 	
 	settings = settings_get()
-	if args.nobidi:
+	if hasattr(args, "nobidi") and args.nobidi:
 		settings.model.bidirectional = False
-	if args.batchnorm:
+	if hasattr(args, "nobidi") and args.batchnorm:
 		settings.model.batch_normalisation = True
 	settings.output = args.output
 	if args.log_stdout:
