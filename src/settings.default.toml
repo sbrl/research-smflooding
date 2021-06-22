@@ -18,7 +18,10 @@ glove = ""
 
 [model]
 lstm_units = [ 100 ]
-
+# Whether to wrap LSTM layers in a Bidirectional layer
+bidirectional = true
+# Whether to enable Batch Normalisation or not
+batch_normalisation = false
 
 [train]
 shuffle_buffer = 10000

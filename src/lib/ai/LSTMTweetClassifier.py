@@ -45,14 +45,23 @@ class LSTMTweetClassifier:
 		self.model = tf.keras.Sequential()
 		for units in self.settings.model.lstm_units[:-1]:
 			logging.info(f"LSTMTweetClassifier: Adding LSTM layer with {units} units")
-			self.model.add(tf.keras.layers.Bidirectional(
-				tf.keras.layers.LSTM(units, return_sequences=True)
-			))
+			lstm = tf.keras.layers.LSTM(units, return_sequences=True)
+			if not self.settings.model.nobidi:
+				logging.info("LSTMTweetClassifier: Adding Bidirectional wrapper")
+				lstm = tf.keras.layers.Bidirectional(lstm)
+			self.model.add(lstm)
+			if self.settings.model.batch_normalisation:
+				self.model.add(tf.keras.layers.BatchNormalization())
 		else:
 			logging.info(f"LSTMTweetClassifier: Adding final LSTM layer with {units} units")
-			self.model.add(tf.keras.layers.Bidirectional(
-				tf.keras.layers.LSTM(units)
-			))
+			lstm = tf.keras.layers.LSTM(units)
+			if not self.settings.model.nobidi:
+				logging.info("LSTMTweetClassifier: Adding Bidirectional wrapper")
+				lstm = tf.keras.layers.Bidirectional(lstm)
+			self.model.add(lstm)
+			if self.settings.model.batch_normalisation:
+				self.model.add(tf.keras.layers.BatchNormalization())
+			
 		self.model.add(tf.keras.layers.Dense(self.settings.data.categories, activation = "softmax"))
 		self.model.compile(
 			optimizer="Adam",
