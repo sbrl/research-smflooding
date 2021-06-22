@@ -36,7 +36,7 @@ if [[ -z "${CONFIG}" ]]; then
 fi
 
 if [[ ! -e "${CONFIG}" ]]; then
-	echo -e "Error: The config file apth '${CONFIG}' doesn't exist.";
+	echo -e "Error: The config file path '${CONFIG}' doesn't exist.";
 	exit 1;
 fi
 
