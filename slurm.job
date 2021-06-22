@@ -40,6 +40,7 @@ if [[ ! -e "${CONFIG}" ]]; then
 	exit 1;
 fi
 
+
 CODE="$(basename "${CONFIG}")";
 CODE="${CODE%.*}";
 
@@ -50,6 +51,7 @@ fi
 
 echo -e ">>> Config file: ${CONFIG}" >&2;
 echo -e ">>> Code: ${CODE}" >&2;
+echo -e ">>> Additional args: ${ARGS}";
 
 dir_output="output/$(date -u --rfc-3339=date)_${CODE}";
 
@@ -58,5 +60,5 @@ export PATH=$HOME/software/bin:$PATH;
 echo ">>> Installing requirements";
 conda run -n py38 pip install -r requirements.txt;
 echo ">>> Training model";
-conda run -n py38 src/lstm_text_classifier.py --only-gpu --config "${CONFIG}" --output "${dir_output}";
+conda run -n py38 src/lstm_text_classifier.py --only-gpu --config "${CONFIG}" --output "${dir_output}" ${ARGS};
 echo ">>> exited with code $?";
