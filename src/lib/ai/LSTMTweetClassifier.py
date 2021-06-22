@@ -51,6 +51,7 @@ class LSTMTweetClassifier:
 				lstm = tf.keras.layers.Bidirectional(lstm)
 			self.model.add(lstm)
 			if self.settings.model.batch_normalisation:
+				logging.info("LSTMTweetClassifier: Adding batch normalisation layer")
 				self.model.add(tf.keras.layers.BatchNormalization())
 		else:
 			logging.info(f"LSTMTweetClassifier: Adding final LSTM layer with {units} units")
@@ -60,6 +61,7 @@ class LSTMTweetClassifier:
 				lstm = tf.keras.layers.Bidirectional(lstm)
 			self.model.add(lstm)
 			if self.settings.model.batch_normalisation:
+				logging.info("LSTMTweetClassifier: Adding batch normalisation layer")
 				self.model.add(tf.keras.layers.BatchNormalization())
 			
 		self.model.add(tf.keras.layers.Dense(self.settings.data.categories, activation = "softmax"))
