@@ -9,8 +9,8 @@ import tensorflow as tf
 from ..polyfills.io import write_file_sync
 from ..io.summarywriter import summarywriter
 from ..io.settings import settings_get
-from model_lstm import make_model_lstm
-from model_transformer import make_model_transformer
+from .model_lstm import make_model_lstm
+from .model_transformer import make_model_transformer
 
 
 class TweetClassifier:

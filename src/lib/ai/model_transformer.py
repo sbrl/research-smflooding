@@ -2,8 +2,8 @@
 import logging
 
 import tensorflow as tf
-from LayerPositionEmbedding import LayerPositionEmbedding
-from LayerTransformerBlock import LayerTransformerBlock
+from .LayerPositionEmbedding import LayerPositionEmbedding
+from .LayerTransformerBlock import LayerTransformerBlock
 
 
 def make_model_transformer(settings, container):
@@ -24,11 +24,20 @@ def make_model_transformer(settings, container):
     )(layer_in)
     
     for params in settings.model.transformer_units:
+        units_embedding = container["glove_word_vector_length"]
+        attention_heads_count = params["attention_heads"]
+        units_dense = params["units_dense"]
+        dropout = params["dropout"] or 0.1
+        logging.info(f"make_model_transformer: Adding transformer encoding block ("
+            + f"units_embedding = {units_embedding}, "
+            + f"attention heads = {attention_heads_count}, "
+            + f"units_dense = {units_dense}, "
+            + f"dropout = {dropout})")
         layer_next = LayerTransformerBlock(
-            units_embedding=container["glove_word_vector_length"],
-            attention_heads_count=params["attention_heads"],
-            units_dense=params["units_dense"],
-            dropout=params["dropout"] or 0.1
+            units_embedding=units_embedding,
+            attention_heads_count=attention_heads_count,
+            units_dense=units_dense,
+            dropout=dropout
         )(layer_next)
     
     layer_next = tf.keras.layers.GlobalAveragePooling1D()(layer_next)
@@ -38,12 +47,16 @@ def make_model_transformer(settings, container):
         settings.model.units_last,
         activation="relu"
     )(layer_next)
+    logging.info(f"make_model_transformer: Adding dropout layer (rate = {settings.model.dropout}")
+    logging.info(f"make_model_transformer: Adding dense layer (units = {settings.model.units_last}, activation = relu)")
     
     layer_next = tf.keras.layers.Dropout(settings.model.dropout)(layer_next)
     layer_next = tf.keras.layers.Dense(
         settings.data.categories,
         activation = "softmax"
     )(layer_next)
+    logging.info(f"make_model_transformer: Adding dropout layer (rate = {settings.model.dropout})")
+    logging.info(f"make_model_transformer: Adding dense layer (units = {settings.data.categories}, activation = softmax)")
     
     return tf.keras.Model(
         inputs=layer_in,

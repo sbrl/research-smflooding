@@ -9,6 +9,7 @@ class LayerPositionEmbedding(tf.keras.layers.Layer):
     """
     
     def __init__(self, max_length, embed_dim_count):
+        """Initialises a new LayerPositionEmbedding layer instance."""
         self(LayerPositionEmbedding, self).__init__()
         self.embedding_positions = tf.keras.layers.Embedding(
             input_dim = max_length,
