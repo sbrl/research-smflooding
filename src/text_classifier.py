@@ -11,7 +11,7 @@ import tensorflow as tf
 
 from lib.io.settings import settings_get, settings_load
 from lib.data.TweetsData import TweetsData
-from lib.ai.LSTMTweetClassifier import LSTMTweetClassifier
+from lib.ai.TweetClassifier import TweetClassifier
 
 
 def init_logging(filepath_output):
@@ -43,6 +43,7 @@ def main():
 		help="If the GPU is not available, exit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	parser.add_argument("--nobidi", help="Don't add the Bidirectional wrapper to the LSTM layers", action="store_true")
 	parser.add_argument("--batchnorm", help="Enable Batch Normalisation", action="store_true")
+	parser.add_argument("--model", help="The type of model to create [training only].", choices=["lstm", "transformer"])
 	
 	args = parser.parse_args()
 	
@@ -57,6 +58,8 @@ def main():
 		settings.model.bidirectional = False
 	if hasattr(args, "batchnorm") and args.batchnorm:
 		settings.model.batch_normalisation = True
+	if hasattr(args, "model"):
+		settings.model.type = args.model
 	settings.output = args.output
 	if args.log_stdout:
 		init_logging(None)
@@ -94,7 +97,7 @@ def main():
 	dataset_train		= TweetsData(settings.data.paths.input_train, container)
 	dataset_validate	= TweetsData(settings.data.paths.input_validate, container)
 	
-	ai = LSTMTweetClassifier(container)
+	ai = TweetClassifier(container)
 	ai.train(dataset_train, dataset_validate)
 	
 

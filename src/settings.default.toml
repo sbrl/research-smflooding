@@ -17,16 +17,33 @@ glove = ""
 
 
 [model]
+# The type of model. Default: lstm. Possible values: lstm, transformer
+type = "lstm"
+
+# An array of numbers, where each one represents the number of units in an LSTM layer [lstm only]
 lstm_units = [ 100 ]
-# Whether to wrap LSTM layers in a Bidirectional layer
+
+# An array of objects, where each represents a transformer encoding block [transformer only]
+transformer_units = [
+	# units_dense = the number of dense units
+	# attention_heads = the number of attention heads
+	# dropout = the dropout percentage between 0 and 1
+	{ units_dense = 32, attention_heads = 8, dropout = 0.1 }
+]
+
+# The dropout rate between 0 and 1 at the end of the model [transformer mode only]
+dropout = 0.1
+
+# Whether to wrap LSTM layers in a Bidirectional layer [lstm only]
 bidirectional = true
-# Whether to enable Batch Normalisation or not
+# Whether to enable Batch Normalisation or not [lstm only; transformers use layer normalisation which is always enabled]
 batch_normalisation = false
 
+
 [train]
-shuffle_buffer = 10000
-batch_size = 64
-epochs = 50
-validation_data_percent = 0.2
+shuffle_buffer = 10000			# The size of the shuffle buffer in elements.
+batch_size = 64					# The batch size
+epochs = 50						# The number of epochs to train for
+validation_data_percent = 0.2	# Percentage of data to hold back for validation
 
 tensorboard_update_freq = 512	# Every N batches, or specify "epoch" instead

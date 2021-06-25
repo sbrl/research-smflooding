@@ -9,13 +9,15 @@ import tensorflow as tf
 from ..polyfills.io import write_file_sync
 from ..io.summarywriter import summarywriter
 from ..io.settings import settings_get
+from model_lstm import make_model_lstm
+from model_transformer import make_model_transformer
 
 
-class LSTMTweetClassifier:
+class TweetClassifier:
 	"""Core LSTM-based model to classify tweets."""
 	
 	def __init__(self, container):
-		"""Initialises a new LSTMTweetClassifier."""
+		"""Initialises a new TweetClassifier."""
 		self.settings = settings_get()
 		self.container = container
 		
@@ -41,30 +43,12 @@ class LSTMTweetClassifier:
 	
 	def make_model(self):
 		"""Reinitialises the model."""
-		# Useful link: https://github.com/fgafarov/learn-neural-networks/blob/master/sequence_classification_LSTM.py
-		self.model = tf.keras.Sequential()
-		for units in self.settings.model.lstm_units[:-1]:
-			logging.info(f"LSTMTweetClassifier: Adding LSTM layer with {units} units")
-			lstm = tf.keras.layers.LSTM(units, return_sequences=True)
-			if not self.settings.model.nobidi:
-				logging.info("LSTMTweetClassifier: Adding Bidirectional wrapper")
-				lstm = tf.keras.layers.Bidirectional(lstm)
-			self.model.add(lstm)
-			if self.settings.model.batch_normalisation:
-				logging.info("LSTMTweetClassifier: Adding batch normalisation layer")
-				self.model.add(tf.keras.layers.BatchNormalization())
-		else:
-			logging.info(f"LSTMTweetClassifier: Adding final LSTM layer with {units} units")
-			lstm = tf.keras.layers.LSTM(units)
-			if not self.settings.model.nobidi:
-				logging.info("LSTMTweetClassifier: Adding Bidirectional wrapper")
-				lstm = tf.keras.layers.Bidirectional(lstm)
-			self.model.add(lstm)
-			if self.settings.model.batch_normalisation:
-				logging.info("LSTMTweetClassifier: Adding batch normalisation layer")
-				self.model.add(tf.keras.layers.BatchNormalization())
-			
-		self.model.add(tf.keras.layers.Dense(self.settings.data.categories, activation = "softmax"))
+		
+		if self.settings.model.type == "lstm":
+			self.model = make_model_lstm(self.settings)
+		elif self.settings.model.type == "transformer":
+			self.model = make_model_transformer(self.settings)
+		
 		self.model.compile(
 			optimizer="Adam",
 			loss="CategoricalCrossentropy",

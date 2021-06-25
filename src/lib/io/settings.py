@@ -1,6 +1,5 @@
 import os
 import toml
-from types import SimpleNamespace
 from ..polyfills.dictionary import merge, make_namespace
 
 settings = None
@@ -8,8 +7,9 @@ settings = None
 
 def read_settings_toml(filepath_default: str, filepath_custom: str):
 	"""
-	Reads settings from 2 toml files - 1 for the default settings, and another
-	for the custom settings which override the default settings.
+	Reads settings from 2 toml files.
+	1 file for the default settings, and another for the custom settings which
+	override the default settings.
 	filepath_default (str): The path the default settings file.
 	filepath_custom (str): The path to the custom override settings file.
 	"""
