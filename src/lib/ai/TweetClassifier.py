@@ -45,9 +45,9 @@ class TweetClassifier:
 		"""Reinitialises the model."""
 		
 		if self.settings.model.type == "lstm":
-			self.model = make_model_lstm(self.settings)
+			self.model = make_model_lstm(self.settings, self.container)
 		elif self.settings.model.type == "transformer":
-			self.model = make_model_transformer(self.settings)
+			self.model = make_model_transformer(self.settings, self.container)
 		
 		self.model.compile(
 			optimizer="Adam",
