@@ -7,7 +7,7 @@ import logging
 import tensorflow as tf
 
 from ..polyfills.io import write_file_sync
-from ..io.summarywriter import summarywriter
+from ..io.summarywriter import summarywriter, summarylogger
 from ..io.settings import settings_get
 from .model_lstm import make_model_lstm
 from .model_transformer import make_model_transformer
@@ -48,6 +48,11 @@ class TweetClassifier:
 			self.model = make_model_lstm(self.settings, self.container)
 		elif self.settings.model.type == "transformer":
 			self.model = make_model_transformer(self.settings, self.container)
+		else:
+			logging.error(f"Error: Unknown model type '{self.settings.model.type}'")
+			sys.exit(1)
+		
+		logging.info(f"Built model of type '{self.settings.model.type}'")
 		
 		self.model.compile(
 			optimizer="Adam",
@@ -57,15 +62,20 @@ class TweetClassifier:
 			# Unfortunately this requires specifying number of items in the dataset
 			steps_per_execution = 1
 		)
+		logging.info("Model compiled step 1 / 2")
 		self.model.build((
 			None,
 			self.settings.data.sequence_length,
 			self.container["glove_word_vector_length"]
 		))
+		logging.info("Model compiled step 2 / 2")
 		
 		# Write the settings and the model summary to disk
 		write_file_sync(self.filepath_settings, self.settings.source)
 		summarywriter(self.model, self.filepath_summary)
+		summarylogger(self.model)
+		
+		logging.info("Model summary above")
 	
 	
 	def make_callbacks(self):

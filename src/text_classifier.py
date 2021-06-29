@@ -28,7 +28,7 @@ def init_logging(filepath_output):
 		# Log to a file - ref https://github.com/conda/conda/issues/9412
 		logging.basicConfig(level=logging.INFO, filename=filepath_output)
 	
-	sys.stderr.write(f"lstm_tweet_classifier: Writing logs to {filepath_output}")
+	sys.stderr.write(f"lstm_tweet_classifier: Writing logs to {filepath_output}\n")
 	logging.info("lstm_text_classifier init! Here we go")
 
 
@@ -58,7 +58,7 @@ def main():
 		settings.model.bidirectional = False
 	if hasattr(args, "batchnorm") and args.batchnorm:
 		settings.model.batch_normalisation = True
-	if hasattr(args, "model"):
+	if hasattr(args, "model") and args.model is not None:
 		settings.model.type = args.model
 	settings.output = args.output
 	if args.log_stdout:

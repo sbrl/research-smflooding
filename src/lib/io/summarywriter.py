@@ -1,5 +1,18 @@
 import io
+import logging
 
+
+def summarylogger(model):
+    """
+    Writes the summary for a model with the default logging context.
+    model (tf.keras.Model): The model to generate the summary from.
+    """
+    
+    def handle_line(line: str):
+        logging.info(line)
+    
+    model.summary(print_fn=handle_line)
+    
 
 def summarywriter(model, filepath_output):
     """
