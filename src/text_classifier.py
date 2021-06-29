@@ -90,6 +90,20 @@ def main():
 		print("Error: No path to the input tweets jsonl file specified to validate with (data.paths.input_validate)")
 		exit(1)
 	
+	if not os.path.exists(settings.data.paths.input_train):
+		print(f"Error: No such file or directory {settings.data.paths.input_train}")
+		exit(2)
+	if not os.path.exists(settings.data.paths.input_validate):
+		print(f"Error: No such file or directory {settings.data.paths.input_validate}")
+		exit(2)
+	if not os.path.exists(settings.data.paths.categories):
+		print(f"Error: No such file or directory {settings.data.paths.categories}")
+		exit(2)
+	if not os.path.exists(settings.data.paths.glove):
+		print(f"Error: No such file or directory {settings.data.paths.glove}")
+		exit(2)
+	
+	
 	###############################################################################
 	
 	container = {}
