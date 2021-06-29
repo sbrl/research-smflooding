@@ -17,7 +17,8 @@ def make_model_lstm(settings, _container):
     for units in settings.model.lstm_units:
         i += 1
         lstm = None
-        if i == layer_count:
+        print(f"DEBUG i {i}, layer_count {layer_count}")
+        if i != layer_count - 1:
             logging.info(f"make_model_lstm: Adding LSTM layer with {units} units")
             lstm = tf.keras.layers.LSTM(units, return_sequences=True)
         else:
