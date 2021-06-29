@@ -8,12 +8,12 @@ class LayerPositionEmbedding(tf.keras.layers.Layer):
     such positional information.
     """
     
-    def __init__(self, max_length, embed_dim_count):
+    def __init__(self, max_length):
         """Initialises a new LayerPositionEmbedding layer instance."""
-        self(LayerPositionEmbedding, self).__init__()
+        super(LayerPositionEmbedding, self).__init__()
         self.embedding_positions = tf.keras.layers.Embedding(
             input_dim = max_length,
-            output_dim = embed_dim_count
+            output_dim = max_length
         )
         
     
@@ -25,5 +25,6 @@ class LayerPositionEmbedding(tf.keras.layers.Layer):
             limit=input_shape[-1],
             delta=1
         ))
-        
+        print("DEBUG tensor_in ", tensor_in.shape)
+        print("DEBUG positions ", positions.shape)
         return tensor_in + positions

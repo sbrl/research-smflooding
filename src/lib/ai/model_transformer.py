@@ -10,7 +10,7 @@ def make_model_transformer(settings, container):
     """
     Creates a Transformer-based tweet classification model.
     Important: Call this *after* you've set up the data processing pipeline.
-    This is becqause the model depends on knowing the number of items in the
+    This is because the model depends on knowing the number of items in the
     each of the glove embedding elements.
     Ref https://keras.io/examples/nlp/text_classification_with_transformer/
     settings: The settings object to use to create the model.
@@ -19,8 +19,7 @@ def make_model_transformer(settings, container):
     
     layer_in = tf.keras.layers.Input(shape=(settings.data.sequence_length,))
     layer_next = LayerPositionEmbedding(
-        max_length=settings.data.sequence_length,
-        embed_dim_count=container["glove_word_vector_length"]
+        max_length=settings.data.sequence_length
     )(layer_in)
     
     for params in settings.model.transformer_units:

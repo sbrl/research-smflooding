@@ -22,8 +22,8 @@ class LayerTransformerBlock(tf.keras.layers.Layer):
 			tf.keras.layers.Dense(units_dense, activation="relu"),
 			tf.keras.layers.Dense(units_embedding)
 		])
-		self.layer_normalisation_a = tf.keras.layers.LayerNormalization(espilon=1e-6)
-		self.layer_normalisation_b = tf.keras.layers.LayerNormalization(espilon=1e-6)
+		self.layer_normalisation_a = tf.keras.layers.LayerNormalization(epsilon=1e-6)
+		self.layer_normalisation_b = tf.keras.layers.LayerNormalization(epsilon=1e-6)
 		self.dropout_a = tf.keras.layers.Dropout(dropout)
 		self.dropout_b = tf.keras.layers.Dropout(dropout)
 	
