@@ -8,7 +8,7 @@ class LayerPositionEmbedding(tf.keras.layers.Layer):
     such positional information.
     """
     
-    def __init__(self, max_length):
+    def __init__(self):
         """Initialises a new LayerPositionEmbedding layer instance."""
         super(LayerPositionEmbedding, self).__init__()
         

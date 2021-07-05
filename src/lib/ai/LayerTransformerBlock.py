@@ -14,6 +14,11 @@ class LayerTransformerBlock(tf.keras.layers.Layer):
 		"""
 		super(LayerTransformerBlock, self).__init__()
 		
+		self.units_embedding = units_embedding
+		self.attention_heads_count = attention_heads_count
+		self.units_dense = units_dense
+		self.dropout = dropout
+		
 		self.multi_head_attention = tf.keras.layers.MultiHeadAttention(
 			num_heads = attention_heads_count,
 			key_dim=units_embedding
@@ -27,6 +32,17 @@ class LayerTransformerBlock(tf.keras.layers.Layer):
 		self.dropout_a = tf.keras.layers.Dropout(dropout)
 		self.dropout_b = tf.keras.layers.Dropout(dropout)
 	
+	def get_config(self):
+		"""
+		Returns this layer's configuration so that it can be serialised by Tensorflow.
+		Without this, Tensorflow will crashes O.o
+		"""
+		return {
+			"units_embedding": self.units_embedding,
+			"attention_heads_count": self.attention_heads_count,
+			"units_dense": self.units_dense,
+			"dropout": self.dropout
+		}
 	
 	def call(self, inputs, training):
 		"""Runs the given inputs through the model."""
