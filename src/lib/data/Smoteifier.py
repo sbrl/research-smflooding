@@ -12,6 +12,13 @@ def dataset2array(dataset):
 
 
 def smoteify(dataset):
-    """Applies SMOTE to a given dataset. Warning: Will read the entire dataset into memory!"""
+    """
+    Applies SMOTE to a given dataset.
+    Warning: Will read the entire dataset into memory!
+    dataset (tf.data.Dataset): The dataset to apply SMOTE to.
+    
+    Returns:
+    tf.data.Dataset: The SMOTEified dataset.
+    """
     
     raise Exception("smotify isn't implemented yet")
