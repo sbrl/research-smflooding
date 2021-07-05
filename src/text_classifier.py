@@ -44,6 +44,7 @@ def main():
 	parser.add_argument("--nobidi", help="Don't add the Bidirectional wrapper to the LSTM layers", action="store_true")
 	parser.add_argument("--batchnorm", help="Enable Batch Normalisation", action="store_true")
 	parser.add_argument("--model", help="The type of model to create [training only; default: lstm].", choices=["lstm", "transformer"])
+	parser.add_argument("--batch-size", help="Sets the batch size.", type=int)
 	
 	args = parser.parse_args()
 	
@@ -60,6 +61,8 @@ def main():
 		settings.model.batch_normalisation = True
 	if hasattr(args, "model") and args.model is not None:
 		settings.model.type = args.model
+	if hasattr(args, "batch_size") and type(args.batch_size) is int:
+		settings.train.batch_size = args.batch_size
 	settings.output = args.output
 	if args.log_stdout:
 		init_logging(None)

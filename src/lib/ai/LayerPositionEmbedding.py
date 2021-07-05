@@ -31,9 +31,9 @@ class LayerPositionEmbedding(tf.keras.layers.Layer):
             which means each word in in input sentence is represented by 50
             different values in the tensor.
         """
-        indices = tf.range(0, embedding_depth_size) # range = 0, 1, 2, 3, 4, .... embedding_depth_size
+        indices = tf.range(tf.constant(0, "float32"), embedding_depth_size) # range = 0, 1, 2, 3, 4, .... embedding_depth_size
         result = tf.math.divide(
-            tf.math.multiply(indices, 2),
+            tf.math.multiply(indices, tf.constant(2, "float32")),
             embedding_depth_size
         )
         result = tf.math.pow(tf.constant(10000, dtype="float32"), result)
@@ -80,9 +80,13 @@ class LayerPositionEmbedding(tf.keras.layers.Layer):
             raise Exception(f"LayerPositionEmbedding: Error: The input tensor has a shape of rank {len(tensor_in.shape)} (specifically {tensor_in.shape}), but a tensor of rank 3 was expected (specifically [ batch_size, sequence_length, embedding_size ])")
         
         batch_size = tensor_in.shape[0]
+        if batch_size is None:
+            raise Exception("LayerPositionEmbedding: Error: The batch size of the input tensor is None. This is incompatible with this layer, because it makes it impossible to encode the time signal (as far as I know). Please specify the batch size explcitly.")
         number_of_tokens = tensor_in.shape[-2]
         embedding_size = tensor_in.shape[-1]
         positions_single = self.get_time_signal(number_of_tokens, embedding_size)
+        print("DEBUG positions_single shape", positions_single.shape)
+        print("DEBUG batch_size", batch_size)
         positions = tf.stack([ positions_single for i in range(0, batch_size) ])
         print("DEBUG tensor_in ", tensor_in.shape)
         print("DEBUG positions ", positions.shape)

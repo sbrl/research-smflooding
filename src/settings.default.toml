@@ -30,6 +30,8 @@ transformer_units = [
 	# dropout = the dropout percentage between 0 and 1
 	{ units_dense = 32, attention_heads = 8, dropout = 0.1 }
 ]
+# The number of units in the last dense layer in transformer models (excluding the softmax layer at the end of course)
+transformer_units_last = 20
 
 # The dropout rate between 0 and 1 at the end of the model [transformer mode only]
 dropout = 0.1

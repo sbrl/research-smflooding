@@ -17,7 +17,10 @@ def make_model_transformer(settings, container):
     container: The dynamic container object that contains runtime settings.
     """
     
-    layer_in = tf.keras.layers.Input(shape=(settings.data.sequence_length,))
+    layer_in = tf.keras.layers.Input(batch_size=settings.train.batch_size, shape=(
+        settings.data.sequence_length,
+        container["glove_word_vector_length"]
+    ))
     layer_next = LayerPositionEmbedding(
         max_length=settings.data.sequence_length
     )(layer_in)
@@ -43,11 +46,11 @@ def make_model_transformer(settings, container):
     
     layer_next = tf.keras.layers.Dropout(settings.model.dropout)(layer_next)
     layer_next = tf.keras.layers.Dense(
-        settings.model.units_last,
+        settings.model.transformer_units_last,
         activation="relu"
     )(layer_next)
     logging.info(f"make_model_transformer: Adding dropout layer (rate = {settings.model.dropout}")
-    logging.info(f"make_model_transformer: Adding dense layer (units = {settings.model.units_last}, activation = relu)")
+    logging.info(f"make_model_transformer: Adding dense layer (units = {settings.model.transformer_units_last}, activation = relu)")
     
     layer_next = tf.keras.layers.Dropout(settings.model.dropout)(layer_next)
     layer_next = tf.keras.layers.Dense(
