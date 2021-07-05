@@ -111,8 +111,14 @@ def main():
 	
 	container = {}
 	
-	dataset_train		= TweetsData(settings.data.paths.input_train, container)
-	dataset_validate	= TweetsData(settings.data.paths.input_validate, container)
+	dataset_train		= TweetsData(
+		settings.data.paths.input_train, container,
+		"train"
+	)
+	dataset_validate	= TweetsData(
+		settings.data.paths.input_validate, container,
+		"validate"
+	)
 	
 	ai = TweetClassifier(container)
 	ai.train(dataset_train, dataset_validate)

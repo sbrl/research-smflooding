@@ -49,3 +49,6 @@ epochs = 50						# The number of epochs to train for
 validation_data_percent = 0.2	# Percentage of data to hold back for validation
 
 tensorboard_update_freq = 512	# Every N batches, or specify "epoch" instead
+
+# Whether to apply SMOTE to the input training dataset. Note that the input training dataset should be UNBALANCED for this to work!
+smoteify = false

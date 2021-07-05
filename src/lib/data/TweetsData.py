@@ -8,6 +8,7 @@ import tensorflow as tf
 from ..io.settings import settings_get
 from ..glove.glove import GloVe
 from .CategoryCalculator import CategoryCalculator
+from .Smoteifier import smoteify
 
 # HACK
 glove = None
@@ -73,7 +74,7 @@ class TweetsData(tf.data.Dataset):
 		
 	
 	
-	def __new__(this_class, filepath_input, container):
+	def __new__(this_class, filepath_input, container, mode = "train"):
 		"""Returns a new tensorflow dataset object."""
 		global glove, cats
 		settings = settings_get()
@@ -85,7 +86,7 @@ class TweetsData(tf.data.Dataset):
 		
 		container["glove_word_vector_length"] = glove.word_vector_length()
 		
-		return tf.data.Dataset.from_generator(
+		dataset = tf.data.Dataset.from_generator(
 			partial(this_class._generator, filepath_input),
 			output_signature=(
 				tf.TensorSpec(shape=(
@@ -99,7 +100,12 @@ class TweetsData(tf.data.Dataset):
 					dtype="int32"
 				)
 			)
-		).prefetch(
+		)
+		
+		if settings.train.smoteify and mode == "train":
+			dataset = smoteify(dataset)
+		
+		return dataset.prefetch(
 			tf.data.AUTOTUNE
 		).shuffle(
 			settings.train.shuffle_buffer
