@@ -60,5 +60,5 @@ export PATH=$HOME/software/bin:$PATH;
 echo ">>> Installing requirements";
 conda run -n py38 pip install -r requirements.txt;
 echo ">>> Training model";
-conda run -n py38 src/lstm_text_classifier.py --only-gpu --config "${CONFIG}" --output "${dir_output}" ${ARGS};
+conda run -n py38 src/text_classifier.py --only-gpu --config "${CONFIG}" --output "${dir_output}" ${ARGS};
 echo ">>> exited with code $?";
