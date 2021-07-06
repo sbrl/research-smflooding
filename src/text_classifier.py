@@ -43,7 +43,7 @@ def parse_args():
 		help="If the GPU is not available, exit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	parser.add_argument("--nobidi", help="Don't add the Bidirectional wrapper to the LSTM layers", action="store_true")
 	parser.add_argument("--batchnorm", help="Enable Batch Normalisation", action="store_true")
-	parser.add_argument("--model", help="The type of model to create [training only; default: lstm].", choices=["lstm", "transftf.__version__ormer"])
+	parser.add_argument("--model", help="The type of model to create [training only; default: lstm].", choices=["lstm", "transformer"])
 	parser.add_argument("--batch-size", help="Sets the batch size.", type=int)
 	
 	return parser.parse_args()
