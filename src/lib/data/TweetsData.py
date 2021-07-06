@@ -103,6 +103,7 @@ class TweetsData(tf.data.Dataset):
 		)
 		
 		if settings.train.smoteify and mode == "train":
+			print("Acitivating SMOTEIFICATION system")
 			dataset = smoteify(dataset)
 		
 		return dataset.prefetch(

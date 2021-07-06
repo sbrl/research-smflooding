@@ -42,6 +42,7 @@ def parse_args():
 	parser.add_argument("--only-gpu",
 		help="If the GPU is not available, exit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	parser.add_argument("--nobidi", help="Don't add the Bidirectional wrapper to the LSTM layers", action="store_true")
+	parser.add_argument("--smoteify", help="Apply SMOTE to the input training data. The training data should be UNBALANCED for this to work!", action="store_true")
 	parser.add_argument("--batchnorm", help="Enable Batch Normalisation", action="store_true")
 	parser.add_argument("--model", help="The type of model to create [training only; default: lstm].", choices=["lstm", "transformer"])
 	parser.add_argument("--batch-size", help="Sets the batch size.", type=int)
@@ -69,6 +70,8 @@ def main():
 		settings.model.type = args.model
 	if hasattr(args, "batch_size") and type(args.batch_size) is int:
 		settings.train.batch_size = args.batch_size
+	if hasattr(args, "smoteify") and args.smoteify:
+		settings.train.smoteify = True
 	settings.output = args.output
 	if args.log_stdout:
 		init_logging(None)
