@@ -30,11 +30,11 @@ def init_logging(filepath_output):
 	
 	sys.stderr.write(f"lstm_tweet_classifier: Writing logs to {filepath_output}\n")
 	logging.info("lstm_text_classifier init! Here we go")
+	logging.info(f"This is Tensorflow {tf.__version__}")
 
 
-def main():
-	"""Main entrypoint."""
-	
+def parse_args():
+	"""Defines and parses the CLI arguments."""
 	parser = argparse.ArgumentParser(description="This program calculates trains a tweet classification model.")
 	parser.add_argument("--config", "-c", help="Filepath to the TOML config file to load.", required=True)
 	parser.add_argument("--output", "-o", help="Path to output directory to write output to (will be automatically created if it doesn't exist)", required=True)
@@ -43,10 +43,16 @@ def main():
 		help="If the GPU is not available, exit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	parser.add_argument("--nobidi", help="Don't add the Bidirectional wrapper to the LSTM layers", action="store_true")
 	parser.add_argument("--batchnorm", help="Enable Batch Normalisation", action="store_true")
-	parser.add_argument("--model", help="The type of model to create [training only; default: lstm].", choices=["lstm", "transformer"])
+	parser.add_argument("--model", help="The type of model to create [training only; default: lstm].", choices=["lstm", "transftf.__version__ormer"])
 	parser.add_argument("--batch-size", help="Sets the batch size.", type=int)
 	
-	args = parser.parse_args()
+	return parser.parse_args()
+
+
+def main():
+	"""Main entrypoint."""
+	
+	args = parse_args()
 	
 	if not Path(args.config).is_file():
 		print("Error: File at '" + args.config + "' does not exist.")
@@ -74,37 +80,37 @@ def main():
 	
 	gpus = tf.config.list_physical_devices('GPU')
 	logging.info(f"lstm_text_classifier: Available gpus: {gpus}")
-	
+	tf.__version__
 	if not gpus and args.only_gpu:
 		logging.info("No GPUs detected, exiting because --only-gpu was specified")
-		os.exit(1)
+		sys.exit(1)
 	
 	
 	if not settings.data.paths.glove:
 		print("Error: No path to the pre-trained glove txt file specified (data.paths.glove)")
-		exit(1)
+		sys.exit(1)
 	if not settings.data.paths.categories:
 		print("Error: No path to the categories file specified (data.paths.categories)")
-		exit(1)
+		sys.exit(1)
 	if not settings.data.paths.input_train:
 		print("Error: No path to the input tweets jsonl file specified to train on (data.paths.input_train)")
-		exit(1)
+		sys.exit(1)
 	if not settings.data.paths.input_validate:
 		print("Error: No path to the input tweets jsonl file specified to validate with (data.paths.input_validate)")
-		exit(1)
+		sys.exit(1)
 	
 	if not os.path.exists(settings.data.paths.input_train):
 		print(f"Error: No such file or directory {settings.data.paths.input_train}")
-		exit(2)
+		sys.exit(2)
 	if not os.path.exists(settings.data.paths.input_validate):
 		print(f"Error: No such file or directory {settings.data.paths.input_validate}")
-		exit(2)
+		sys.exit(2)
 	if not os.path.exists(settings.data.paths.categories):
 		print(f"Error: No such file or directory {settings.data.paths.categories}")
-		exit(2)
+		sys.exit(2)
 	if not os.path.exists(settings.data.paths.glove):
 		print(f"Error: No such file or directory {settings.data.paths.glove}")
-		exit(2)
+		sys.exit(2)
 	
 	
 	###############################################################################
