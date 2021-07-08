@@ -122,11 +122,11 @@ def main():
 	
 	dataset_train		= TweetsData(
 		settings.data.paths.input_train, container,
-		"train"
+		smote=settings.train.smote
 	)
 	dataset_validate	= TweetsData(
 		settings.data.paths.input_validate, container,
-		"validate"
+		smote=False
 	)
 	
 	ai = TweetClassifier(container)

@@ -74,8 +74,13 @@ class TweetsData(tf.data.Dataset):
 		
 	
 	
-	def __new__(this_class, filepath_input, container, mode = "train"):
-		"""Returns a new tensorflow dataset object."""
+	def __new__(this_class, filepath_input, container, smote = True):
+		"""
+		Returns a new tensorflow dataset object.
+		filepath_input (string): The path to the file that contains the input tweets to process.
+		container (dict): The container dictionary for passing dynamically computed values around to other parts of the program.
+		smote (bool): Whether to activate the SMOTEIFICATION system
+		"""
 		global glove, cats
 		settings = settings_get()
 		cats = CategoryCalculator(settings.data.paths.categories)
@@ -102,8 +107,8 @@ class TweetsData(tf.data.Dataset):
 			)
 		)
 		
-		if settings.train.smoteify and mode == "train":
-			print("Acitivating SMOTEIFICATION system")
+		if smote == True:
+			print("Activating SMOTEIFICATION system")
 			dataset = smoteify(dataset)
 		
 		return dataset.prefetch(
