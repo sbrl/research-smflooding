@@ -18,27 +18,24 @@ class TweetClassifier:
 	
 	def __init__(self, container, filepath_checkpoint = None):
 		"""Initialises a new TweetClassifier."""
-		self.settings = settings_get()
 		self.container = container
 		
-		
-		self.dir_tensorboard = os.path.join(self.settings.output, "tensorboard")
-		self.dir_checkpoints = os.path.join(self.settings.output, "checkpoints")
-		self.filepath_tsvlog = os.path.join(self.settings.output, "metrics.tsv")
-		self.filepath_summary = os.path.join(self.settings.output, "summary.txt")
-		self.filepath_settings = os.path.join(self.settings.output, "settings.toml")
-		
-		
-		if not os.path.exists(self.dir_checkpoints):
-			os.makedirs(self.dir_checkpoints, 0o750)
-		
-		
-		if not self.container["glove_word_vector_length"]:
-			sys.stderr.write("Error: Please initialise the dataset object before initialising the model.\n")
-			exit(1)
-		
-		
-		if not filepath_checkpoint:
+		if filepath_checkpoint is None:
+			self.settings = settings_get()
+			
+			self.dir_tensorboard = os.path.join(self.settings.output, "tensorboard")
+			self.dir_checkpoints = os.path.join(self.settings.output, "checkpoints")
+			self.filepath_tsvlog = os.path.join(self.settings.output, "metrics.tsv")
+			self.filepath_summary = os.path.join(self.settings.output, "summary.txt")
+			self.filepath_settings = os.path.join(self.settings.output, "settings.toml")
+			
+			if not os.path.exists(self.dir_checkpoints):
+				os.makedirs(self.dir_checkpoints, 0o750)
+			
+			if not self.container["glove_word_vector_length"]:
+				sys.stderr.write("Error: Please initialise the dataset object before initialising the model.\n")
+				exit(1)
+			
 			self.make_model()
 		else:
 			self.load_model(filepath_checkpoint)
