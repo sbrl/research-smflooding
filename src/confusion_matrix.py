@@ -51,11 +51,6 @@ def main():
 	
 	args = parse_args()
 	
-	if not Path(args.config).is_file():
-		print("Error: File at '" + args.config + "' does not exist.")
-		exit(1)
-	
-	
 	gpus = tf.config.list_physical_devices('GPU')
 	logging.info(f"lstm_text_classifier: Available gpus: {gpus}")
 	tf.__version__
