@@ -27,7 +27,7 @@ class ConfusionMatrixMaker:
 		predictions = []
 		
 		acc = []
-		for tweet, label in generator():
+		for tweet, label in generator:
 			ground_truth.append(label)
 			
 			acc.append(tweet)
