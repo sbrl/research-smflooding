@@ -2,3 +2,4 @@ tensorflow
 toml
 numpy
 imbalanced-learn
+mathplotlib

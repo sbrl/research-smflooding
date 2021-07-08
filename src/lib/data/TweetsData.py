@@ -18,7 +18,8 @@ cats = None
 class TweetsData(tf.data.Dataset):
 	"""Converts a jsonl tweets file into tensors."""
 	
-	def _generator(filepath_input):
+	@staticmethod
+	def generator(filepath_input):
 		global glove, cats
 		
 		settings = settings_get()
@@ -70,8 +71,6 @@ class TweetsData(tf.data.Dataset):
 				),
 				tf.one_hot(next_cat, cats.count, dtype="int32")
 			)
-		
-		
 	
 	
 	def __new__(this_class, filepath_input, container, smote = True):
@@ -92,7 +91,7 @@ class TweetsData(tf.data.Dataset):
 		container["glove_word_vector_length"] = glove.word_vector_length()
 		
 		dataset = tf.data.Dataset.from_generator(
-			partial(this_class._generator, filepath_input),
+			partial(this_class.generator, filepath_input),
 			output_signature=(
 				tf.TensorSpec(shape=(
 					settings.data.sequence_length,

@@ -16,7 +16,7 @@ from .model_transformer import make_model_transformer
 class TweetClassifier:
 	"""Core LSTM-based model to classify tweets."""
 	
-	def __init__(self, container):
+	def __init__(self, container, filepath_checkpoint = None):
 		"""Initialises a new TweetClassifier."""
 		self.settings = settings_get()
 		self.container = container
@@ -38,8 +38,25 @@ class TweetClassifier:
 			exit(1)
 		
 		
-		self.make_model()
+		if not filepath_checkpoint:
+			self.make_model()
+		else:
+			self.load_model(filepath_checkpoint)
 	
+	
+	def load_model(self, filepath_checkpoint):
+		"""
+		Loads a saved model from the given filename.
+		filepath_checkpoint (string): The filepath to load the saved model from.
+		"""
+		
+		if not os.path.exists(filepath_checkpoint):
+			print(f"TweetClassifier Error: No such file or directory {filepath_checkpoint}")
+			sys.exit(2)
+		
+		
+		self.model = tf.keras.models.load_model(filepath_checkpoint)
+		
 	
 	def make_model(self):
 		"""Reinitialises the model."""
