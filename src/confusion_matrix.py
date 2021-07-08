@@ -11,6 +11,7 @@ import tensorflow as tf
 
 from lib.io.settings import settings_get, settings_load
 from lib.data.TweetsData import TweetsData
+from lib.data.CategoryCalculator import CategoryCalculator
 from lib.ai.TweetClassifier import TweetClassifier
 from lib.ai.ConfusionMatrixMaker import ConfusionMatrixMaker
 
@@ -39,6 +40,7 @@ def parse_args():
 	parser = argparse.ArgumentParser(description="This program creates a confusion matrix for a pre-trained tweet classification model.")
 	parser.add_argument("--input", "-i", help="Path to input file that contains the tweets to use to analyse the AI model", required=True)
 	parser.add_argument("--model", "-m", help="Filepath to the AI model checkpoint to load.", required=True)
+	parser.add_argument("--cats", "-c", help="Filepath to the categories file to work against.", required=True)
 	parser.add_argument("--output", "-o", help="Path to output file to write the output as a PNG to.", required=True)
 	parser.add_argument("--only-gpu",
 		help="If the GPU is not available, exit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
@@ -65,14 +67,19 @@ def main():
 	if not os.path.exists(args.model):
 		print(f"Error: No such file or directory {args.model}")
 		sys.exit(2)
+	if not os.path.exists(args.cats):
+		print(f"Error: No such file or directory {args.model}")
+		sys.exit(2)
 	
 	###############################################################################
 	
 	container = {}
 	
+	cats = CategoryCalculator(args.cats)
 	dataset_predict = TweetsData.generator(args.input)
 	matrix_maker = ConfusionMatrixMaker(
-		TweetClassifier(container, filepath_checkpoint=args.model)
+		TweetClassifier(container, filepath_checkpoint=args.model),
+		cats
 	)
 	matrix_maker.render(
 		dataset_predict,

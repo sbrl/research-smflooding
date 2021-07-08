@@ -6,15 +6,14 @@ import numpy
 class ConfusionMatrixMaker:
 	"""Makes confusion matrices and renders them to PNG images from pre-trained models."""
 	
-	def __init__(self, model, cat_names):
+	def __init__(self, model, cats):
 		"""
 		Creates new ConfusionMatrixMaker instances.
 		model: The Tensorflow model to make predictions with.
 		cat_names (string[]): The list of category names (in the SAME order as was used for training).
 		"""
 		self.model = model
-		self.cat_names = cat_names
-		self.cats_count = len(self.cat_names)
+		self.cats = cats
 		
 		self.batch_size = 32
 	
@@ -50,6 +49,9 @@ class ConfusionMatrixMaker:
 		
 		matrix = tf.math.confusion_matrix(ground_truth, predictions)
 		
+		cat_names = self.cats.get_all_names()
+		cats_count = len(cat_names)
+		
 		plt.clf()
 		plt.imshow(
 			matrix,
@@ -59,12 +61,12 @@ class ConfusionMatrixMaker:
 		plt.title("Tweet Classifier - Confusion matrix")
 		plt.ylabel("Ground Truth")
 		plt.xlabel("Prediction")
-		ticks = numpy.arange(self.cats_count)
-		plt.xticks(ticks, self.cat_names, rotation=45)
-		plt.yticks(ticks, self.cat_names)
+		ticks = numpy.arange(cats_count)
+		plt.xticks(ticks, cat_names, rotation=45)
+		plt.yticks(ticks, cat_names)
 		
-		for i in range(self.cats_count):
-			for j in range(self.cats_count):
+		for i in range(cats_count):
+			for j in range(cats_count):
 				plt.text(j, i, str(matrix[i][j]))
 		
 		plt.savefig(filepath_output)

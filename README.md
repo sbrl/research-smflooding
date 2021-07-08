@@ -4,8 +4,9 @@ Social media AI stuff for my PhD.
 
 See also https://www.npmjs.com/package/twitter-academic-downloader, which used to be called PhD-Social-Media before it turned into a twitter downloader.
 
+**TODO: Fill this README out with comprehensive instructions.**
 
-## Entry points
+## Entrypoints
 
  - `src/text_classifier.py`: The main LSTM-based text classifier
  - `src/confusion_matrix.py`: Makes a confusion matrix using a given dataset & saved model checkpoint.

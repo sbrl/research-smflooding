@@ -64,6 +64,14 @@ class CategoryCalculator:
 	def get_category_name(self, text: str):
 		"""Calculates the name of the category that the given string of text belongs to."""
 		return self.index2name(self.get_category_index(text))
+	
+	def get_all_names(self):
+		"""Returns a (ordered) list of category names."""
+		result = []
+		for cat in self.categories:
+			result.append(cat["name"])
+		
+		return result
 		
 	def index2name(self, i: int):
 		"""Returns the name for a given category index."""
