@@ -107,7 +107,7 @@ class TweetsData(tf.data.Dataset):
 			)
 		)
 		
-		if smote == True:
+		if smote is True:
 			print("Activating SMOTEIFICATION system")
 			dataset = smoteify(dataset)
 		
