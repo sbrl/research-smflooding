@@ -87,7 +87,7 @@ def main():
 	
 	container = {}
 	
-	TweetsData.init_globals(settings.data.paths.glove, settings.data.paths.cats)
+	TweetsData.init_globals(settings.data.paths.glove, settings.data.paths.categories)
 	dataset_predict = TweetsData.generator(args.input)
 	matrix_maker = ConfusionMatrixMaker(
 		TweetClassifier(container, filepath_checkpoint=args.model),
