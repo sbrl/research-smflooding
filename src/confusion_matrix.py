@@ -16,21 +16,10 @@ from lib.ai.TweetClassifier import TweetClassifier
 from lib.ai.ConfusionMatrixMaker import ConfusionMatrixMaker
 
 
-def init_logging(filepath_output):
+def init_logging():
 	"""Initialises the logging subsystem."""
 	
-	if filepath_output is None:
-		logging.basicConfig(level=logging.INFO)
-	else:
-		# Create the output directory if it doesn't exist already
-		dirpath = os.path.dirname(filepath_output)
-		if not os.path.exists(dirpath):
-			os.makedirs(dirpath, 0o750)
-		
-		# Log to a file - ref https://github.com/conda/conda/issues/9412
-		logging.basicConfig(level=logging.INFO, filename=filepath_output)
-	
-	sys.stderr.write(f"confusion_matrix: Writing logs to {filepath_output}\n")
+	logging.basicConfig(level=logging.INFO)
 	logging.info("confusion_matrix init! Here we go")
 	logging.info(f"This is Tensorflow {tf.__version__}")
 
