@@ -1,6 +1,7 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy
+import logging
 
 
 class ConfusionMatrixMaker:
@@ -45,9 +46,13 @@ class ConfusionMatrixMaker:
 		filepath_output (string): The filepath to write the resulting confusion matrix to as a PNG image.
 		"""
 		
+		logging.info("ConfusionMatrixMaker: Starting")
 		ground_truth, predictions = self.get_predictions(generator)
+		logging.info(f"ConfusionMatrixMaker: Got {len(ground_truth)}, {len(predictions)} ground_truth, predictions")
+		
 		
 		matrix = tf.math.confusion_matrix(ground_truth, predictions)
+		logging.into(f"ConfusionMatrixMaker: Got confusion matrix of shape {matrix.shape}")
 		
 		cat_names = self.cats.get_all_names()
 		cats_count = len(cat_names)
@@ -70,3 +75,4 @@ class ConfusionMatrixMaker:
 				plt.text(j, i, str(matrix[i][j]))
 		
 		plt.savefig(filepath_output)
+		logging.info(f"ConfusionMatrixMaker: Saved plot to {filepath_output}")

@@ -21,6 +21,7 @@ class TweetClassifier:
 		self.container = container
 		
 		if filepath_checkpoint is None:
+			logging.info("TweetClassifier: Creating new model")
 			self.settings = settings_get()
 			
 			self.dir_tensorboard = os.path.join(self.settings.output, "tensorboard")
@@ -38,6 +39,7 @@ class TweetClassifier:
 			
 			self.make_model()
 		else:
+			logging.info(f"TweetClassifier: Loading checkpoint from {filepath_checkpoint}")
 			self.load_model(filepath_checkpoint)
 	
 	
