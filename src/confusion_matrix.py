@@ -70,14 +70,14 @@ def main():
 	if not os.path.exists(args.model):
 		print(f"Error: No such file or directory {args.model}")
 		sys.exit(2)
-	if not settings.data.paths.cats:
-		print("Error: No categories file specified in the setting data.paths.cats.")
+	if not settings.data.paths.categories:
+		print("Error: No categories file specified in the setting data.paths.categories.")
 		sys.exit(1)
 	if not settings.data.paths.glove:
-		print("Error: No glove file specified in the setting data.paths.cats.")
+		print("Error: No glove file specified in the setting data.paths.glove.")
 		sys.exit(1)
-	if not os.path.exists(settings.data.paths.cats):
-		print(f"Error: No such file or directory {settings.data.paths.cats}")
+	if not os.path.exists(settings.data.paths.categories):
+		print(f"Error: No such file or directory {settings.data.paths.categories}")
 		sys.exit(2)
 	if not os.path.exists(settings.data.paths.glove):
 		print(f"Error: No such file or directory {settings.data.paths.glove}")
