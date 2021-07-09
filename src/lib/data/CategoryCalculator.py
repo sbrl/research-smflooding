@@ -1,5 +1,4 @@
 import io
-import logging
 
 class CategoryCalculator:
 	"""Calculates the category of a given string of text based on the number of occurences of category items."""
@@ -35,7 +34,6 @@ class CategoryCalculator:
 			self.markers += parts[1]
 		
 		self.count = i + 1
-		logging.log(f"CategoryCalculator: {self.count} categories loaded")
 	
 	def get_category_index(self, text: str):
 		"""
