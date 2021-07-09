@@ -1,5 +1,5 @@
 import io
-
+import logging
 
 class CategoryCalculator:
 	"""Calculates the category of a given string of text based on the number of occurences of category items."""
@@ -22,7 +22,10 @@ class CategoryCalculator:
 		i = -1
 		for line in handle:
 			i += 1
-			parts = line.strip().split("\t")
+			line = line.strip()
+			if len(line) == 0:
+				continue
+			parts = line.split("\t")
 			
 			self.categories.append({
 				"i": i,
@@ -31,8 +34,8 @@ class CategoryCalculator:
 			})
 			self.markers += parts[1]
 		
-		
 		self.count = i + 1
+		logging.log(f"CategoryCalculator: {self.count} categories loaded")
 	
 	def get_category_index(self, text: str):
 		"""
