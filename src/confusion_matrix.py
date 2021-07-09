@@ -91,7 +91,7 @@ def main():
 	dataset_predict = TweetsData.generator(args.input)
 	matrix_maker = ConfusionMatrixMaker(
 		TweetClassifier(container, filepath_checkpoint=args.model),
-		CategoryCalculator(args.cats)
+		CategoryCalculator(settings.data.paths.categories)
 	)
 	matrix_maker.render(
 		dataset_predict,
