@@ -38,10 +38,9 @@ def init_logging(filepath_output):
 def parse_args():
 	"""Defines and parses the CLI arguments."""
 	parser = argparse.ArgumentParser(description="This program creates a confusion matrix for a pre-trained tweet classification model.")
+	parser.add_argument("--config", "-c", help="Filepath to the TOML config file to load.", required=True)
 	parser.add_argument("--input", "-i", help="Path to input file that contains the tweets to use to analyse the AI model", required=True)
 	parser.add_argument("--model", "-m", help="Filepath to the AI model checkpoint to load.", required=True)
-	parser.add_argument("--cats", "-c", help="Filepath to the categories file to work against.", required=True)
-	parser.add_argument("--glove", "-g", help="Path to the pretrained GloVe .txt file to use.", required=True)
 	parser.add_argument("--output", "-o", help="Path to the output file to write the output as a PNG to.", required=True)
 	parser.add_argument("--only-gpu",
 		help="If the GPU is not available, exit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
@@ -62,24 +61,33 @@ def main():
 		sys.exit(1)
 	
 	
+	settings_load(args.config)
+	settings = settings_get()
+	
 	if not os.path.exists(args.input):
 		print(f"Error: No such file or directory {args.input}")
 		sys.exit(2)
 	if not os.path.exists(args.model):
 		print(f"Error: No such file or directory {args.model}")
 		sys.exit(2)
-	if not os.path.exists(args.cats):
-		print(f"Error: No such file or directory {args.cats}")
+	if not settings.data.paths.cats:
+		print("Error: No categories file specified in the setting data.paths.cats.")
+		sys.exit(1)
+	if not settings.data.paths.glove:
+		print("Error: No glove file specified in the setting data.paths.cats.")
+		sys.exit(1)
+	if not os.path.exists(settings.data.paths.cats):
+		print(f"Error: No such file or directory {settings.data.paths.cats}")
 		sys.exit(2)
-	if not os.path.exists(args.glove):
-		print(f"Error: No such file or directory {args.glove}")
+	if not os.path.exists(settings.data.paths.glove):
+		print(f"Error: No such file or directory {settings.data.paths.glove}")
 		sys.exit(2)
 	
 	###############################################################################
 	
 	container = {}
 	
-	TweetsData.init_globals(args.cats, args.glove)
+	TweetsData.init_globals(settings.data.paths.glove, settings.data.paths.cats)
 	dataset_predict = TweetsData.generator(args.input)
 	matrix_maker = ConfusionMatrixMaker(
 		TweetClassifier(container, filepath_checkpoint=args.model),
