@@ -19,6 +19,15 @@ class TweetsData(tf.data.Dataset):
 	"""Converts a jsonl tweets file into tensors."""
 	
 	@staticmethod
+	def init_globals(filepath_cats, filepath_glove):
+		global glove, cats
+		if cats is None:
+			cats = CategoryCalculator(filepath_cats)
+		# Globalise the instance
+		if glove is None:
+			glove = GloVe(filepath_glove)
+	
+	@staticmethod
 	def generator(filepath_input):
 		global glove, cats
 		
@@ -82,11 +91,10 @@ class TweetsData(tf.data.Dataset):
 		"""
 		global glove, cats
 		settings = settings_get()
-		cats = CategoryCalculator(settings.data.paths.categories)
-		
-		# Globalise the instance
-		if glove is None:
-			glove = GloVe(settings.data.paths.glove)
+		this_class.init_raw(
+			settings.data.paths.categories,
+			settings.data.paths.glove
+		)
 		
 		container["glove_word_vector_length"] = glove.word_vector_length()
 		

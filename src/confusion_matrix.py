@@ -41,7 +41,8 @@ def parse_args():
 	parser.add_argument("--input", "-i", help="Path to input file that contains the tweets to use to analyse the AI model", required=True)
 	parser.add_argument("--model", "-m", help="Filepath to the AI model checkpoint to load.", required=True)
 	parser.add_argument("--cats", "-c", help="Filepath to the categories file to work against.", required=True)
-	parser.add_argument("--output", "-o", help="Path to output file to write the output as a PNG to.", required=True)
+	parser.add_argument("--glove", "-g", help="Path to the pretrained GloVe .txt file to use.", required=True)
+	parser.add_argument("--output", "-o", help="Path to the output file to write the output as a PNG to.", required=True)
 	parser.add_argument("--only-gpu",
 		help="If the GPU is not available, exit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	
@@ -68,18 +69,21 @@ def main():
 		print(f"Error: No such file or directory {args.model}")
 		sys.exit(2)
 	if not os.path.exists(args.cats):
-		print(f"Error: No such file or directory {args.model}")
+		print(f"Error: No such file or directory {args.cats}")
+		sys.exit(2)
+	if not os.path.exists(args.glove):
+		print(f"Error: No such file or directory {args.glove}")
 		sys.exit(2)
 	
 	###############################################################################
 	
 	container = {}
 	
-	cats = CategoryCalculator(args.cats)
+	TweetsData.init_globals(args.cats, args.glove)
 	dataset_predict = TweetsData.generator(args.input)
 	matrix_maker = ConfusionMatrixMaker(
 		TweetClassifier(container, filepath_checkpoint=args.model),
-		cats
+		CategoryCalculator(args.cats)
 	)
 	matrix_maker.render(
 		dataset_predict,
