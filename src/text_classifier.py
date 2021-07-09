@@ -122,7 +122,7 @@ def main():
 	
 	dataset_train		= TweetsData(
 		settings.data.paths.input_train, container,
-		smote=settings.train.smote
+		smote=settings.train.smoteify
 	)
 	dataset_validate	= TweetsData(
 		settings.data.paths.input_validate, container,
