@@ -39,6 +39,7 @@ def parse_args():
 
 def main():
 	"""Main entrypoint."""
+	init_logging()
 	
 	args = parse_args()
 	
