@@ -36,7 +36,7 @@ class ConfusionMatrixMaker:
 				stacked = tf.stack(acc)
 				print("STACKED_SHAPE", stacked.shape)
 				predictions_batch = self.model.evaluate(stacked)
-				print("PREDICTIONS_BATCH", predictions_batch.shape)
+				print("PREDICTIONS_BATCH", predictions_batch)
 				for item in predictions_batch:
 					print("ITEM", item.shape)
 					predictions.append(item)
