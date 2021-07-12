@@ -37,6 +37,8 @@ class ConfusionMatrixMaker:
 				for item in predictions_batch:
 					predictions.append(item)
 				del acc[:]
+		
+		return ground_truth, predictions
 	
 	
 	def render(self, generator, filepath_output):
