@@ -38,7 +38,7 @@ class ConfusionMatrixMaker:
 				predictions_batch = self.model.evaluate(stacked)
 				print("PREDICTIONS_BATCH", predictions_batch)
 				for item in predictions_batch:
-					print("ITEM", item.shape)
+					print("ITEM", item)
 					predictions.append(item)
 				del acc[:]
 		
