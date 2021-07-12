@@ -35,7 +35,7 @@ class ConfusionMatrixMaker:
 			if len(acc) >= self.batch_size:
 				stacked = tf.stack(acc)
 				print("STACKED_SHAPE", stacked.shape)
-				predictions_batch = self.model.evaluate()
+				predictions_batch = self.model.evaluate(stacked)
 				print("PREDICTIONS_BATCH", predictions_batch.shape)
 				for item in predictions_batch:
 					print("ITEM", item.shape)
