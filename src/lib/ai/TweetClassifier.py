@@ -127,8 +127,9 @@ class TweetClassifier:
 			callbacks=self.make_callbacks()
 		)
 	
-	def evaluate(self, data):
-		"""Evaluates the given input data with the AI model, but does not update any weights."""
+	def predict(self, data, batch_size=None):
+		"""Makes a prediction for the given input data with the AI model, but does not update any weights."""
 		return self.model.evaluate(
-			data
+			data,
+			batch_size=batch_size
 		)
