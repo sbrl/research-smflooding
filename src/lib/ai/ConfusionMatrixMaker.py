@@ -33,8 +33,12 @@ class ConfusionMatrixMaker:
 			
 			acc.append(tweet)
 			if len(acc) >= self.batch_size:
-				predictions_batch = self.model.evaluate(tf.stack(acc))
+				stacked = tf.stack(acc)
+				print("STACKED_SHAPE", stacked.shape)
+				predictions_batch = self.model.evaluate()
+				print("PREDICTIONS_BATCH", predictions_batch.shape)
 				for item in predictions_batch:
+					print("ITEM", item.shape)
 					predictions.append(item)
 				del acc[:]
 		
