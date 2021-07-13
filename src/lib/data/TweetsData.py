@@ -82,7 +82,7 @@ class TweetsData(tf.data.Dataset):
 			)
 	
 	
-	def __new__(this_class, filepath_input, container, smote = True):
+	def __new__(cls, filepath_input, container, smote = True):
 		"""
 		Returns a new tensorflow dataset object.
 		filepath_input (string): The path to the file that contains the input tweets to process.
@@ -91,7 +91,7 @@ class TweetsData(tf.data.Dataset):
 		"""
 		global glove, cats
 		settings = settings_get()
-		this_class.init_raw(
+		cls.init_raw(
 			settings.data.paths.categories,
 			settings.data.paths.glove
 		)
@@ -99,7 +99,7 @@ class TweetsData(tf.data.Dataset):
 		container["glove_word_vector_length"] = glove.word_vector_length()
 		
 		dataset = tf.data.Dataset.from_generator(
-			partial(this_class.generator, filepath_input),
+			partial(cls.generator, filepath_input),
 			output_signature=(
 				tf.TensorSpec(shape=(
 					settings.data.sequence_length,

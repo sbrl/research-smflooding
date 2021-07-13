@@ -35,7 +35,7 @@ class TweetClassifier:
 			
 			if not self.container["glove_word_vector_length"]:
 				sys.stderr.write("Error: Please initialise the dataset object before initialising the model.\n")
-				exit(1)
+				sys.exit(1)
 			
 			self.make_model()
 		else:
@@ -129,7 +129,7 @@ class TweetClassifier:
 	
 	def predict(self, data, batch_size=None):
 		"""Makes a prediction for the given input data with the AI model, but does not update any weights."""
-		return self.model.predict(
+		self.model.predict(
 			data,
 			batch_size=batch_size
 		)
