@@ -129,7 +129,7 @@ class TweetClassifier:
 	
 	def predict(self, data, batch_size=None):
 		"""Makes a prediction for the given input data with the AI model, but does not update any weights."""
-		return self.model.evaluate(
+		return self.model.predict(
 			data,
 			batch_size=batch_size
 		)
