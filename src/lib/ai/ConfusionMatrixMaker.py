@@ -7,12 +7,14 @@ import logging
 class ConfusionMatrixMaker:
 	"""Makes confusion matrices and renders them to PNG images from pre-trained models."""
 	
-	def __init__(self, model, cats):
+	def __init__(self, model, cats, min_confidence):
 		"""
 		Creates new ConfusionMatrixMaker instances.
 		model: The Tensorflow model to make predictions with.
 		cat_names (string[]): The list of category names (in the SAME order as was used for training).
+		min_confidence (number): The minimum confidence required by the model to include it in confusion matrices. Should be a floating-point number between 0 (no confidence) and 1 (full confidence).
 		"""
+		self.min_confidence = min_confidence
 		self.model = model
 		self.cats = cats
 		
@@ -28,19 +30,25 @@ class ConfusionMatrixMaker:
 		predictions = []
 		
 		acc = []
+		acc_truth =  []
 		for tweet, label in generator:
-			ground_truth.append(label)
-			
+			acc_truth.append(label)
 			acc.append(tweet)
 			if len(acc) >= self.batch_size:
 				stacked = tf.stack(acc)
 				print("STACKED_SHAPE", stacked.shape)
-				predictions_batch = self.model.predict(stacked, self.batch_size)
+				predictions_batch = self.model.predict_class_ids(stacked, self.batch_size)
 				print("PREDICTIONS_BATCH", predictions_batch)
-				for item in predictions_batch:
+				# Process the predictions
+				for index, item in predictions_batch:
 					print("ITEM", item)
-					predictions.append(item)
+					if item is not None:
+						predictions.append(item)
+						ground_truth.append(acc_truth[index])
+				
+				# Empty the accumulators
 				del acc[:]
+				del acc_truth[:]
 		
 		return ground_truth, predictions
 	
@@ -58,7 +66,7 @@ class ConfusionMatrixMaker:
 		
 		
 		matrix = tf.math.confusion_matrix(ground_truth, predictions)
-		logging.into(f"ConfusionMatrixMaker: Got confusion matrix of shape {matrix.shape}")
+		logging.info(f"ConfusionMatrixMaker: Got confusion matrix of shape {matrix.shape}")
 		
 		cat_names = self.cats.get_all_names()
 		cats_count = len(cat_names)

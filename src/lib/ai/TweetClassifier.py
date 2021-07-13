@@ -129,7 +129,27 @@ class TweetClassifier:
 	
 	def predict(self, data, batch_size=None):
 		"""Makes a prediction for the given input data with the AI model, but does not update any weights."""
-		self.model.predict(
+		return self.model.predict(
 			data,
 			batch_size=batch_size
 		)
+	
+	def predict_class_ids(self, data, batch_size=None, min_confidence=0.5):
+		"""Makes a prediction, but returns the class ids instead of the probabilities."""
+		
+		predictions = self.predict(data, batch_size)
+		result = []
+		for item in predictions:
+			max_value = -1
+			max_index = -1
+			for i,value in item:
+				if value > max_value:
+					max_index = i
+					max_value = value
+			
+			if max_value > min_confidence:
+				result.append(max_index)
+			else
+				result.append(None)
+		
+		return result
