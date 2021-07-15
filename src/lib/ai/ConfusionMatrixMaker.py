@@ -96,7 +96,7 @@ class ConfusionMatrixMaker:
 		
 		for i in range(cats_count):
 			for j in range(cats_count):
-				plt.text(j, i, str(matrix[i][j].numpy()))
+				plt.text(j, i, str(matrix[i][j].numpy()), backgroundcolor=(1, 1, 1, 0.5))
 		
 		plt.tight_layout()
 		plt.savefig(filepath_output)
