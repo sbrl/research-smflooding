@@ -32,7 +32,15 @@ class ConfusionMatrixMaker:
 		acc = []
 		acc_truth =  []
 		for tweet, label in generator:
-			acc_truth.append(label)
+			label_index = -1
+			for i in range(0, len(label)):
+				if label[i] == 1:
+					label_index = i
+			
+			if label_index == -1:
+				raise Exception(f"Error: One-hot encoded label '{label}' did not have at least one element with a value of 1.")
+			
+			acc_truth.append(label_index)
 			acc.append(tweet)
 			if len(acc) >= self.batch_size:
 				stacked = tf.stack(acc)
