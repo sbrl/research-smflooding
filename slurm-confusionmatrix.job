@@ -36,13 +36,15 @@ filename_output="${model_dirname}_${checkpoint_filename%.*}.png";
 dir_output="output";
 
 if [[ ! -d "${dir_output}" ]]; then
-	mkdir -o "${dir_output}";
+	mkdir -p "${dir_output}";
 fi
+
+target_output="${dir_output}/${filename_output}";
 
 export PATH=$HOME/software/bin:$PATH;
 
 echo ">>> Installing requirements";
 conda run -n py38 pip install -r requirements.txt;
 echo ">>> Training model";
-conda run -n py38 src/confusion_matrix.py --input "${INPUT}" --config "${CONFIG}" --model "${CHECKPOINT}" --output "${dir_output}/${filename_output}"
+conda run -n py38 src/confusion_matrix.py --input "${INPUT}" --config "${CONFIG}" --model "${CHECKPOINT}" --output "${target_output}"
 echo ">>> exited with code $?";
