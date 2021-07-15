@@ -149,7 +149,7 @@ class TweetClassifier:
 			
 			if max_value > min_confidence:
 				result.append(max_index)
-			else
+			else:
 				result.append(None)
 		
 		return result
