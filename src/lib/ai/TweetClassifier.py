@@ -142,7 +142,8 @@ class TweetClassifier:
 		for item in predictions:
 			max_value = -1
 			max_index = -1
-			for i,value in item:
+			for i in range(0, predictions.shape[-1]):
+				value = item[i]
 				if value > max_value:
 					max_index = i
 					max_value = value
