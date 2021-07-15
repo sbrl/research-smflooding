@@ -96,7 +96,8 @@ class ConfusionMatrixMaker:
 		
 		for i in range(cats_count):
 			for j in range(cats_count):
-				plt.text(j, i, str(matrix[i][j]))
+				plt.text(j, i, str(matrix[i][j].numpy()))
 		
+		plt.tight_layout()
 		plt.savefig(filepath_output)
 		logging.info(f"ConfusionMatrixMaker: Saved plot to {filepath_output}")
