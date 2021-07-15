@@ -31,6 +31,7 @@ def parse_args():
 	parser.add_argument("--input", "-i", help="Path to input file that contains the tweets to use to analyse the AI model", required=True)
 	parser.add_argument("--model", "-m", help="Filepath to the AI model checkpoint to load.", required=True)
 	parser.add_argument("--output", "-o", help="Path to the output file to write the output as a PNG to.", required=True)
+	parser.add_argument("--min-confidence", help="Minimum confidence interval from the AI model to require to include a given prediction in the resulting confusion matrix.")
 	parser.add_argument("--only-gpu",
 		help="If the GPU is not available, exit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	
@@ -45,11 +46,12 @@ def main():
 	
 	gpus = tf.config.list_physical_devices('GPU')
 	logging.info(f"lstm_text_classifier: Available gpus: {gpus}")
-	tf.__version__
+	
 	if not gpus and args.only_gpu:
 		logging.info("No GPUs detected, exiting because --only-gpu was specified")
 		sys.exit(1)
-	
+	if not hasattr(args, "min_confidence"):
+		args.min_confidence = 0.8
 	
 	settings_load(args.config)
 	settings = settings_get()
@@ -81,7 +83,8 @@ def main():
 	dataset_predict = TweetsData.generator(args.input)
 	matrix_maker = ConfusionMatrixMaker(
 		TweetClassifier(container, filepath_checkpoint=args.model),
-		CategoryCalculator(settings.data.paths.categories)
+		CategoryCalculator(settings.data.paths.categories),
+		min_confidence=args.min_confidence
 	)
 	matrix_maker.render(
 		dataset_predict,
