@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+#SBATCH -J TensorCM
+#SBATCH -N 1
+#SBATCH -n 4
+#SBATCH --gres=gpu:1
+#SBATCH -o %j.%N.%a.out
+#SBATCH -e %j.%N.%a.err
+#SBATCH -p gpu05,gpu
+#SBATCH --time=5-00:00:00
+#SBATCH --mem=25600
+
+# 25600 = 25GiB memory required
+module load utilities/multi
+module load readline/7.0
+module load gcc/10.2.0
+module load cuda/11.0.3
+
+module load python/anaconda/4.6/miniconda/3.7
+
+# TODO: expand this to pull this dynamically from the model
+INPUT="${INPUT:-$HOME/data/twitter/tweets-mini.jsonl}";
+CHECKPOINT="${CHECKPOINT}"; # Example: output/20210629-128,128-c2-nobidi-batchnorm/checkpoints/checkpoint_e7_acc0.919.hdf5
+CONFIG="${CONFIG:-configs/g200a128,128c2pn.toml}"
+
+if [[ -z "${CHECKPOINT}" ]]; then
+	echo "Error: No checkpoint specified in the CHECKPOINT environment variable.";
+	exit 1;
+fi
+
+checkpoint_filename="$(basename "${CHECKPOINT}")";
+model_dirname="$(basename "$(dirname "$(dirname "${CHECKPOINT}")")")"
+
+filename_output="${model_dirname}_${checkpoint_filename%.*}.png";
+
+#dir_output="output/$(date -u --rfc-3339=date)_${CODE}";
+dir_output="output";
+
+if [[ ! -d "${dir_output}" ]]; then
+	mkdir -o "${dir_output}";
+fi
+
+export PATH=$HOME/software/bin:$PATH;
+
+echo ">>> Installing requirements";
+conda run -n py38 pip install -r requirements.txt;
+echo ">>> Training model";
+conda run -n py38 src/confusion_matrix.py --input "${INPUT}" --config "${CONFIG}" --model "${CHECKPOINT}" --output "${dir_output}/${filename_output}"
+echo ">>> exited with code $?";
