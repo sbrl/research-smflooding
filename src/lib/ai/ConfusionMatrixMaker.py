@@ -40,7 +40,8 @@ class ConfusionMatrixMaker:
 				predictions_batch = self.model.predict_class_ids(stacked, self.batch_size)
 				print("PREDICTIONS_BATCH", predictions_batch)
 				# Process the predictions
-				for index, item in predictions_batch:
+				for index in range(0, len(predictions_batch)):
+					item = predictions_batch[index]
 					print("ITEM", item)
 					if item is not None:
 						predictions.append(item)
