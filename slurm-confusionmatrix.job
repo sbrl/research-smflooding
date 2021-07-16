@@ -6,7 +6,7 @@
 #SBATCH -o %j.%N.%a.out
 #SBATCH -e %j.%N.%a.err
 #SBATCH -p gpu05,gpu
-#SBATCH --time=03:00:00
+#SBATCH --time=01:00:00
 #SBATCH --mem=25600
 
 # This slurm job file renders confusion matrices.
