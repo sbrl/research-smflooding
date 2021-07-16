@@ -12,6 +12,9 @@ from ..io.settings import settings_get
 from .model_lstm import make_model_lstm
 from .model_transformer import make_model_transformer
 
+from .LayerPositionEmbedding import LayerPositionEmbedding
+from .LayerTransformerBlock import LayerTransformerBlock
+
 
 class TweetClassifier:
 	"""Core LSTM-based model to classify tweets."""
@@ -54,7 +57,11 @@ class TweetClassifier:
 			sys.exit(2)
 		
 		
-		self.model = tf.keras.models.load_model(filepath_checkpoint)
+		self.model = tf.keras.models.load_model(filepath_checkpoint, custom_objects={
+			# Tell Tensorflow about our custom layers
+			"LayerPositionEmbedding": LayerPositionEmbedding,
+			"LayerTransformerBlock": LayerTransformerBlock
+		})
 		
 	
 	def make_model(self):
