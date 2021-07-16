@@ -9,6 +9,11 @@
 #SBATCH --time=03:00:00
 #SBATCH --mem=25600
 
+# This slurm job file renders confusion matrices.
+# Usage:
+# 
+# CHECKPOINT="PATH/TO/model/checkpoints/CHECKPOINT.HDF5" sbatch slurm-confusionmatrix.job
+
 # 25600 = 25GiB memory required
 module load utilities/multi
 module load readline/7.0
@@ -18,7 +23,7 @@ module load cuda/11.0.3
 module load python/anaconda/4.6/miniconda/3.7
 
 # TODO: expand this to pull this dynamically from the model
-INPUT="${INPUT:-$HOME/data/twitter/tweets-mini.jsonl}";
+INPUT="${INPUT:-$HOME/data/twitter/tweets-all-validate.jsonl}";
 CHECKPOINT="${CHECKPOINT}"; # Example: output/20210629-128,128-c2-nobidi-batchnorm/checkpoints/checkpoint_e7_acc0.919.hdf5
 CONFIG="${CONFIG:-configs/g200a128,128c2pn.toml}"
 
