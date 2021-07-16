@@ -58,7 +58,7 @@ class TweetClassifier:
 		
 		
 		self.model = tf.keras.models.load_model(filepath_checkpoint, custom_objects={
-			# Tell Tensorflow about our custom layers
+			# Tell Tensorflow about our custom layers so that it can deserialise models that use them
 			"LayerPositionEmbedding": LayerPositionEmbedding,
 			"LayerTransformerBlock": LayerTransformerBlock
 		})
