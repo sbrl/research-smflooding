@@ -13,6 +13,13 @@
 # Usage:
 # 
 # CHECKPOINT="PATH/TO/model/checkpoints/CHECKPOINT.HDF5" sbatch slurm-confusionmatrix.job
+# 
+# Environment Variables:
+#	CHECKPOINT		Filepath to the checkpoint file to evaluate
+#	INPUT			Filepath to the tweets file to use for validation. Default: tweets-all-valdate
+#	CONFIG			Filepath to the config file to use (specifies GloVe & category files)
+#	POSTFIX			Optional postfix for output filename
+
 
 # 25600 = 25GiB memory required
 module load utilities/multi
@@ -35,7 +42,7 @@ fi
 checkpoint_filename="$(basename "${CHECKPOINT}")";
 model_dirname="$(basename "$(dirname "$(dirname "${CHECKPOINT}")")")"
 
-filename_output="${model_dirname}_${checkpoint_filename%.*}.png";
+filename_output="${model_dirname}_${checkpoint_filename%.*}${POSTFIX}.png";
 
 #dir_output="output/$(date -u --rfc-3339=date)_${CODE}";
 dir_output="output";
