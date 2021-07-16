@@ -2,6 +2,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy
 import logging
+import os
 
 
 class ConfusionMatrixMaker:
@@ -87,7 +88,8 @@ class ConfusionMatrixMaker:
 			interpolation="nearest",
 			cmap=plt.cm.plasma			# The colour map
 		)
-		plt.title("Tweet Classifier - Confusion matrix")
+		title_code = os.path.basename(filepath_output).replace(".png", "")
+		plt.title(f"Tweet Classifier - Confusion matrix\n{title_code}")
 		plt.ylabel("Ground Truth")
 		plt.xlabel("Prediction")
 		ticks = numpy.arange(cats_count)
