@@ -91,7 +91,7 @@ class TweetsData(tf.data.Dataset):
 		"""
 		global glove, cats
 		settings = settings_get()
-		cls.init_raw(
+		cls.init_globals(
 			settings.data.paths.categories,
 			settings.data.paths.glove
 		)
