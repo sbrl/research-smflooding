@@ -56,6 +56,9 @@ class CategoryCalculator:
 				max_i = i
 				max_value = weights[i]
 		
+		if max_value <= 0:
+			return None
+		
 		return max_i
 	
 	def strip_markers(self, text: str):
@@ -64,7 +67,10 @@ class CategoryCalculator:
 	
 	def get_category_name(self, text: str):
 		"""Calculates the name of the category that the given string of text belongs to."""
-		return self.index2name(self.get_category_index(text))
+		index = self.get_category_index(text)
+		if index == None:
+			return None
+		return self.index2name(index)
 	
 	def get_all_names(self):
 		"""Returns a (ordered) list of category names."""

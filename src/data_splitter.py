@@ -39,13 +39,16 @@ def main():
 def split(filepath_input, dir_output, cats):
 	"""Splits the given input into multiple separate files."""
 	reader = io.open(filepath_input, "r")
-	writers = {}
+	writers = { }
 	
 	for line in reader:
 		obj = json.loads(line)
 		text = obj["text"].strip()
 		
 		next_cat = cats.get_category_name(text)
+		
+		if next_cat is None:
+			next_cat = "none"
 		
 		if next_cat not in writers:
 			writers[next_cat] = io.open(os.path.join(dir_output, f"{next_cat}.jsonl"), "w")
