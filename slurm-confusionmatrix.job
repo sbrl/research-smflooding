@@ -30,13 +30,22 @@ module load cuda/11.0.3
 module load python/anaconda/4.6/miniconda/3.7
 
 # TODO: expand this to pull this dynamically from the model
-INPUT="${INPUT:-$HOME/data/twitter/tweets-all-validate.jsonl}";
+INPUT="${INPUT:-$HOME/data/twitter/tweets-cats-2-validate.jsonl}";
 CHECKPOINT="${CHECKPOINT}"; # Example: output/20210629-128,128-c2-nobidi-batchnorm/checkpoints/checkpoint_e7_acc0.919.hdf5
 CONFIG="${CONFIG:-configs/g200a128,128c2pn.toml}"
 
 if [[ -z "${CHECKPOINT}" ]]; then
 	echo "Error: No checkpoint specified in the CHECKPOINT environment variable.";
 	exit 1;
+fi
+
+if [[ ! -r "${CHECKPOINT}" ]]; then
+	echo "Error: That checkpoint file doesn't exist.";
+	exit 2;
+fi
+if [[ ! -r "${INPUT}" ]]; then
+	echo "Error: That input file doesn't exist.";
+	exit 3;
 fi
 
 checkpoint_filename="$(basename "${CHECKPOINT}")";
