@@ -2,6 +2,7 @@ import time
 import io
 import sys
 import logging
+import numpy
 import tensorflow as tf
 from ..polyfills.string import removeprefix, removesuffix
 
@@ -103,8 +104,12 @@ class GloVe:
 		
 		return result
 	
-	def embeddings(self, str):
-		"""Converts the given string to a list of word embeddings."""
+	def embeddings(self, str, length=-1):
+		"""
+		Converts the given string to a list of word embeddings.
+		str (string): The string to convert to an embedding.
+		length (number): The number of tokens that the returned embedding should have. -1 (the default value) indicates that no length normalisation should be performed.
+		"""
 		result = []
 		# TODO: Handle out-of-vocabulary words better than just stripping them
 		for i, token in enumerate(self._tokenise(str)):
@@ -114,5 +119,13 @@ class GloVe:
 				continue
 			
 			result.append(embedding)
+		
+		# Normalise the embedding length if we're asked to
+		if length > -1:
+			result = result[-length:]
+			
+			shortfall = length - len(result)
+			for _ in range(shortfall):
+				result.append(numpy.zeros(self.word_vector_length()))
 		
 		return result

@@ -12,6 +12,9 @@ import tensorflow as tf
 from lib.io.settings import settings_get, settings_load
 from lib.data.TweetsData import TweetsData
 from lib.ai.TweetClassifier import TweetClassifier
+from lib.io.TweetLabeller import TweetLabeller
+from lib.glove.glove import GloVe
+from lib.data.CategoryCalculator import CategoryCalculator
 
 
 def init_logging(filepath_output):
@@ -38,7 +41,8 @@ def main():
 	
 	parser = argparse.ArgumentParser(description="This program labels tweets using a given model.")
 	parser.add_argument("--config", "-c", help="Filepath to the TOML config file to load.", required=True)
-	parser.add_argument("--input", "-i", help="Filepath to the file containing the associated tweets.", required=True)
+	parser.add_argument("--input", "-i", help="Filepath to the file containing the associated tweets. If not specified, data is read from stdin.")
+	parser.add_argument("--output", "-o", help="Filepath to write labelled tweets to. If not specified, data is written to stdout.")
     parser.add_argument("--checkpoint", help="Path to the checkpoint of the model to load.", required=True)
 	parser.add_argument("--only-gpu",
 		help="If the GPU is not available, exit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
@@ -48,12 +52,20 @@ def main():
 	if not os.path.isfile(args.config):
 		print("Error: File at '" + args.config + "' does not exist.")
 		exit(1)
-	if not os.path.isfile(args.input):
+	if args.input and not os.path.isfile(args.input):
 		print("Error: File at '" + args.input + "' does not exist.")
 		exit(1)
 	if not os.path.isfile(args.checkpoint):
 		print("Error: File at '" + args.checkpoint + "' does not exist.")
 		exit(1)
+	
+	stream_in = sys.stdin
+	stream_out = sys.stdout
+	
+	if args.input:
+		stream_in = open(args.input, "rb")
+	if args.output:
+		stream_out = oppen(args.output, "wb")
 	
 	settings_load(args.config)
 	
@@ -91,8 +103,22 @@ def main():
 	container = {}
 	
 	
-	ai = TweetClassifier(container)
 	
+	cats = CategoryCalculator(settings.data.paths.categories)
+	glove = GloVe(settings.data.paths.glove)
+	model = TweetClassifier(container, settings.checkpoint)
+	
+	labeller = TweetLabeller(
+		model,
+		glove,
+		cats,
+		settings.train.batch_size or 32
+	)
+	
+	labeller.label(
+		stream_in,
+		stream_out
+	)
 
 if __name__ == "__main__":
 	main()

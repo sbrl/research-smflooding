@@ -5,11 +5,27 @@ import tensorflow as tf
 class TweetLabeller():
 	"""Labels tweets using a given (pre-initialised) TweetClassifier instance."""
 	
-	def __init__(self, model, cats, batch_size=32):
+	def __init__(self, model, glove, cats, batch_size=32):
 		self.model = model
 		self.cats = cats
+		self.glove = glove
 		self.batch_size = batch_size
 		
+		# TODO: Read this from the model dynamically, but this will havet o be done when  we actually run it for real (and I don't have remote access to my lab machine right now because the University VPN is down..... again)
+		self.sequence_length = None
+	
+	
+	def tweet2tensor(tweet_text):
+		"""
+		Converts a tweet to a tensor using GloVe.
+		Respects the sequence length of the model provided at the initialisation of this TweetLabeller instance.
+		tweet_text (string): The string to convert.
+		"""
+		return self.glove.embeddings(
+			self.cats.strip_markers(tweet_text),
+			self.sequence_length
+		)
+	
 	
 	def label(self, stream_in, stream_out):
 		"""
