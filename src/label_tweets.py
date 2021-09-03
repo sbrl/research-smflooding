@@ -21,15 +21,15 @@ def init_logging(filepath_output):
 	"""Initialises the logging subsystem."""
 	
 	if filepath_output is None:
-		logging.basicConfig(level=logging.INFO)
+	logging.basicConfig(level=logging.INFO)
 	else:
-		# Create the output directory if it doesn't exist already
-		dirpath = os.path.dirname(filepath_output)
-		if not os.path.exists(dirpath):
-			os.makedirs(dirpath, 0o750)
-		
-		# Log to a file - ref https://github.com/conda/conda/issues/9412
-		logging.basicConfig(level=logging.INFO, filename=filepath_output)
+	# Create the output directory if it doesn't exist already
+	dirpath = os.path.dirname(filepath_output)
+	if not os.path.exists(dirpath):
+	os.makedirs(dirpath, 0o750)
+	
+	# Log to a file - ref https://github.com/conda/conda/issues/9412
+	logging.basicConfig(level=logging.INFO, filename=filepath_output)
 	
 	sys.stderr.write(f"lstm_tweet_classifier: Writing logs to {filepath_output}\n")
 	logging.info("lstm_text_classifier init! Here we go")
@@ -43,12 +43,11 @@ def main():
 	parser.add_argument("--config", "-c", help="Filepath to the TOML config file to load.", required=True)
 	parser.add_argument("--input", "-i", help="Filepath to the file containing the associated tweets. If not specified, data is read from stdin.")
 	parser.add_argument("--output", "-o", help="Filepath to write labelled tweets to. If not specified, data is written to stdout.")
-    parser.add_argument("--checkpoint", help="Path to the checkpoint of the model to load.", required=True)
-	parser.add_argument("--only-gpu",
-		help="If the GPU is not available, exit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
+	parser.add_argument("--checkpoint", help="Path to the checkpoint of the model to load.", required=True)
+	parser.add_argument("--only-gpu", help="If the GPU is not available, exit with an error (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	
 	args = parser.parse_args()
-    
+	
 	if not os.path.isfile(args.config):
 		print("Error: File at '" + args.config + "' does not exist.")
 		exit(1)
