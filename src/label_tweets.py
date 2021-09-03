@@ -21,12 +21,12 @@ def init_logging(filepath_output):
 	"""Initialises the logging subsystem."""
 	
 	if filepath_output is None:
-	logging.basicConfig(level=logging.INFO)
+		logging.basicConfig(level=logging.INFO)
 	else:
-	# Create the output directory if it doesn't exist already
-	dirpath = os.path.dirname(filepath_output)
-	if not os.path.exists(dirpath):
-	os.makedirs(dirpath, 0o750)
+		# Create the output directory if it doesn't exist already
+		dirpath = os.path.dirname(filepath_output)
+		if not os.path.exists(dirpath):
+			os.makedirs(dirpath, 0o750)
 	
 	# Log to a file - ref https://github.com/conda/conda/issues/9412
 	logging.basicConfig(level=logging.INFO, filename=filepath_output)
