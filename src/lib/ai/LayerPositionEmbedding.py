@@ -75,7 +75,7 @@ class LayerPositionEmbedding(tf.keras.layers.Layer):
     
     def call(self, tensor_in):
         """Adds the positional time signal to the input tensor."""
-        print("DEBUG input_shape", tensor_in.shape)
+        # print("DEBUG input_shape", tensor_in.shape)
         if len(tensor_in.shape) != 3:
             raise Exception(f"LayerPositionEmbedding: Error: The input tensor has a shape of rank {len(tensor_in.shape)} (specifically {tensor_in.shape}), but a tensor of rank 3 was expected (specifically [ batch_size, sequence_length, embedding_size ])")
         
@@ -85,9 +85,9 @@ class LayerPositionEmbedding(tf.keras.layers.Layer):
         number_of_tokens = tensor_in.shape[-2]
         embedding_size = tensor_in.shape[-1]
         positions_single = self.get_time_signal(number_of_tokens, embedding_size)
-        print("DEBUG positions_single shape", positions_single.shape)
-        print("DEBUG batch_size", batch_size)
+        # print("DEBUG positions_single shape", positions_single.shape)
+        # print("DEBUG batch_size", batch_size)
         positions = tf.stack([ positions_single for i in range(0, batch_size) ])
-        print("DEBUG tensor_in ", tensor_in.shape)
-        print("DEBUG positions ", positions.shape)
+        # print("DEBUG tensor_in ", tensor_in.shape)
+        # print("DEBUG positions ", positions.shape)
         return tensor_in + positions

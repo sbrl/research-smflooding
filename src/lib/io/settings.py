@@ -1,5 +1,8 @@
 import os
+import sys
 import toml
+
+import logging
 from ..polyfills.dictionary import merge, make_namespace
 
 settings = None
@@ -20,8 +23,7 @@ def read_settings_toml(filepath_default: str, filepath_custom: str):
 	merge(settings_custom, settings_default)
 	
 	settings_default["source"] = toml.dumps(settings_default)
-	print("[DEBUG] source:")
-	print(settings_default["source"])
+	logging.debug(f"[DEBUG] source:\n{settings_default["source"]}")
 	return make_namespace(settings_default)
 
 
