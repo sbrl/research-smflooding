@@ -1,3 +1,4 @@
+import logging
 import json
 
 import tensorflow as tf
@@ -15,7 +16,7 @@ class TweetLabeller():
 		self.sequence_length = None
 	
 	
-	def tweet2tensor(tweet_text):
+	def tweet2tensor(self, tweet_text):
 		"""
 		Converts a tweet to a tensor using GloVe.
 		Respects the sequence length of the model provided at the initialisation of this TweetLabeller instance.
@@ -43,9 +44,9 @@ class TweetLabeller():
 			})
 			if len(acc) >= self.batch_size:
 				stacked = tf.stack([ item.tensor for item in acc ])
-				print("STACKED_SHAPE", stacked.shape)
+				logging.log(f"STACKED_SHAPE {stacked.shape}")
 				predictions_batch = self.model.predict_class_ids(stacked, self.batch_size)
-				print("PREDICTIONS_BATCH", predictions_batch)
+				logging.log(f"PREDICTIONS_BATCH {predictions_batch}")
 				# Process the predictions
 				# for index in range(0, len(predictions_batch)):
 				for batch_index in range(0, len(predictions_batch)):
@@ -59,5 +60,5 @@ class TweetLabeller():
 				# Empty the accumulators
 				del acc[:]
 	
-		
+	
 	
