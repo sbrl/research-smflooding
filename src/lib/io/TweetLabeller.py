@@ -40,7 +40,7 @@ class TweetLabeller():
 			
 			acc.append({
 				"obj": tweet,
-				"tensor": self.tweet2tensor(tweet)
+				"tensor": self.tweet2tensor(tweet.text)
 			})
 			if len(acc) >= self.batch_size:
 				stacked = tf.stack([ item.tensor for item in acc ])
