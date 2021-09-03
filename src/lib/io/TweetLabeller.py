@@ -14,7 +14,7 @@ class TweetLabeller():
 		
 		# This is just silly....
 		# self.model.model.get_config()["layers"][0]["config"]["batch_input_shape"] should look something like (None, 100, 200)
-		self.sequence_length = self.model.model.get_config()["layers"][0]["config"]["batch_input_shape"][2]
+		self.sequence_length = self.model.model.get_config()["layers"][0]["config"]["batch_input_shape"][1]
 	
 	
 	def tweet2tensor(self, tweet_text):
