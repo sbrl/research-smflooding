@@ -21,7 +21,7 @@ def init_logging(filepath_output):
 	"""Initialises the logging subsystem."""
 	
 	if filepath_output is None:
-		logging.basicConfig(level=logging.INFO)
+		logging.basicConfig(level=logging.INFO, stream=sys.stderr)
 	else:
 		# Create the output directory if it doesn't exist already
 		dirpath = os.path.dirname(filepath_output)
