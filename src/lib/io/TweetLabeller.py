@@ -40,7 +40,7 @@ class TweetLabeller():
 			
 			acc.append({
 				"obj": tweet,
-				"tensor": self.tweet2tensor(tweet.text)
+				"tensor": self.tweet2tensor(tweet["text"])
 			})
 			if len(acc) >= self.batch_size:
 				stacked = tf.stack([ item.tensor for item in acc ])
@@ -53,7 +53,7 @@ class TweetLabeller():
 					label_index = predictions_batch[batch_index]
 					print("ITEM", label_index)
 					if label_index is not None:
-						acc[batch_index].obj.label = self.cats.get_category_name(label_index)
+						acc[batch_index].obj["label"] = self.cats.get_category_name(label_index)
 						stream_out.write(json.dumps(acc[batch_index].obj))
 						stream_out.write("\n")
 				
