@@ -71,7 +71,6 @@ def main():
 	settings = settings_get()
 	settings.input = args.input
 	settings.checkpoint = args.checkpoint
-	settings.imagedir = args.imagedir
 	init_logging(None)
 	
 	gpus = tf.config.list_physical_devices('GPU')
