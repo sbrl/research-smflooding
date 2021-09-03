@@ -23,7 +23,7 @@ def read_settings_toml(filepath_default: str, filepath_custom: str):
 	merge(settings_custom, settings_default)
 	
 	settings_default["source"] = toml.dumps(settings_default)
-	logging.debug(f"[DEBUG] source:\n{settings_default["source"]}")
+	logging.debug(f"[DEBUG] source:\n" + settings_default["source"])
 	return make_namespace(settings_default)
 
 
