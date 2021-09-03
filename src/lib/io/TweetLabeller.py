@@ -12,8 +12,9 @@ class TweetLabeller():
 		self.glove = glove
 		self.batch_size = batch_size
 		
-		# TODO: Read this from the model dynamically, but this will havet o be done when  we actually run it for real (and I don't have remote access to my lab machine right now because the University VPN is down..... again)
-		self.sequence_length = None
+		# This is just silly....
+		# self.model.model.get_config()["layers"][0]["config"]["batch_input_shape"] should look something like (None, 100, 200)
+		self.sequence_length = self.model.model.get_config()["layers"][0]["config"]["batch_input_shape"][2]
 	
 	
 	def tweet2tensor(self, tweet_text):
