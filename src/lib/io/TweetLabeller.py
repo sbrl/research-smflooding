@@ -44,17 +44,17 @@ class TweetLabeller():
 				"tensor": self.tweet2tensor(tweet["text"])
 			})
 			if len(acc) >= self.batch_size:
-				stacked = tf.stack([ item.tensor for item in acc ])
-				logging.log(f"STACKED_SHAPE {stacked.shape}")
+				stacked = tf.stack([ item["tensor"] for item in acc ])
+				logging.info(f"STACKED_SHAPE {stacked.shape}")
 				predictions_batch = self.model.predict_class_ids(stacked, self.batch_size)
-				logging.log(f"PREDICTIONS_BATCH {predictions_batch}")
+				logging.info(f"PREDICTIONS_BATCH {predictions_batch}")
 				# Process the predictions
 				# for index in range(0, len(predictions_batch)):
 				for batch_index in range(0, len(predictions_batch)):
 					label_index = predictions_batch[batch_index]
 					print("ITEM", label_index)
 					if label_index is not None:
-						acc[batch_index].obj["label"] = self.cats.get_category_name(label_index)
+						acc[batch_index].obj["label"] = self.cats.index2name(label_index)
 						stream_out.write(json.dumps(acc[batch_index].obj))
 						stream_out.write("\n")
 				
