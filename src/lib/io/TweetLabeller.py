@@ -54,7 +54,7 @@ class TweetLabeller():
 					label_index = predictions_batch[batch_index]
 					print("ITEM", label_index)
 					if label_index is not None:
-						acc[batch_index].obj["label"] = self.cats.index2name(label_index)
+						acc[batch_index]["obj"]["label"] = self.cats.index2name(label_index)
 						stream_out.write(json.dumps(acc[batch_index].obj))
 						stream_out.write("\n")
 				
