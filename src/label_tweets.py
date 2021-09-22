@@ -62,9 +62,9 @@ def main():
 	stream_out = sys.stdout
 	
 	if args.input:
-		stream_in = open(args.input, "rb")
+		stream_in = open(args.input, "r")
 	if args.output:
-		stream_out = open(args.output, "wb")
+		stream_out = open(args.output, "w")
 	
 	settings_load(args.config)
 	
