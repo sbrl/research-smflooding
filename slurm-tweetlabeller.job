@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#SBATCH -J TensorCM
+#SBATCH -J TwtLabel
 #SBATCH -N 1
 #SBATCH -n 4
 #SBATCH --gres=gpu:1
