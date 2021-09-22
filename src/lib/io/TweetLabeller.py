@@ -57,6 +57,7 @@ class TweetLabeller():
 						acc[batch_index]["obj"]["label"] = self.cats.index2name(label_index)
 						stream_out.write(json.dumps(acc[batch_index]["obj"]))
 						stream_out.write("\n")
+						stream_out.flush()
 				
 				# Empty the accumulators
 				del acc[:]
