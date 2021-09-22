@@ -4,7 +4,7 @@ import tensorflow as tf
 class LayerTransformerBlock(tf.keras.layers.Layer):
 	"""Implements a single encoder block from the Transformer model architecture."""
 	
-	def __init__(self, units_embedding, attention_heads_count, units_dense, dropout = 0.1, , **kwargs):
+	def __init__(self, units_embedding, attention_heads_count, units_dense, dropout = 0.1, **kwargs):
 		"""
 		Implements a Transformer encoder as per the Attention Is All You Need paper.
 		units_embedding: The number of units to use in the embedding dimension.
