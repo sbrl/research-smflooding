@@ -77,5 +77,5 @@ export PATH=$HOME/software/bin:$PATH;
 echo ">>> Installing requirements";
 conda run -n py38 pip install -r requirements.txt;
 echo ">>> Labelling tweets";
-conda run -n py38 src/label_tweets.py --config "${CONFIG}" --checkpoint "${CHECKPOINT}" --output  "${OUTPUT}";
+conda run -n py38 src/label_tweets.py --input "${INPUT}" --config "${CONFIG}" --checkpoint "${CHECKPOINT}" --output  "${OUTPUT}";
 echo ">>> exited with code $?";
