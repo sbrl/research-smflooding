@@ -74,6 +74,13 @@ fi
 
 export PATH=$HOME/software/bin:$PATH;
 
+echo ">>> Settings";
+
+echo "INPUT $INPUT";
+echo "OUTPUT $OUTPUT";
+echo "CHECKPOINT $CHECKPOINT";
+echo "CONFIG $CONFIG";
+
 echo ">>> Installing requirements";
 conda run -n py38 pip install -r requirements.txt;
 echo ">>> Labelling tweets";
