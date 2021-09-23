@@ -117,6 +117,9 @@ def main():
 		stream_in,
 		stream_out
 	)
+	
+	stream_out.close()
+
 
 if __name__ == "__main__":
 	main()
