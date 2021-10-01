@@ -1,5 +1,4 @@
 tensorflow
 toml
 numpy
-imbalanced-learn
 matplotlib
