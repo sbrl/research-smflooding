@@ -35,7 +35,7 @@ class LayerTransformerBlock(tf.keras.layers.Layer):
 	def get_config(self):
 		"""
 		Returns this layer's configuration so that it can be serialised by Tensorflow.
-		Without this, Tensorflow will crashes O.o
+		Without this, Tensorflow will crash on saving a checkpoint O.o
 		"""
 		return {
 			"units_embedding": self.units_embedding,
