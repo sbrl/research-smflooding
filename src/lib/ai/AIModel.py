@@ -3,7 +3,7 @@ from ..io.settings import settings_get
 
 class AIModel:
     """Abstract base class for managing AI models."""
-    def __init__(self):
+    def __init__(self, container):
         self.container = container
         
 		if filepath_checkpoint is None:

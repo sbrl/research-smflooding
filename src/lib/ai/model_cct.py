@@ -7,11 +7,12 @@ from .LayerVisionTransformerEncoder import LayerVisionTransformerEncoder
 from .LayerCCTConvEmbedding import LayerCCTConvEmbedding
 from .LayerSequencePooling import LayerSequencePooling
 
-def make_model_cct(settings, container, class_count,
-	layers_embed=[ { filters: 64, kernel: 7, stride: 1,  } ]
+# Default settings = CCT-7/3x1
+def make_model_cct(class_count, batch_size=128,
+	layers_embed=[ { filters: 64, kernel: 3 } ]
 	schotastic_depth_keep
 	trans_attention_heads=6,
-	layers_transformer = [ { } ],
+	layers_transformer = [ { attention_heads: 4, units_dense: 256, copies: 7 } ],
 	stochastic_survivability=0.9¸
 	image_size=128, image_channels=3, patch_size=16,):
 	"""
@@ -20,8 +21,6 @@ def make_model_cct(settings, container, class_count,
 	This is because the model depends on knowing the number of items in the
 	each of the glove embedding elements.
 	Ref https://keras.io/examples/nlp/text_classification_with_transformer/
-	settings: The settings object to use to create the model.
-	container: The dynamic container object that contains runtime settings.
 	image_size (int): The size of the image the model will consume.
 	image_channels (int): The number of channels input images will have.
 	patch_size (int): The size of the patches to split images up into. The image_size must be a multiple of this number.
@@ -42,13 +41,7 @@ def make_model_cct(settings, container, class_count,
 	
 	
 	for layer in layers_embed:
-		layer_next = LayerCCTConvEmbedding(
-			filters=layer["filters"] or None,
-			kernel=layer["kernel"] or None,
-			stride=layer["stride"] or None,
-			pool_kernel=layer["pool_kernel"] or None,
-			pool_stride=layer["pool_stride"] or None
-		)(layer_next)
+		layer_next = LayerCCTConvEmbedding(**layer)(layer_next)
 	
 	
 	shape = tf.shape(layer_next)
@@ -70,26 +63,29 @@ def make_model_cct(settings, container, class_count,
 	stochastic_probabilities = [ x for x in np.linspace(0, stochastic_survivability, len(layers_transformer))]
 	
 	# THEN: our transformer
-	# NOTE: Implementation looks slightly different, but we may be able to get away with our current implementation
+	# The paper suggests these should be done in parallel, but the actual implementation doesn't do this
 	for i in range(len(layers_transformer)):
 		params = layers_transformer[i]
-		attention_heads_count = params["attention_heads"]
-		units_dense = params["units_dense"]
-		dropout = params["dropout"] or 0.1 # Filled in by the 
-		 = params["stochastic_survivability"] or 0.9 # The probability to KEEP, not drop!
-		logging.info(f"make_model_transformer: Adding vision transformer encoding block ("
-			+ f"units_embedding = {units_embedding}, "
-			+ f"attention heads = {attention_heads_count}, "
-			+ f"units_dense = {units_dense}, "
-			+ f"dropout = {dropout}, "
-			+ f"stochastic_survivability = {stochastic_survivability})")
-		layer_next = LayerVisionTransformerEncoder(
-			units_embedding=units_embedding,
-			attention_heads_count=attention_heads_count,
-			units_dense=units_dense,
-			dropout=dropout,
-			stochastic_survivability=stochastic_probabilities[i]
-		)(layer_next)
+		
+		copies = params["copies"]
+		params.pop("copies")
+		
+		for i in range(copies):
+			attention_heads_count = params["attention_heads"]
+			units_dense = params["units_dense"]
+			dropout = params["dropout"] or 0.1 # NOTE: The original paper distinguishes between the MultiHeadAttention dropout & the dense layer dropout
+			 = params["stochastic_survivability"] or 0.9 # The probability to KEEP, not drop!
+			logging.info(f"make_model_transformer: Adding vision transformer encoding block ("
+				+ f"units_embedding = {units_embedding}, "
+				+ f"attention heads = {attention_heads_count}, "
+				+ f"units_dense = {units_dense}, "
+				+ f"dropout = {dropout}, "
+				+ f"stochastic_survivability = {stochastic_survivability})")
+			layer_next = LayerVisionTransformerEncoder(
+				units_embedding=units_embedding
+				stochastic_survivability=stochastic_probabilities[i],
+				**params
+			)(layer_next)
 	
 	
 	

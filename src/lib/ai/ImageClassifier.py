@@ -14,30 +14,35 @@ from .model_transformer import make_model_transformer
 
 from .AIModel import AIModel
 from .LayerPositionEmbedding import LayerPositionEmbedding
-from .LayerTransformerBlock import LayerTransformerBlock
+from .LayerVisionTransformerEncoder import LayerVisionTransformerEncoder
+from .LayerCCTConvEmbedding import LayerCCTConvEmbedding
+from .LayerSequencePooling import LayerSequencePooling
 
 
 class ImageClassifier(AIModel):
 	"""Core Compact Convolutional Transformer-based model for classifying images."""
 	
-	def __init__(self, container, filepath_checkpoint = None):
+	def __init__(self, container, filepath_checkpoint = None, model_settings):
 		"""Initialises a new ImageClassifier."""
 		super().__init__(self, container, filepath_checkpoint)
+        
+        self.model_settings = model_settings
 	
     
 	def custom_layers(self):
-        super().custom_layers()
         return {
 			# Tell Tensorflow about our custom layers so that it can deserialise models that use them
 			"LayerPositionEmbedding": LayerPositionEmbedding,
-			"LayerTransformerBlock": LayerTransformerBlock
+            "LayerVisionTransformerEncoder": LayerVisionTransformerEncoder,
+            "LayerCCTConvEmbedding": LayerCCTConvEmbedding,
+            "LayerSequencePooling": LayerSequencePooling
 		}
 	
     
 	def make_model(self):
 		"""Reinitialises the model."""
         
-        model = make_model_cct(self.settings, self.container)
+        model = make_model_cct(**self.model_settings)
 		
 		logging.info(f"Built cct model")
 		
