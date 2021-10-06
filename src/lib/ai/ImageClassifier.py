@@ -55,32 +55,16 @@ class ImageClassifier(AIModel):
 			steps_per_execution = 1
 		)
 		logging.info("Model compiled step 1 / 2")
-		model.build((
-			None,
-			self.settings.data.sequence_length,
-			self.container["glove_word_vector_length"]
-		))
+        # Unsure if this is actually necessary
+		# model.build((
+		# 	None,
+		# 	self.settings.data.sequence_length,
+		# 	self.container["glove_word_vector_length"]
+		# ))
 		logging.info("Model compiled step 2 / 2")
 		
         return model
 	
-	
-	def train(self, data_train, data_validate):
-		"""Trains the model on the given data."""
-		return self.model.fit(
-			data_train,
-			validation_data=data_validate,
-			# The batch size is specified as part of the keras.utils.Sequence/dataset/generator object
-			epochs = self.settings.train.epochs,
-			callbacks=self.make_callbacks()
-		)
-	
-	def predict(self, data, batch_size=None):
-		"""Makes a prediction for the given input data with the AI model, but does not update any weights."""
-		return self.model.predict(
-			data,
-			batch_size=batch_size
-		)
 	
 	def predict_class_ids(self, data, batch_size=None, min_confidence=0.5):
 		"""Makes a prediction, but returns the class ids instead of the probabilities."""

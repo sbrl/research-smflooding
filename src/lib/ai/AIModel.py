@@ -83,4 +83,22 @@ class AIModel:
 				update_freq=self.settings.train.tensorboard_update_freq
 			)
 		]
+    
+    
+	def train(self, data_train, data_validate):
+		"""Trains the model on the given data."""
+		return self.model.fit(
+			data_train,
+			validation_data=data_validate,
+			# The batch size is specified as part of the keras.utils.Sequence/dataset/generator object
+			epochs = self.settings.train.epochs,
+			callbacks=self.make_callbacks()
+		)
+    
+	def predict(self, data, batch_size=None):
+		"""Makes a prediction for the given input data with the AI model, but does not update any weights."""
+		return self.model.predict(
+			data,
+			batch_size=batch_size
+		)
 	

@@ -1,0 +1,55 @@
+# Overwritten by the CLI arg
+output = ""
+
+[data]
+
+[data.paths]
+# Path to the LABELLED tweets.jsonl file to train on
+input_train = ""
+# Same as input_train, but for validation
+input_validate = ""
+# Path to the directory containing media to use
+input_media_dir = ""
+
+
+[model]
+# Size of input images
+# Images that are not this size will be resized to fit (aspect ratio will NOT be preserved)
+image_size = 128
+# Number of channels to extract from input images
+channels = 3
+
+# An array of objects, where each represents a CCT convolutional encoder.
+layers_encoder = [
+	# Any values not specified will be filled with default values.
+	# filters		The number of CNN filters to  use.
+	# kernel		The kernel size of the CNN layer
+	# stride		The stride of the CNN layer
+	# pool_kernel	The size of the kernel for the pooling layer
+	# pool_stride	The stride for the pooling layer. [may need to be 1, unsure]
+	{ filters=64, kernel=7, stride=1, pool_kernel=3, pool_stride=2 }
+]
+
+
+# An array of objects, where each represents a transformer encoding block
+layers_transformer = [
+	# units_dense = the number of dense units
+	# attention_heads = the number of attention heads
+	# dropout = the dropout percentage between 0 and 1
+	# copies = the number of copies of this layer
+	{ units_dense = 32, attention_heads = 4, dropout = 0.1, copies = 7 }
+]
+
+# 1 - stochastic_depth. In other words, the percentage chance any given layer
+# of the model is likely to be kept during the training process.
+# This is transformed with np.linspace according to
+# https://keras.io/examples/vision/cct/#the-final-cct-model
+stochastic_survivability = 0.9
+
+
+[train]
+shuffle_buffer = 10000			# The size of the shuffle buffer in elements.
+batch_size = 64					# The batch size
+epochs = 50						# The number of epochs to train for
+
+tensorboard_update_freq = 512	# Every N batches, or specify "epoch" instead

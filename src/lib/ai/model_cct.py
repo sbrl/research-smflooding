@@ -10,11 +10,9 @@ from .LayerSequencePooling import LayerSequencePooling
 # Default settings = CCT-7/3x1
 def make_model_cct(class_count, batch_size=128,
 	layers_embed=[ { filters: 64, kernel: 3 } ]
-	schotastic_depth_keep
-	trans_attention_heads=6,
-	layers_transformer = [ { attention_heads: 4, units_dense: 256, copies: 7 } ],
+	layers_transformer = [ { attention_heads: 6, units_dense: 256, copies: 7 } ],
 	stochastic_survivability=0.9¸
-	image_size=128, image_channels=3, patch_size=16,):
+	image_size=128, image_channels=3):
 	"""
 	Creates a Compact Convolutional Transformer-based image classification model.
 	Important: Call this *after* you've set up the data processing pipeline.
