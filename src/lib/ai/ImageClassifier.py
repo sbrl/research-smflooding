@@ -22,11 +22,15 @@ from .LayerSequencePooling import LayerSequencePooling
 class ImageClassifier(AIModel):
 	"""Core Compact Convolutional Transformer-based model for classifying images."""
 	
-	def __init__(self, container, filepath_checkpoint = None, model_settings):
-		"""Initialises a new ImageClassifier."""
+	def __init__(self, container, settings, filepath_checkpoint = None):
+		"""
+        Initialises a new ImageClassifier.
+        container(dictionary): The container holding runtime settings and dependencies (i.e. a simple prototype dependency injection system).
+        filepath_checkpoint(string?): Optional. If specified, the model in the specified checkpoint file is loaded. If not specified, then a brand-new model will be created with the given settings.
+        """
 		super().__init__(self, container, filepath_checkpoint)
         
-        self.model_settings = model_settings
+        self.settings = settings
 	
     
 	def custom_layers(self):
@@ -42,7 +46,7 @@ class ImageClassifier(AIModel):
 	def make_model(self):
 		"""Reinitialises the model."""
         
-        model = make_model_cct(**self.model_settings)
+        model = make_model_cct(**self.settings.model)
 		
 		logging.info(f"Built cct model")
 		

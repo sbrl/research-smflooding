@@ -8,17 +8,13 @@ from .LayerCCTConvEmbedding import LayerCCTConvEmbedding
 from .LayerSequencePooling import LayerSequencePooling
 
 # Default settings = CCT-7/3x1
-def make_model_cct(class_count, batch_size=128,
+def make_model_cct(class_count,
 	layers_embed=[ { filters: 64, kernel: 3 } ]
 	layers_transformer = [ { attention_heads: 6, units_dense: 256, copies: 7 } ],
 	stochastic_survivability=0.9¸
 	image_size=128, image_channels=3, **kwargs):
 	"""
 	Creates a Compact Convolutional Transformer-based image classification model.
-	Important: Call this *after* you've set up the data processing pipeline.
-	This is because the model depends on knowing the number of items in the
-	each of the glove embedding elements.
-	Ref https://keras.io/examples/nlp/text_classification_with_transformer/
 	image_size (int): The size of the image the model will consume.
 	image_channels (int): The number of channels input images will have.
 	patch_size (int): The size of the patches to split images up into. The image_size must be a multiple of this number.
@@ -26,17 +22,26 @@ def make_model_cct(class_count, batch_size=128,
 	"""
 	
 	
-	
-	layer_in = tf.keras.layers.Input(batch_size=settings.train.batch_size, shape=(
-		image_size,
-		image_size,
-		image_channels
-	))
+	# Batch size is specified during training
+	# layer_in = tf.keras.layers.InputLayer(batch_size=None, shape=(
+	# 	image_size,
+	# 	image_size,
+	# 	image_channels
+	# ))
+	# Resize input images to a known size
+	layer_in = tf.keras.layers.Resizing(image_size, image_size)
 	layer_next = layer_in
+	
+	# Rescale from 0 - 255 to 0-1
+	layer_next = tf.keras.layers.Rescaling(scale=1.0 / 255)(layer_next)
+	
+	# Keras blog post has RandomCrop, but it doesn't seem to do anything
+	layer_next = tf.keras.layers.RandomFlip()(layer_next)
+	# Not part of the original; may need to remove this
+	layer_next = tf.keras.layers.RandomRotation(factor=0.2)(layer_next)
 	
 	if not isinstance(layers_embed, list):
 		layers_embed = [ layers_embed ]
-	
 	
 	for layer in layers_embed:
 		layer_next = LayerCCTConvEmbedding(**layer)(layer_next)

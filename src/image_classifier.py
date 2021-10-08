@@ -42,6 +42,7 @@ def parse_args():
 	parser.add_argument("--only-gpu",
 		help="If the GPU is not available, exit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	parser.add_argument("--batch-size", help="Sets the batch size.", type=int)
+	parser.add_argument("--image-size", help="Sets the image size. All input images are resized to match this size before continuing through the rest of the model. Aspect ratio is not preserved.", type=int)
 	
 	return parser.parse_args()
 
@@ -66,8 +67,8 @@ def main():
 		settings.model.type = args.model
 	if hasattr(args, "batch_size") and type(args.batch_size) is int:
 		settings.train.batch_size = args.batch_size
-	if hasattr(args, "smoteify") and args.smoteify:
-		settings.train.smoteify = True
+	if hasattr(args, "image_size") and type(args.image_size) is int:
+		settings.model.image_size = args.image_size
 	settings.output = args.output
 	if args.log_stdout:
 		init_logging(None)
@@ -85,17 +86,14 @@ def main():
 		sys.exit(1)
 	
 	
-	if not settings.data.paths.glove:
-		print("Error: No path to the pre-trained glove txt file specified (data.paths.glove)")
-		sys.exit(1)
-	if not settings.data.paths.categories:
-		print("Error: No path to the categories file specified (data.paths.categories)")
-		sys.exit(1)
 	if not settings.data.paths.input_train:
 		print("Error: No path to the input tweets jsonl file specified to train on (data.paths.input_train)")
 		sys.exit(1)
 	if not settings.data.paths.input_validate:
 		print("Error: No path to the input tweets jsonl file specified to validate with (data.paths.input_validate)")
+		sys.exit(1)
+	if not settings.data.paths.input_validate:
+		print("Error: No path to the media directory specified (data.paths.input_media_dir)")
 		sys.exit(1)
 	
 	if not os.path.exists(settings.data.paths.input_train):
@@ -104,28 +102,22 @@ def main():
 	if not os.path.exists(settings.data.paths.input_validate):
 		print(f"Error: No such file or directory {settings.data.paths.input_validate}")
 		sys.exit(2)
-	if not os.path.exists(settings.data.paths.categories):
-		print(f"Error: No such file or directory {settings.data.paths.categories}")
+	if not os.path.exists(settings.data.paths.input_media_train):
+		print(f"Error: No such file or directory {settings.data.paths.input_media_train}")
 		sys.exit(2)
-	if not os.path.exists(settings.data.paths.glove):
-		print(f"Error: No such file or directory {settings.data.paths.glove}")
-		sys.exit(2)
-	
 	
 	###############################################################################
 	
 	container = {}
 	
 	dataset_train		= TweetsData(
-		settings.data.paths.input_train, container,
-		smote=settings.train.smoteify
+		settings.data.paths.input_train, container
 	)
 	dataset_validate	= TweetsData(
-		settings.data.paths.input_validate, container,
-		smote=False
+		settings.data.paths.input_validate, container
 	)
 	
-	ai = TweetClassifier(container)
+	ai = ImageClassifier(container, settings)
 	ai.train(dataset_train, dataset_validate)
 	
 
