@@ -12,7 +12,7 @@ def make_model_cct(class_count, batch_size=128,
 	layers_embed=[ { filters: 64, kernel: 3 } ]
 	layers_transformer = [ { attention_heads: 6, units_dense: 256, copies: 7 } ],
 	stochastic_survivability=0.9¸
-	image_size=128, image_channels=3):
+	image_size=128, image_channels=3, **kwargs):
 	"""
 	Creates a Compact Convolutional Transformer-based image classification model.
 	Important: Call this *after* you've set up the data processing pipeline.
