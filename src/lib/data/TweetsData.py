@@ -8,7 +8,6 @@ import tensorflow as tf
 from ..io.settings import settings_get
 from ..glove.glove import GloVe
 from .CategoryCalculator import CategoryCalculator
-from .Smoteifier import smoteify
 
 # HACK
 glove = None
@@ -82,12 +81,11 @@ class TweetsData(tf.data.Dataset):
 			)
 	
 	
-	def __new__(cls, filepath_input, container, smote = False):
+	def __new__(cls, filepath_input, container):
 		"""
 		Returns a new tensorflow dataset object.
 		filepath_input (string): The path to the file that contains the input tweets to process.
 		container (dict): The container dictionary for passing dynamically computed values around to other parts of the program.
-		smote (bool): Whether to activate the SMOTEIFICATION system
 		"""
 		global glove, cats
 		settings = settings_get()
@@ -113,10 +111,6 @@ class TweetsData(tf.data.Dataset):
 				)
 			)
 		)
-		
-		if smote is True:
-			print("Activating SMOTEIFICATION system")
-			dataset = smoteify(dataset)
 		
 		return dataset.prefetch(
 			tf.data.AUTOTUNE
