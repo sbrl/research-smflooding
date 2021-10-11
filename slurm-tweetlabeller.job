@@ -44,8 +44,12 @@ if [[ -z "${INPUT}" ]]; then
 	exit 1;
 fi
 if [[ -z "${OUTPUT}" ]]; then
-	echo "Error: No output file specified in the OUTPUT environment variable.";
-	exit 1;
+	OUTPUT="$(echo "${INPUT}" | sed -e 's/\.jsonl$/-labelled.jsonl/')";
+	if [[ "${INPUT}" == "${OUTPUT}" ]]; then
+		echo "Error: OUTPUT was not specified, but failed to do replacement .jsonl → -labelled.jsonl for auto-calculated output filename. Abort.";
+		exit 1;
+	fi
+	echo "Auto-calculated output filename.";
 fi
 if [[ -z "${CONFIG}" ]]; then
 	echo "Error: No config file specified in the CONFIG environment variable.";
