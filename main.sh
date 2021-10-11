@@ -43,7 +43,7 @@ do
 			# Ref https://discord.com/channels/364428045093699594/364434363472936974/896083536933695508
 			echo "Social-Media-Sentiment"
 			echo "    by Starbeamrainbowlabs <feedback@starbeamrainbowlabs.com>"
-			echo "This superscript provides a convenient interface by which all the various entrypoints in this repository can be neatly accessed..";
+			echo "This superscript provides a convenient interface by which all the various entrypoints in this repository can be neatly accessed.";
 			echo "";
 			echo "Note: You need to have your tweets already downloaded to use this repository. For this, use twitter-academic-downloader:";
 			echo "    <https://www.npmjs.com/package/twitter-academic-downloader>";
