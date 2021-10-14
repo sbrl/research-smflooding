@@ -111,9 +111,11 @@ def main():
 	
 	container = {}
 	
+	
 	if args.fashion_mnist:
 		logging.info("Loading fashion mnist")
 		dataset_train, dataset_validate = tf.keras.datasets.fashion_mnist.load_data()
+		class_count = 10
 	else:
 		logging.info("Loading data")
 		dataset_train		= TweetsImageData(
@@ -122,8 +124,10 @@ def main():
 		dataset_validate	= TweetsImageData(
 			settings.data.paths.input_validate, container
 		)
+		class_count = CategoryCalculator(settings.data.paths.categories).count
 	
-	ai = ImageClassifier(container, settings)
+	ai = ImageClassifier(container, class_count, settings)
+	ai.setup()
 	ai.train(dataset_train, dataset_validate)
 	
 

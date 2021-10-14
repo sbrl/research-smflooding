@@ -12,8 +12,10 @@ class AIModel:
 	"""Abstract base class for managing AI models."""
 	def __init__(self, container, filepath_checkpoint):
 		self.container = container
-		
-		if filepath_checkpoint is None:
+		self.filepath_checkpoint = filepath_checkpoint
+	
+	def setup(self):
+		if self.filepath_checkpoint is None:
 			logging.info("AIModel: Creating new model")
 			self.settings = settings_get()
 			
@@ -38,8 +40,8 @@ class AIModel:
 			logging.info("Model summary above")
 			
 		else:
-			logging.info(f"ImageClassifier: Loading checkpoint from {filepath_checkpoint}")
-			self.load_model(filepath_checkpoint)
+			logging.info(f"ImageClassifier: Loading checkpoint from {self.filepath_checkpoint}")
+			self.load_model(self.filepath_checkpoint)
 	
 	@abstractmethod
 	def make_model(self):

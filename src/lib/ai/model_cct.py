@@ -9,9 +9,9 @@ from .LayerSequencePooling import LayerSequencePooling
 
 # Default settings = CCT-7/3x1
 def make_model_cct(class_count,
-	layers_embed=[ { filters: 64, kernel: 3 } ]
-	layers_transformer = [ { attention_heads: 6, units_dense: 256, copies: 7 } ],
-	stochastic_survivability=0.9¸
+	layers_embed=[ { "filters": 64, "kernel": 3 } ],
+	layers_transformer=[ { "attention_heads": 6, "units_dense": 256, "copies": 7 } ],
+	stochastic_survivability=0.9,
 	image_size=128, image_channels=3, **kwargs):
 	"""
 	Creates a Compact Convolutional Transformer-based image classification model.
@@ -20,7 +20,6 @@ def make_model_cct(class_count,
 	patch_size (int): The size of the patches to split images up into. The image_size must be a multiple of this number.
 	class_count (int): The number of different distinct classes to predict for.
 	"""
-	
 	
 	# Batch size is specified during training
 	# layer_in = tf.keras.layers.InputLayer(batch_size=None, shape=(
@@ -77,7 +76,10 @@ def make_model_cct(class_count,
 			attention_heads_count = params["attention_heads"]
 			units_dense = params["units_dense"]
 			dropout = params["dropout"] or 0.1 # NOTE: The original paper distinguishes between the MultiHeadAttention dropout & the dense layer dropout
-			 = params["stochastic_survivability"] or 0.9 # The probability to KEEP, not drop!
+			
+			# The probability to KEEP, not drop! Hence the "1 - value" here
+			stochastic_survivability = 1 - stochastic_probabilities[i]
+			
 			logging.info(f"make_model_transformer: Adding vision transformer encoding block ("
 				+ f"units_embedding = {units_embedding}, "
 				+ f"attention heads = {attention_heads_count}, "
@@ -85,8 +87,8 @@ def make_model_cct(class_count,
 				+ f"dropout = {dropout}, "
 				+ f"stochastic_survivability = {stochastic_survivability})")
 			layer_next = LayerVisionTransformerEncoder(
-				units_embedding=units_embedding
-				stochastic_survivability=stochastic_probabilities[i],
+				units_embedding=units_embedding,
+				stochastic_survivability=stochastic_survivability,
 				**params
 			)(layer_next)
 	

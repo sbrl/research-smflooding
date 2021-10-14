@@ -9,8 +9,7 @@ import tensorflow as tf
 from ..polyfills.io import write_file_sync
 from ..io.summarywriter import summarywriter, summarylogger
 from ..io.settings import settings_get
-from .model_lstm import make_model_lstm
-from .model_transformer import make_model_transformer
+from .model_cct import make_model_cct
 
 from .AIModel import AIModel
 from .LayerPositionEmbedding import LayerPositionEmbedding
@@ -22,14 +21,16 @@ from .LayerSequencePooling import LayerSequencePooling
 class ImageClassifier(AIModel):
 	"""Core Compact Convolutional Transformer-based model for classifying images."""
 	
-	def __init__(self, container, settings, filepath_checkpoint = None):
+	def __init__(self, container, class_count, settings, filepath_checkpoint = None):
 		"""
 		Initialises a new ImageClassifier.
 		container(dictionary): The container holding runtime settings and dependencies (i.e. a simple prototype dependency injection system).
+		class_count(int): The number of output classes of thing the model should predict.
 		filepath_checkpoint(string?): Optional. If specified, the model in the specified checkpoint file is loaded. If not specified, then a brand-new model will be created with the given settings.
 		"""
 		super().__init__(container, filepath_checkpoint)
 		
+		self.class_count = class_count
 		self.settings = settings
 	
 	
@@ -46,7 +47,7 @@ class ImageClassifier(AIModel):
 	def make_model(self):
 		"""Reinitialises the model."""
 		
-		model = make_model_cct(**self.settings.model)
+		model = make_model_cct(class_count=self.class_count, **vars(self.settings.model))
 		
 		logging.info(f"Built cct model")
 		

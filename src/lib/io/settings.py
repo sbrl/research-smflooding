@@ -8,7 +8,7 @@ from ..polyfills.dictionary import merge, make_namespace
 settings = None
 
 
-def read_settings_toml(filepath_default: str, filepath_custom: str):
+def read_settings_toml(filepath_default: str, filepath_custom: str, overrides):
 	"""
 	Reads settings from 2 toml files.
 	1 file for the default settings, and another for the custom settings which
@@ -22,6 +22,9 @@ def read_settings_toml(filepath_default: str, filepath_custom: str):
 	
 	merge(settings_custom, settings_default)
 	
+	if overrides is not None:
+		merge(overrides, settings_default)
+	
 	settings_default["source"] = toml.dumps(settings_default)
 	logging.debug(f"[DEBUG] source:\n" + settings_default["source"])
 	return make_namespace(settings_default)
@@ -34,7 +37,7 @@ def settings_get():
 	return settings
 
 
-def settings_load(filepath_custom: str):
+def settings_load(filepath_custom: str, **overrides):
 	"""
 	Loads the settings from the specified custom config file.
 	Said settings are applied over the default config file and saving them to
@@ -48,4 +51,4 @@ def settings_load(filepath_custom: str):
 		"settings.default.toml"
 	)
 	
-	settings = read_settings_toml(filepath_default, filepath_custom)
+	settings = read_settings_toml(filepath_default, filepath_custom, overrides)

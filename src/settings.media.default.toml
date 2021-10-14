@@ -8,6 +8,8 @@ output = ""
 input_train = ""
 # Same as input_train, but for validation
 input_validate = ""
+# Path to the categories.tsv file
+categories = ""
 # Path to the directory containing media to use
 input_media_dir = ""
 
