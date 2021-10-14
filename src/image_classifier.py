@@ -10,8 +10,8 @@ import json
 import tensorflow as tf
 
 from lib.io.settings import settings_get, settings_load
-from lib.data.TweetsData import TweetsData
-from lib.ai.TweetClassifier import TweetClassifier
+from lib.data.TweetsImageData import TweetsImageData
+from lib.ai.ImageClassifier import ImageClassifier
 
 
 def init_logging(filepath_output):
@@ -43,6 +43,7 @@ def parse_args():
 		help="If the GPU is not available, exit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	parser.add_argument("--batch-size", help="Sets the batch size.", type=int)
 	parser.add_argument("--image-size", help="Sets the image size. All input images are resized to match this size before continuing through the rest of the model. Aspect ratio is not preserved.", type=int)
+	parser.add_argument("--fashion-mnist", help="Use fashion MNIST instead of a regular dataset.", action="store_true")
 	
 	return parser.parse_args()
 
@@ -102,20 +103,25 @@ def main():
 	if not os.path.exists(settings.data.paths.input_validate):
 		print(f"Error: No such file or directory {settings.data.paths.input_validate}")
 		sys.exit(2)
-	if not os.path.exists(settings.data.paths.input_media_train):
-		print(f"Error: No such file or directory {settings.data.paths.input_media_train}")
+	if not os.path.exists(settings.data.paths.input_media_dir):
+		print(f"Error: No such file or directory {settings.data.paths.input_media_dir}")
 		sys.exit(2)
 	
 	###############################################################################
 	
 	container = {}
 	
-	dataset_train		= TweetsData(
-		settings.data.paths.input_train, container
-	)
-	dataset_validate	= TweetsData(
-		settings.data.paths.input_validate, container
-	)
+	if args.fashion_mnist:
+		logging.info("Loading fashion mnist")
+		dataset_train, dataset_validate = tf.keras.datasets.fashion_mnist.load_data()
+	else:
+		logging.info("Loading data")
+		dataset_train		= TweetsImageData(
+			settings.data.paths.input_train, container
+		)
+		dataset_validate	= TweetsImageData(
+			settings.data.paths.input_validate, container
+		)
 	
 	ai = ImageClassifier(container, settings)
 	ai.train(dataset_train, dataset_validate)

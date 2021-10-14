@@ -1,11 +1,18 @@
-from ..io.settings import settings_get
+import os
+import io
+import sys
+from abc import abstractmethod
 
+import logging
+
+from ..io.settings import settings_get
+import tensorflow as tf
 
 class AIModel:
-    """Abstract base class for managing AI models."""
-    def __init__(self, container):
-        self.container = container
-        
+	"""Abstract base class for managing AI models."""
+	def __init__(self, container, filepath_checkpoint):
+		self.container = container
+		
 		if filepath_checkpoint is None:
 			logging.info("AIModel: Creating new model")
 			self.settings = settings_get()
@@ -21,32 +28,32 @@ class AIModel:
 			
 			
 			self.model = self.make_model()
-            
-            
-    		# Write the settings and the model summary to disk
-    		write_file_sync(self.filepath_settings, self.settings.source)
-    		summarywriter(self.model, self.filepath_summary)
-    		summarylogger(self.model)
-    		
-    		logging.info("Model summary above")
-            
+			
+			
+			# Write the settings and the model summary to disk
+			write_file_sync(self.filepath_settings, self.settings.source)
+			summarywriter(self.model, self.filepath_summary)
+			summarylogger(self.model)
+			
+			logging.info("Model summary above")
+			
 		else:
 			logging.info(f"ImageClassifier: Loading checkpoint from {filepath_checkpoint}")
 			self.load_model(filepath_checkpoint)
-    
-    @abstractmethod
-    def make_model(self):
-        """Creates and returns a new model instance."""
-        pass
-    
-    @abstractmethod
-    def custom_layers(self):
-        """
-        Returns a list of custom layers used.
-        This is important for loading models back in again!
-        """
-        pass
-    
+	
+	@abstractmethod
+	def make_model(self):
+		"""Creates and returns a new model instance."""
+		pass
+	
+	@abstractmethod
+	def custom_layers(self):
+		"""
+		Returns a list of custom layers used.
+		This is important for loading models back in again!
+		"""
+		pass
+	
 	def load_model(self, filepath_checkpoint):
 		"""
 		Loads a saved model from the given filename.
@@ -60,7 +67,7 @@ class AIModel:
 		
 		self.model = tf.keras.models.load_model(filepath_checkpoint, custom_objects=self.custom_layers())
 		
-    
+	
 	def make_callbacks(self):
 		"""Generates a list of callbacks to be called when a model is training."""
 		return [
@@ -83,8 +90,8 @@ class AIModel:
 				update_freq=self.settings.train.tensorboard_update_freq
 			)
 		]
-    
-    
+	
+	
 	def train(self, data_train, data_validate):
 		"""Trains the model on the given data."""
 		return self.model.fit(
@@ -94,7 +101,7 @@ class AIModel:
 			epochs = self.settings.train.epochs,
 			callbacks=self.make_callbacks()
 		)
-    
+	
 	def predict(self, data, batch_size=None):
 		"""Makes a prediction for the given input data with the AI model, but does not update any weights."""
 		return self.model.predict(
