@@ -61,15 +61,19 @@ class TweetsImageData(tf.data.Dataset):
 				continue
 			
 			
-			# tf.keras.preprocessing.sequence.pad_sequences doesn't pad correctly :-(
+			for media in obj["media"]:
+				filename = os.path.join(
+					settings.data.paths.input_media_dir,
+					os.path.basename(media["url"])
+				)
+				image = tf.convert_to_tensor(tf.keras.utils.load_img(
+					filename,
+					target_size=(settings.model.image_size, settings.mode.image_size)
+				), dtype=tf.float32).div(255)
 			
-			# print(f"[DEBUG] cat=\"{cats.index2name(next_cat)}\" text=\"{glove.tweetvision(text)}\"")
 			
 			yield (
-				tf.constant(
-					next_cat,
-					dtype="float32"
-				),
+				image,
 				tf.one_hot(next_cat, cats.count, dtype="int32")
 			)
 	

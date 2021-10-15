@@ -2,18 +2,16 @@ import tensorflow as tf
 
 class LayerCCTConvEmbedding(tf.keras.layers.Layer):
 	
-	def __init__(self, filters=64, kernel=7, stride=1, pool_kernel=3, pool_stride=2, **kwargs):
+	def __init__(self, filters=64, kernel=7, strides=(1, 1), pool_kernel=3, pool_stride=2, **kwargs):
 		"""Initialises a new LayerCCTConvEmbedding layer instance."""
 		super(LayerCCTConvEmbedding, self).__init__(**kwargs)
-		
-		self.layers = layers
 		
 		self.submodel = tf.keras.Sequential()
 		
 		self.submodel.add(tf.keras.layers.Conv2D(
 			filters=filters, 
 			kernel_size=kernel,
-			stride=stride,
+			strides=strides,
 			use_bias=False
 		))
 		self.submodel.add(tf.keras.layers.ReLU())

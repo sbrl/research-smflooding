@@ -6,8 +6,6 @@ import json
 import logging
 import tensorflow as tf
 
-from ..polyfills.io import write_file_sync
-from ..io.summarywriter import summarywriter, summarylogger
 from ..io.settings import settings_get
 from .model_cct import make_model_cct
 

@@ -9,8 +9,7 @@ class LayerSequencePooling(tf.keras.layers.Layer):
 		self.activation=activation
 		
 		self.layernorm_a = tf.keras.layers.LayerNormalization(epsilon=1e-5)
-		self.dense = tf.keras.layers.Dense(1, activation=activation, axis=1)
-	
+		self.dense = tf.keras.layers.Dense(1)
 	
 	
 	def get_config(self):
@@ -28,6 +27,8 @@ class LayerSequencePooling(tf.keras.layers.Layer):
 		out_layernorm = self.layernorm_a(inputs)
 		
 		out_attention = self.dense(inputs)
+		
+		out_softmax = tf.nn.softmax(out_attention, axis=1)
 		
 		out_weighted = tf.matmul(
 			out_attention,
