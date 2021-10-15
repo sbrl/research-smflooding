@@ -84,11 +84,10 @@ class TweetsImageData(tf.data.Dataset):
 		filepath_input (string): The path to the file that contains the input tweets to process.
 		container (dict): The container dictionary for passing dynamically computed values around to other parts of the program.
 		"""
-		global glove, cats
+		global cats
 		settings = settings_get()
 		cls.init_globals(
-			settings.data.paths.categories,
-			settings.data.paths.glove
+			settings.data.paths.categories
 		)
 		
 		container["glove_word_vector_length"] = glove.word_vector_length()
@@ -97,8 +96,9 @@ class TweetsImageData(tf.data.Dataset):
 			partial(cls.generator, filepath_input),
 			output_signature=(
 				tf.TensorSpec(shape=(
-					settings.data.sequence_length,
-					glove.word_vector_length()
+					settings.model.image_size,
+					settings.model.image_size,
+					3
 				), dtype="float32"),
 				tf.TensorSpec(
 					shape=(

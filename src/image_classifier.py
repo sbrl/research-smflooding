@@ -128,7 +128,7 @@ def main():
 	
 	ai = ImageClassifier(container, class_count, settings)
 	ai.setup()
-	ai.train(dataset_train, dataset_validate)
+	ai.train(dataset_train, dataset_validate, mode="plain")
 	
 
 if __name__ == "__main__":

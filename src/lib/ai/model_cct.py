@@ -59,6 +59,7 @@ def make_model_cct(class_count,
 	# Ref https://keras.io/examples/vision/cct/#the-cct-tokenizer
 	layer_next = tf.keras.layers.Reshape(
 		# ???, sequence length, filters
+		# Used to have -1 at the beginning here in addition to what's here already, but we stripped it 'cause it didn't make much sense to have a dimension of 1 all the way throug the model
 		(layer_next.shape[1] * layer_next.shape[2], layer_next.shape[-1])
 	)(layer_next)
 	

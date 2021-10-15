@@ -96,15 +96,26 @@ class AIModel:
 		]
 	
 	
-	def train(self, data_train, data_validate):
+	def train(self, data_train, data_validate, mode="generator"):
 		"""Trains the model on the given data."""
-		return self.model.fit(
-			data_train,
-			validation_data=data_validate,
-			# The batch size is specified as part of the keras.utils.Sequence/dataset/generator object
-			epochs = self.settings.train.epochs,
-			callbacks=self.make_callbacks()
-		)
+		if mode == "generator":
+			return self.model.fit(
+				data_train,
+				validation_data=data_validate,
+				# The batch size is specified as part of the keras.utils.Sequence/dataset/generator object
+				epochs=self.settings.train.epochs,
+				callbacks=self.make_callbacks()
+			)
+		elif mode == "plain":
+			return self.model.fit(
+				data_train[0],
+				data_train[1],
+				validation_data=data_validate,
+				epochs=self.settings.train.epochs,
+				callbacks=self.make_callbacks()
+			)
+		else:
+			raise Exception(f"Error: Unknown mode '{mode}' (valid modes: generator [default], plain)")
 	
 	def predict(self, data, batch_size=None):
 		"""Makes a prediction for the given input data with the AI model, but does not update any weights."""

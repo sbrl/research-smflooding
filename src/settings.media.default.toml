@@ -18,8 +18,6 @@ input_media_dir = ""
 # Size of input images
 # Images that are not this size will be resized to fit (aspect ratio will NOT be preserved)
 image_size = 128
-# Number of channels to extract from input images
-channels = 3
 
 # An array of objects, where each represents a CCT convolutional encoder.
 layers_encoder = [
