@@ -4,7 +4,7 @@ import tensorflow as tf
 class LayerSequencePooling(tf.keras.layers.Layer):
 	
 	def __init__(self, activation="softmax", **kwargs):
-		super(LayerSequencePooling, self).__init__()
+		super(LayerSequencePooling, self).__init__(**kwargs)
 		
 		self.activation=activation
 		

@@ -12,7 +12,7 @@ class LayerTransformerBlock(tf.keras.layers.Layer):
 		attention_heads_count: The number of attention heads to create.
 		dropout: The dropout percentage, from 0 to 1.
 		"""
-		super(LayerTransformerBlock, self).__init__()
+		super(LayerTransformerBlock, self).__init__(**kwargs)
 		
 		self.units_embedding = units_embedding
 		self.attention_heads_count = attention_heads_count

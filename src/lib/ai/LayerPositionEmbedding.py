@@ -10,7 +10,7 @@ class LayerPositionEmbedding(tf.keras.layers.Layer):
     
     def __init__(self, **kwargs):
         """Initialises a new LayerPositionEmbedding layer instance."""
-        super(LayerPositionEmbedding, self).__init__()
+        super(LayerPositionEmbedding, self).__init__(**kwargs)
         
     
     def get_time_signal_single(self, token_position, embedding_depth_size):
