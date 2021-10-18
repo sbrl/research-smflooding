@@ -68,8 +68,17 @@ class TweetsImageData(tf.data.Dataset):
 				)
 				image = tf.convert_to_tensor(tf.keras.utils.load_img(
 					filename,
-					target_size=(settings.model.image_size, settings.mode.image_size)
+					target_size=(settings.model.image_size, settings.mode.image_size),
+					color_mode="rgb"
 				), dtype=tf.float32).div(255)
+				# # Convert from channels first ot channels last, since indredibly there isn't actually an option for this
+				# # I hate Tensorflow for Python so much....
+				# image = tf.transpose(image, perm=[2,0,1])
+				# # Ensure we have channels, because apparently the docs for load_img are wrong
+				# if len(image.shape.length) < 4:
+				# 	image = tf.stack([image, image, image], axis=-1)
+				# 
+				# print("DEBUG image shape after", image.shape)
 			
 			
 			yield (

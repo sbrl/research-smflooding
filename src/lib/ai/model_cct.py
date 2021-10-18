@@ -36,7 +36,7 @@ def make_model_cct(class_count,
 		image_channels
 	))
 	layer_next = layer_in
-	print("DEBUG shape", layer_next.shape)
+	print("DEBUG input shape", layer_next.shape)
 	
 	# Keras blog post has RandomCrop, but it doesn't seem to do anything
 	layer_next = tf.keras.layers.RandomFlip()(layer_next)
