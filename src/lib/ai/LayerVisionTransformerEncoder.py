@@ -62,10 +62,18 @@ class LayerVisionTransformerEncoder(tf.keras.layers.Layer):
 		
 		out_skipconn_a = self.stochastic_a([out_attention, inputs], training=training)
 		
+		print("DEBUG:stochastic_a shape", out_skipconn_a.shape)
+		
 		out_layernorm_b = self.layer_normalisation_b(out_skipconn_a)
+		
+		print("DEBUG:layernorm_b shape", out_skipconn_a.shape)
 		
 		out_dense = self.dense(out_layernorm_b)
 		
+		print("DEBUG:dense shape", out_skipconn_a.shape)
+		
 		out_skipconn_b = self.stochastic_b([out_dense, out_skipconn_a], training=training)
+		
+		print("DEBUG:stochastic_b shape", out_skipconn_a.shape)
 		
 		return out_skipconn_b
