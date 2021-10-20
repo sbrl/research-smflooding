@@ -29,6 +29,9 @@ class LayerVisionTransformerEncoder(tf.keras.layers.Layer):
 		self.layer_normalisation_a = tf.keras.layers.LayerNormalization(epsilon=1e-5)
 		self.layer_normalisation_b = tf.keras.layers.LayerNormalization(epsilon=1e-5)
 		
+		self.skipconn_a = tf.keras.layers.Add()
+		self.skipconn_b = tf.keras.layers.Add()
+		
 		self.stochastic_a = tfa.layers.StochasticDepth(stochastic_survivability)
 		self.stochastic_b = tfa.layers.StochasticDepth(stochastic_survivability)
 		
@@ -60,9 +63,10 @@ class LayerVisionTransformerEncoder(tf.keras.layers.Layer):
 		print("DEBUG:layernorm_a shape", out_layernorm_a.shape)
 		print("DEBUG:MHA1 shape", out_attention.shape)
 		
-		out_skipconn_a = self.stochastic_a([out_attention, inputs], training=training)
+		out_skipconn_a = self.skipconn_a([ out_attention, inputs ])
+		# out_skipconn_a = self.stochastic_a([out_attention, inputs], training=training)
 		
-		print("DEBUG:stochastic_a shape", out_skipconn_a.shape)
+		print("DEBUG:skipconn_a shape", out_skipconn_a.shape)
 		
 		out_layernorm_b = self.layer_normalisation_b(out_skipconn_a)
 		
@@ -72,8 +76,9 @@ class LayerVisionTransformerEncoder(tf.keras.layers.Layer):
 		
 		print("DEBUG:dense shape", out_skipconn_a.shape)
 		
-		out_skipconn_b = self.stochastic_b([out_dense, out_skipconn_a], training=training)
+		out_skipconn_b = self.skipconn_b([ out_dense, out_skipconn_a ])
+		# out_skipconn_b = self.stochastic_b([out_dense, out_skipconn_a], training=training)
 		
-		print("DEBUG:stochastic_b shape", out_skipconn_a.shape)
+		print("DEBUG:skipconn_b shape", out_skipconn_a.shape)
 		
 		return out_skipconn_b
