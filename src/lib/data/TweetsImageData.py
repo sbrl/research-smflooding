@@ -70,7 +70,7 @@ class TweetsImageData(tf.data.Dataset):
 					filename,
 					target_size=(settings.model.image_size, settings.mode.image_size),
 					color_mode="rgb"
-				))
+				)
 				
 				if settings.model.image_size < 32 and settings.model.type == "resnet":
 					image = image.resize((32, 32))
