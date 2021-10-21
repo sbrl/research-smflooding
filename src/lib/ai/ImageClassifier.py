@@ -45,9 +45,15 @@ class ImageClassifier(AIModel):
 	def make_model(self):
 		"""Reinitialises the model."""
 		
-		model = make_model_cct(class_count=self.class_count, **vars(self.settings.model))
+		if self.settings.model.type == "cct":
+			model = make_model_cct(class_count=self.class_count, **vars(self.settings.model))
+		elif self.settings.model.type == "resnet":
+			model = tf.keras.applications.resnet50.ResNet50(
+				classes=self.class_count,
+				weights=None # Could also be "imagenet"
+			)
 		
-		logging.info(f"Built cct model")
+		logging.info(f"Built {self.settings.model.type} model")
 		
 		model.compile(
 			optimizer="Adam",

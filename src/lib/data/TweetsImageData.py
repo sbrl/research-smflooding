@@ -71,20 +71,27 @@ class TweetsImageData(tf.data.Dataset):
 					target_size=(settings.model.image_size, settings.mode.image_size),
 					color_mode="rgb"
 				), dtype=tf.float32).div(255)
-				# # Convert from channels first ot channels last, since indredibly there isn't actually an option for this
-				# # I hate Tensorflow for Python so much....
-				# image = tf.transpose(image, perm=[2,0,1])
-				# # Ensure we have channels, because apparently the docs for load_img are wrong
-				# if len(image.shape.length) < 4:
-				# 	image = tf.stack([image, image, image], axis=-1)
-				# 
-				# print("DEBUG image shape after", image.shape)
-			
-			
-			yield (
-				image,
-				tf.one_hot(next_cat, cats.count, dtype="int32")
-			)
+				print("DEBUG image shape before", image.shape)
+				# Convert from channels first ot channels last, since indredibly there isn't actually an option for this
+				# I hate Tensorflow for Python so much....
+				image = tf.transpose(image, perm=[2,0,1])
+				# Ensure we have channels, because apparently the docs for load_img are wrong
+				if len(image.shape.length) < 4:
+					image = tf.stack([image, image, image], axis=-1)
+				
+				print("DEBUG image shape after", image.shape)
+				
+				if settings.model.type == "resnet":
+					image = tf.keras.applications.resnet50.preprocess_input(
+						image,
+						data_format="channels_last"
+					)
+					print("DEBUG image shape resnet_after", image.shape)
+				
+				yield (
+					image,
+					tf.one_hot(next_cat, cats.count, dtype="int32")
+				)
 	
 	
 	def __new__(cls, filepath_input, container):
