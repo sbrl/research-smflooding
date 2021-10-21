@@ -37,7 +37,7 @@ def settings_get():
 	return settings
 
 
-def settings_load(filepath_custom: str, **overrides):
+def settings_load(filepath_custom: str, filename_default: str = None, **overrides):
 	"""
 	Loads the settings from the specified custom config file.
 	Said settings are applied over the default config file and saving them to
@@ -46,9 +46,14 @@ def settings_load(filepath_custom: str, **overrides):
 	"""
 	global settings
 	
+	if filename_default == None:
+		filename_default = "settings.default.toml"
+	
 	filepath_default = os.path.join(
 		os.path.dirname(os.path.dirname(os.path.dirname(__file__))),    # src/
-		"settings.default.toml"
+		filename_default
 	)
+	
+	logging.info(f"[settings_load] filepath_custom={filepath_custom}, filepath_default={filepath_default}")
 	
 	settings = read_settings_toml(filepath_default, filepath_custom, overrides)

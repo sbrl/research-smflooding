@@ -57,7 +57,10 @@ def main():
 		print("Error: File at '" + args.config + "' does not exist.")
 		exit(1)
 	
-	settings_load(args.config)
+	settings_load(
+		filename_default="settings.media.default.toml",
+		filepath_custom=args.config
+	)
 	
 	settings = settings_get()
 	if hasattr(args, "nobidi") and args.nobidi:
