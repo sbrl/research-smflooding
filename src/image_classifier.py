@@ -135,7 +135,7 @@ def main():
 			tf.one_hot(dataset_validate[1], depth=10, axis=-1)
 		)
 		
-		settings.model.image_size = 28
+		settings.model.image_size = 56
 		
 		class_count = 10
 	else:
