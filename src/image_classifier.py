@@ -73,11 +73,11 @@ def main():
 	else:
 		init_logging(os.path.join(
 			settings.output,
-			"lstm_text_classifier.log"
+			"this_run.log"
 		))
 	
 	gpus = tf.config.list_physical_devices('GPU')
-	logger.info(f"lstm_text_classifier: Available gpus: {gpus}")
+	logger.info(f"tweet_media_classifier: Available gpus: {gpus}")
 	tf.__version__
 	if not gpus and args.only_gpu:
 		logger.info("No GPUs detected, exiting because --only-gpu was specified")
