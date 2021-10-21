@@ -113,13 +113,17 @@ def main():
 		logger.info("Loading fashion mnist")
 		dataset_train, dataset_validate = tf.keras.datasets.fashion_mnist.load_data()
 		dataset_train = (
-			tf.stack([dataset_train[0], dataset_train[0], dataset_train[0]], axis=-1)
-				.div(255),
+			tf.divide(
+				tf.stack([dataset_train[0], dataset_train[0], dataset_train[0]], axis=-1),
+				255
+			),
 			tf.one_hot(dataset_train[1], depth=10, axis=-1)
 		)
 		dataset_validate = (
-			tf.stack([dataset_validate[0], dataset_validate[0], dataset_validate[0]], axis=-1)
-				.div(255),
+			tf.divide(
+				tf.stack([dataset_validate[0], dataset_validate[0], dataset_validate[0]], axis=-1),
+				255
+			),
 			tf.one_hot(dataset_validate[1], depth=10, axis=-1)
 		)
 		
