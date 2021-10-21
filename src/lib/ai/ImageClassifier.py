@@ -64,7 +64,7 @@ class ImageClassifier(AIModel):
 		else:
 			raise Exception(f"Error: Invalid model type {self.settings.model.type}")
 		
-		logging.info(f"Built {self.settings.model.type} model")
+		sys.stdout.write(f"Built {self.settings.model.type} model")
 		
 		model.compile(
 			optimizer="Adam",

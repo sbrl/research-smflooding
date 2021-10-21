@@ -19,8 +19,6 @@ def init_logging(filepath_output):
 	
 	if filepath_output is None:
 		logging.basicConfig(level=logging.INFO)
-		logger = logging.getLogger()
-		logger.addHandler(logger.StreamHandler(sys.stdout))
 	else:
 		# Create the output directory if it doesn't exist already
 		dirpath = os.path.dirname(filepath_output)
