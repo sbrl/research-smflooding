@@ -18,9 +18,11 @@ class LayerCCTConvEmbedding(tf.keras.layers.Layer):
 			filters=self.filters, 
 			kernel_size=self.kernel,
 			strides=self.strides,
-			use_bias=False
+			use_bias=False,
+			activation="relu",
+			padding="valid"
 		))
-		self.submodel.add(tf.keras.layers.ReLU())
+		self.submodel.add(tf.keras.layers.ZeroPadding2D())
 		# The Keras tutorial adds ZeroPadding2D here, but the original doesn't? I'm confused
 		# Ref https://github.com/SHI-Labs/Compact-Transformers/blob/main/src/utils/tokenizer.py
 		self.submodel.add(tf.keras.layers.MaxPool2D(
