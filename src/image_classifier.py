@@ -120,7 +120,7 @@ def main():
 					[56, 56]
 				),
 				255
-			)
+			),
 			tf.one_hot(dataset_train[1], depth=10, axis=-1)
 		)
 		dataset_validate = (
