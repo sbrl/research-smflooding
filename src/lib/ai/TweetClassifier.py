@@ -3,7 +3,7 @@ import io
 import sys
 import json
 
-import logging
+from loguru import logger
 import tensorflow as tf
 
 from ..polyfills.io import write_file_sync
@@ -24,7 +24,7 @@ class TweetClassifier:
 		self.container = container
 		
 		if filepath_checkpoint is None:
-			logging.info("TweetClassifier: Creating new model")
+			logger.info("TweetClassifier: Creating new model")
 			self.settings = settings_get()
 			
 			self.dir_tensorboard = os.path.join(self.settings.output, "tensorboard")
@@ -42,7 +42,7 @@ class TweetClassifier:
 			
 			self.make_model()
 		else:
-			logging.info(f"TweetClassifier: Loading checkpoint from {filepath_checkpoint}")
+			logger.info(f"TweetClassifier: Loading checkpoint from {filepath_checkpoint}")
 			self.load_model(filepath_checkpoint)
 	
 	
@@ -72,10 +72,10 @@ class TweetClassifier:
 		elif self.settings.model.type == "transformer":
 			self.model = make_model_transformer(self.settings, self.container)
 		else:
-			logging.error(f"Error: Unknown model type '{self.settings.model.type}'")
+			logger.error(f"Error: Unknown model type '{self.settings.model.type}'")
 			sys.exit(1)
 		
-		logging.info(f"Built model of type '{self.settings.model.type}'")
+		logger.info(f"Built model of type '{self.settings.model.type}'")
 		
 		self.model.compile(
 			optimizer="Adam",
@@ -85,20 +85,20 @@ class TweetClassifier:
 			# Unfortunately this requires specifying number of items in the dataset
 			steps_per_execution = 1
 		)
-		logging.info("Model compiled step 1 / 2")
+		logger.info("Model compiled step 1 / 2")
 		self.model.build((
 			None,
 			self.settings.data.sequence_length,
 			self.container["glove_word_vector_length"]
 		))
-		logging.info("Model compiled step 2 / 2")
+		logger.info("Model compiled step 2 / 2")
 		
 		# Write the settings and the model summary to disk
 		write_file_sync(self.filepath_settings, self.settings.source)
 		summarywriter(self.model, self.filepath_summary)
 		summarylogger(self.model)
 		
-		logging.info("Model summary above")
+		logger.info("Model summary above")
 	
 	
 	def make_callbacks(self):

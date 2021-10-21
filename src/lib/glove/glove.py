@@ -1,7 +1,7 @@
 import time
 import io
 import sys
-import logging
+from loguru import logger
 import numpy
 import tensorflow as tf
 from ..polyfills.string import removeprefix, removesuffix
@@ -115,7 +115,7 @@ class GloVe:
 		for i, token in enumerate(self._tokenise(str)):
 			embedding = self.lookup(token)
 			if embedding is None:
-				logging.debug(f"[DEBUG] {token} was none")
+				logger.debug(f"[DEBUG] {token} was none")
 				continue
 			
 			result.append(embedding)

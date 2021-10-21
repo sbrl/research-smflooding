@@ -1,5 +1,5 @@
 import io
-import logging
+from loguru import logger
 
 
 def summarylogger(model):
@@ -9,7 +9,7 @@ def summarylogger(model):
     """
     
     def handle_line(line: str):
-        logging.info(line)
+        logger.info(line)
     
     model.summary(print_fn=handle_line)
     

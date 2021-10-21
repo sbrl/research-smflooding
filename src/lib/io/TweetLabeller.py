@@ -1,4 +1,4 @@
-import logging
+from loguru import logger
 import json
 
 import tensorflow as tf
@@ -45,9 +45,9 @@ class TweetLabeller():
 			})
 			if len(acc) >= self.batch_size:
 				stacked = tf.stack([ item["tensor"] for item in acc ])
-				logging.info(f"STACKED_SHAPE {stacked.shape}")
+				logger.info(f"STACKED_SHAPE {stacked.shape}")
 				predictions_batch = self.model.predict_class_ids(stacked, self.batch_size)
-				logging.info(f"PREDICTIONS_BATCH {predictions_batch}")
+				logger.info(f"PREDICTIONS_BATCH {predictions_batch}")
 				# Process the predictions
 				# for index in range(0, len(predictions_batch)):
 				for batch_index in range(0, len(predictions_batch)):

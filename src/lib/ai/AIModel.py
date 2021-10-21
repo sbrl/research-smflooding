@@ -3,7 +3,7 @@ import io
 import sys
 from abc import abstractmethod
 
-import logging
+from loguru import logger
 
 from ..polyfills.io import write_file_sync
 from ..io.summarywriter import summarywriter, summarylogger
@@ -18,7 +18,7 @@ class AIModel:
 	
 	def setup(self):
 		if self.filepath_checkpoint is None:
-			logging.info("AIModel: Creating new model")
+			logger.info("AIModel: Creating new model")
 			self.settings = settings_get()
 			
 			self.dir_tensorboard = os.path.join(self.settings.output, "tensorboard")
@@ -39,10 +39,10 @@ class AIModel:
 			summarywriter(self.model, self.filepath_summary)
 			summarylogger(self.model)
 			
-			logging.info("Model summary above")
+			logger.info("Model summary above")
 			
 		else:
-			logging.info(f"ImageClassifier: Loading checkpoint from {self.filepath_checkpoint}")
+			logger.info(f"ImageClassifier: Loading checkpoint from {self.filepath_checkpoint}")
 			self.load_model(self.filepath_checkpoint)
 	
 	@abstractmethod

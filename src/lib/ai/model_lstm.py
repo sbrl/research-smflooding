@@ -1,5 +1,5 @@
 import sys
-import logging
+from loguru import logger
 
 import tensorflow as tf
 
@@ -17,20 +17,20 @@ def make_model_lstm(settings, _container):
     for units in settings.model.lstm_units:
         i += 1
         lstm = None
-        logging.info(f"DEBUG i {i}, layer_count {layer_count}\n")
+        logger.info(f"DEBUG i {i}, layer_count {layer_count}\n")
         if i != layer_count - 1:
-            logging.info(f"make_model_lstm: Adding LSTM layer with {units} units")
+            logger.info(f"make_model_lstm: Adding LSTM layer with {units} units")
             lstm = tf.keras.layers.LSTM(units, return_sequences=True)
         else:
-            logging.info(f"make_model_lstm: Adding final LSTM layer with {units} units")
+            logger.info(f"make_model_lstm: Adding final LSTM layer with {units} units")
             lstm = tf.keras.layers.LSTM(units)
         
         if settings.model.bidirectional:
-            logging.info("make_model_lstm: Adding Bidirectional wrapper")
+            logger.info("make_model_lstm: Adding Bidirectional wrapper")
             lstm = tf.keras.layers.Bidirectional(lstm)
         model.add(lstm)
         if settings.model.batch_normalisation:
-            logging.info("make_model_lstm: Adding batch normalisation layer")
+            logger.info("make_model_lstm: Adding batch normalisation layer")
             model.add(tf.keras.layers.BatchNormalization())
     
     model.add(tf.keras.layers.Dense(settings.data.categories, activation = "softmax"))

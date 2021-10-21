@@ -3,7 +3,7 @@ import io
 import sys
 import json
 
-import logging
+from loguru import logger
 import tensorflow as tf
 
 from ..io.settings import settings_get
@@ -46,13 +46,13 @@ class ImageClassifier(AIModel):
 		"""Reinitialises the model."""
 		
 		if self.settings.model.type == "cct":
-			logging.info("Making CCT")
+			logger.info("Making CCT")
 			model = make_model_cct(
 				class_count=self.class_count,
 				**vars(self.settings.model)
 			)
 		elif self.settings.model.type == "resnet":
-			logging.info("Making ResNet50")
+			logger.info("Making ResNet50")
 			image_size = self.settings.model.image_size
 			if image_size < 32:
 				image_size = 32
@@ -74,14 +74,14 @@ class ImageClassifier(AIModel):
 			# Unfortunately this requires specifying number of items in the dataset
 			steps_per_execution = 1
 		)
-		logging.info("Model compiled step 1 / 2")
+		logger.info("Model compiled step 1 / 2")
 		# Unsure if this is actually necessary
 		# model.build((
 		# 	None,
 		# 	self.settings.data.sequence_length,
 		# 	self.container["glove_word_vector_length"]
 		# ))
-		logging.info("Model compiled step 2 / 2")
+		logger.info("Model compiled step 2 / 2")
 		
 		return model
 	

@@ -4,7 +4,7 @@ import sys
 import os
 from pathlib import Path
 import argparse
-import logging
+from loguru import logger
 import json
 
 import tensorflow as tf
@@ -19,9 +19,8 @@ from lib.ai.ConfusionMatrixMaker import ConfusionMatrixMaker
 def init_logging():
 	"""Initialises the logging subsystem."""
 	
-	logging.basicConfig(level=logging.INFO)
-	logging.info("confusion_matrix init! Here we go")
-	logging.info(f"This is Tensorflow {tf.__version__}")
+	logger.info("confusion_matrix init! Here we go")
+	logger.info(f"This is Tensorflow {tf.__version__}")
 
 
 def parse_args():
@@ -45,10 +44,10 @@ def main():
 	args = parse_args()
 	
 	gpus = tf.config.list_physical_devices('GPU')
-	logging.info(f"lstm_text_classifier: Available gpus: {gpus}")
+	logger.info(f"lstm_text_classifier: Available gpus: {gpus}")
 	
 	if not gpus and args.only_gpu:
-		logging.info("No GPUs detected, exiting because --only-gpu was specified")
+		logger.info("No GPUs detected, exiting because --only-gpu was specified")
 		sys.exit(1)
 	if not hasattr(args, "min_confidence"):
 		args.min_confidence = 0.8

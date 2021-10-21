@@ -4,7 +4,7 @@ import sys
 import os
 from pathlib import Path
 import argparse
-import logging
+from loguru import logger
 import json
 
 import tensorflow as tf
@@ -20,20 +20,18 @@ from lib.data.CategoryCalculator import CategoryCalculator
 def init_logging(filepath_output):
 	"""Initialises the logging subsystem."""
 	
-	if filepath_output is None:
-		logging.basicConfig(level=logging.INFO, stream=sys.stderr)
-	else:
+	if filepath_output is not None:
 		# Create the output directory if it doesn't exist already
 		dirpath = os.path.dirname(filepath_output)
 		if not os.path.exists(dirpath):
 			os.makedirs(dirpath, 0o750)
-	
-	# Log to a file - ref https://github.com/conda/conda/issues/9412
-	logging.basicConfig(level=logging.INFO, filename=filepath_output)
+		
+		# Log to a file - ref https://github.com/conda/conda/issues/9412
+		logger.add(io.open(filepath_output, mode="r"))
 	
 	sys.stderr.write(f"lstm_tweet_classifier: Writing logs to {filepath_output}\n")
-	logging.info("lstm_text_classifier init! Here we go")
-	logging.info(f"This is Tensorflow {tf.__version__}")
+	logger.info("lstm_text_classifier init! Here we go")
+	logger.info(f"This is Tensorflow {tf.__version__}")
 
 
 def main():
@@ -74,10 +72,10 @@ def main():
 	init_logging(None)
 	
 	gpus = tf.config.list_physical_devices('GPU')
-	logging.info(f"classify_images: Available gpus: {gpus}")
+	logger.info(f"classify_images: Available gpus: {gpus}")
 	tf.__version__
 	if not gpus and args.only_gpu:
-		logging.info("No GPUs detected, exiting because --only-gpu was specified")
+		logger.info("No GPUs detected, exiting because --only-gpu was specified")
 		sys.exit(1)
 	
 	

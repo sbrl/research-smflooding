@@ -1,5 +1,5 @@
 
-import logging
+from loguru import logger
 
 import tensorflow as tf
 import numpy as np
@@ -94,7 +94,7 @@ def make_model_cct(class_count,
 			# The probability to KEEP, not drop! Hence the "1 - value" here
 			stochastic_survivability = 1 - stochastic_probabilities[i]
 			
-			logging.info(f"make_model_transformer: Adding vision transformer encoding block ("
+			logger.info(f"make_model_transformer: Adding vision transformer encoding block ("
 				+ f"units_embedding = {units_embedding}, "
 				+ f"attention heads = {attention_heads_count}, "
 				+ f"units_dense = {units_dense}, "
