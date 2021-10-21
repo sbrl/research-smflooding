@@ -57,7 +57,7 @@ class ImageClassifier(AIModel):
 			if image_size < 32:
 				image_size = 32
 			
-			logger.debug("image_size", image_size, "raw", self.settings.model.image_size)
+			logger.debug(f"image_size {image_size}, raw {self.settings.model.image_size}")
 			model = tf.keras.applications.resnet50.ResNet50(
 				classes=self.class_count,
 				weights=None, # Could also be "imagenet"
