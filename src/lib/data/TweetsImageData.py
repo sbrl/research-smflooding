@@ -66,11 +66,19 @@ class TweetsImageData(tf.data.Dataset):
 					settings.data.paths.input_media_dir,
 					os.path.basename(media["url"])
 				)
-				image = tf.convert_to_tensor(tf.keras.utils.load_img(
+				image = tf.keras.utils.load_img(
 					filename,
 					target_size=(settings.model.image_size, settings.mode.image_size),
 					color_mode="rgb"
-				), dtype=tf.float32).div(255)
+				))
+				
+				if settings.model.image_size < 32 and settings.model.type == "resnet":
+					image = image.resize((32, 32))
+				
+				image = tf.convert_to_tensor(image, dtype=tf.float32)
+				if settings.model.type != "resnet":
+					image = image.div(255)
+				
 				print("DEBUG image shape before", image.shape)
 				# Convert from channels first ot channels last, since indredibly there isn't actually an option for this
 				# I hate Tensorflow for Python so much....

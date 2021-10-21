@@ -63,10 +63,6 @@ def main():
 	)
 	
 	settings = settings_get()
-	if hasattr(args, "nobidi") and args.nobidi:
-		settings.model.bidirectional = False
-	if hasattr(args, "batchnorm") and args.batchnorm:
-		settings.model.batch_normalisation = True
 	if hasattr(args, "model") and args.model is not None:
 		settings.model.type = args.model
 	if hasattr(args, "batch_size") and type(args.batch_size) is int:

@@ -47,12 +47,19 @@ class ImageClassifier(AIModel):
 		
 		if self.settings.model.type == "cct":
 			logging.info("Making CCT")
-			model = make_model_cct(class_count=self.class_count, **vars(self.settings.model))
+			model = make_model_cct(
+				class_count=self.class_count,
+				**vars(self.settings.model)
+			)
 		elif self.settings.model.type == "resnet":
 			logging.info("Making ResNet50")
+			image_size = self.settings.model.image_size
+			if image_size < 32:
+				image_size = 32
 			model = tf.keras.applications.resnet50.ResNet50(
 				classes=self.class_count,
-				weights=None # Could also be "imagenet"
+				weights=None, # Could also be "imagenet"
+				input_shape=( image_size, image_size, 3 )
 			)
 		else:
 			raise Exception(f"Error: Invalid model type {self.settings.model.type}")
