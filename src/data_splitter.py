@@ -2,7 +2,7 @@
 import io
 import os
 import argparse
-import logging
+from loguru import logger
 import json
 # import tensorflow as tf
 
@@ -11,7 +11,6 @@ from lib.data.CategoryCalculator import CategoryCalculator
 
 def main():
 	"""Main entrypoint."""
-	logging.basicConfig(level=logging.INFO)
 	
 	parser = argparse.ArgumentParser(description="This program calculates trains a tweet classification model.")
 	parser.add_argument("--input", "-i", help="Path to input tweets jsonl file to read.", required=True)

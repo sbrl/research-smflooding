@@ -3,3 +3,4 @@ tensorflow_addons
 toml
 numpy
 matplotlib
+loguru

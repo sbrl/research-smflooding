@@ -3,7 +3,7 @@ import io
 import sys
 import json
 
-import logging
+from loguru import logger
 import tensorflow as tf
 
 from ..io.settings import settings_get
@@ -45,9 +45,28 @@ class ImageClassifier(AIModel):
 	def make_model(self):
 		"""Reinitialises the model."""
 		
-		model = make_model_cct(class_count=self.class_count, **vars(self.settings.model))
+		if self.settings.model.type == "cct":
+			logger.info("Making CCT")
+			model = make_model_cct(
+				class_count=self.class_count,
+				**vars(self.settings.model)
+			)
+		elif self.settings.model.type == "resnet":
+			logger.info("Making ResNet50")
+			image_size = self.settings.model.image_size
+			if image_size < 32:
+				image_size = 32
+			
+			logger.debug(f"image_size {image_size}, raw {self.settings.model.image_size}")
+			model = tf.keras.applications.resnet50.ResNet50(
+				classes=self.class_count,
+				weights=None, # Could also be "imagenet"
+				input_shape=( image_size, image_size, 3 )
+			)
+		else:
+			raise Exception(f"Error: Invalid model type {self.settings.model.type}")
 		
-		logging.info(f"Built cct model")
+		sys.stdout.write(f"Built {self.settings.model.type} model")
 		
 		model.compile(
 			optimizer="Adam",
@@ -57,14 +76,14 @@ class ImageClassifier(AIModel):
 			# Unfortunately this requires specifying number of items in the dataset
 			steps_per_execution = 1
 		)
-		logging.info("Model compiled step 1 / 2")
+		logger.info("Model compiled step 1 / 2")
 		# Unsure if this is actually necessary
 		# model.build((
 		# 	None,
 		# 	self.settings.data.sequence_length,
 		# 	self.container["glove_word_vector_length"]
 		# ))
-		logging.info("Model compiled step 2 / 2")
+		logger.info("Model compiled step 2 / 2")
 		
 		return model
 	

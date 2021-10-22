@@ -1,5 +1,5 @@
 
-import logging
+from loguru import logger
 
 import tensorflow as tf
 from .LayerPositionEmbedding import LayerPositionEmbedding
@@ -28,7 +28,7 @@ def make_model_transformer(settings, container):
 		attention_heads_count = params["attention_heads"]
 		units_dense = params["units_dense"]
 		dropout = params["dropout"] or 0.1
-		logging.info(f"make_model_transformer: Adding transformer encoding block ("
+		logger.info(f"make_model_transformer: Adding transformer encoding block ("
 			+ f"units_embedding = {units_embedding}, "
 			+ f"attention heads = {attention_heads_count}, "
 			+ f"units_dense = {units_dense}, "
@@ -47,16 +47,16 @@ def make_model_transformer(settings, container):
 		settings.model.transformer_units_last,
 		activation="relu"
 	)(layer_next)
-	logging.info(f"make_model_transformer: Adding dropout layer (rate = {settings.model.dropout}")
-	logging.info(f"make_model_transformer: Adding dense layer (units = {settings.model.transformer_units_last}, activation = relu)")
+	logger.info(f"make_model_transformer: Adding dropout layer (rate = {settings.model.dropout}")
+	logger.info(f"make_model_transformer: Adding dense layer (units = {settings.model.transformer_units_last}, activation = relu)")
 	
 	layer_next = tf.keras.layers.Dropout(settings.model.dropout)(layer_next)
 	layer_next = tf.keras.layers.Dense(
 		settings.data.categories,
 		activation = "softmax"
 	)(layer_next)
-	logging.info(f"make_model_transformer: Adding dropout layer (rate = {settings.model.dropout})")
-	logging.info(f"make_model_transformer: Adding dense layer (units = {settings.data.categories}, activation = softmax)")
+	logger.info(f"make_model_transformer: Adding dropout layer (rate = {settings.model.dropout})")
+	logger.info(f"make_model_transformer: Adding dense layer (units = {settings.data.categories}, activation = softmax)")
 	
 	return tf.keras.Model(
 		inputs=layer_in,

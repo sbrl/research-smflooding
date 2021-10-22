@@ -2,7 +2,7 @@
 import io
 from pathlib import Path
 import argparse
-import logging
+from loguru import logger
 import json
 # import tensorflow as tf
 
@@ -11,8 +11,7 @@ from lib.glove.glove import GloVe
 
 def main():
     """Main entrypoint."""
-    logging.basicConfig(level=logging.INFO)
-
+    
     parser = argparse.ArgumentParser(description="This program calculates the longest word embedding in a list of tweets.")
     parser.add_argument("--glove", "-g", help="Filepath to the pretrained GloVe word vectors to load.")
     parser.add_argument("tweets_jsonl", help="The input tweets jsonl file to scan.")
@@ -36,11 +35,11 @@ def main():
         
         if len(result) > longest:
             longest = len(result)
-            logging.info(f"\n\n\n\nTweet #{i} has length of {longest}:")
-            logging.info("INPUT:")
-            logging.info(obj["text"])
-            logging.info("\nOUTPUT:")
-            logging.info(result)
+            logger.info(f"\n\n\n\nTweet #{i} has length of {longest}:")
+            logger.info("INPUT:")
+            logger.info(obj["text"])
+            logger.info("\nOUTPUT:")
+            logger.info(result)
 
 
     # print(tf.constant(glove.convert(args.input_string)))

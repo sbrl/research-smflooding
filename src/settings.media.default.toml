@@ -15,6 +15,9 @@ input_media_dir = ""
 
 
 [model]
+# Which model to use. Default: resnet. Available models: resnet, cct.
+type = "resnet"
+
 # Size of input images
 # Images that are not this size will be resized to fit (aspect ratio will NOT be preserved)
 image_size = 128

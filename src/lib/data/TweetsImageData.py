@@ -1,4 +1,5 @@
 import io
+import sys
 import json
 from functools import partial
 import numpy
@@ -66,25 +67,40 @@ class TweetsImageData(tf.data.Dataset):
 					settings.data.paths.input_media_dir,
 					os.path.basename(media["url"])
 				)
-				image = tf.convert_to_tensor(tf.keras.utils.load_img(
+				image = tf.keras.utils.load_img(
 					filename,
 					target_size=(settings.model.image_size, settings.mode.image_size),
 					color_mode="rgb"
-				), dtype=tf.float32).div(255)
-				# # Convert from channels first ot channels last, since indredibly there isn't actually an option for this
-				# # I hate Tensorflow for Python so much....
-				# image = tf.transpose(image, perm=[2,0,1])
-				# # Ensure we have channels, because apparently the docs for load_img are wrong
-				# if len(image.shape.length) < 4:
-				# 	image = tf.stack([image, image, image], axis=-1)
-				# 
-				# print("DEBUG image shape after", image.shape)
-			
-			
-			yield (
-				image,
-				tf.one_hot(next_cat, cats.count, dtype="int32")
-			)
+				)
+				
+				if settings.model.image_size < 32 and settings.model.type == "resnet":
+					image = image.resize((32, 32))
+				
+				image = tf.convert_to_tensor(image, dtype=tf.float32)
+				if settings.model.type != "resnet":
+					image = image.div(255)
+				
+				print("DEBUG image shape before", image.shape)
+				# Convert from channels first ot channels last, since indredibly there isn't actually an option for this
+				# I hate Tensorflow for Python so much....
+				image = tf.transpose(image, perm=[2,0,1])
+				# Ensure we have channels, because apparently the docs for load_img are wrong
+				if len(image.shape.length) < 4:
+					image = tf.stack([image, image, image], axis=-1)
+				
+				print("DEBUG image shape after", image.shape)
+				
+				if settings.model.type == "resnet":
+					image = tf.keras.applications.resnet50.preprocess_input(
+						image,
+						data_format="channels_last"
+					)
+					print("DEBUG image shape resnet_after", image.shape)
+				
+				yield (
+					image,
+					tf.one_hot(next_cat, cats.count, dtype="int32")
+				)
 	
 	
 	def __new__(cls, filepath_input, container):
