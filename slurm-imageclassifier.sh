@@ -32,7 +32,7 @@ extra_flags="";
 if [[ "${MODE}" == "FASHION_MNIST" ]]; then
 	extra_flags="${extra_flags} --fashion-mnist";
 fi
-	
+
 
 echo ">>> Installing requirements";
 conda run -n py38 pip install -r requirements.txt;
