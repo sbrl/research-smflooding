@@ -81,7 +81,7 @@ class TweetsImageData(tf.data.Dataset):
 				
 				image = tf.convert_to_tensor(image, dtype=tf.float32)
 				
-				print("DEBUG image shape before", image.shape)
+				logger.debug("DEBUG image shape before "+json.dumps(image.shape))
 				# Convert from channels first ot channels last, since indredibly there isn't actually an option for this
 				# I hate Tensorflow for Python so much....
 				image = tf.transpose(image, perm=[2,0,1])
@@ -89,14 +89,14 @@ class TweetsImageData(tf.data.Dataset):
 				if len(image.shape) < 4:
 					image = tf.stack([image, image, image], axis=-1)
 				
-				print("DEBUG image shape after", image.shape)
+				logger.debug("DEBUG image shape after "+json.dumps(image.shape))
 				
 				if settings.model.type == "resnet":
 					image = tf.keras.applications.resnet50.preprocess_input(
 						image,
 						data_format="channels_last"
 					)
-					print("DEBUG image shape resnet_after", image.shape)
+					logger.dumps("DEBUG image shape resnet_after "+json.dumps(image.shape))
 				else:
 					image = image.div(255)
 				
@@ -106,7 +106,7 @@ class TweetsImageData(tf.data.Dataset):
 				)
 		
 		
-		print(f"Epoch end; skipped {skipped} of {i+1} tweets")
+		logger.info(f"Epoch end; skipped {skipped} of {i+1} tweets")
 		
 	
 	
@@ -145,5 +145,5 @@ class TweetsImageData(tf.data.Dataset):
 			settings.train.shuffle_buffer
 		).batch(
 			settings.train.batch_size,
-			# drop_remainder=settings.model.type == "transformer" # Drop any remainder for transformers because a fixed batch size is required
+			drop_remainder=True
 		)
