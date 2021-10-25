@@ -6,6 +6,7 @@ from functools import partial
 import numpy
 
 import tensorflow as tf
+from loguru import logger
 
 from ..io.settings import settings_get
 from ..glove.glove import GloVe
