@@ -151,7 +151,7 @@ def main():
 	
 	ai = ImageClassifier(container, class_count, settings)
 	ai.setup()
-	ai.train(dataset_train, dataset_validate, mode="plain")
+	ai.train(dataset_train, dataset_validate, mode="plain" if args.fashion_mnist else "generator")
 	
 
 if __name__ == "__main__":
