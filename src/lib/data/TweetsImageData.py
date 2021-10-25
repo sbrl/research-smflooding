@@ -115,8 +115,6 @@ class TweetsImageData(tf.data.Dataset):
 			settings.data.paths.categories
 		)
 		
-		container["glove_word_vector_length"] = glove.word_vector_length()
-		
 		dataset = tf.data.Dataset.from_generator(
 			partial(cls.generator, filepath_input),
 			output_signature=(
@@ -140,5 +138,5 @@ class TweetsImageData(tf.data.Dataset):
 			settings.train.shuffle_buffer
 		).batch(
 			settings.train.batch_size,
-			drop_remainder=settings.model.type == "transformer" # Drop any remainder for transformers because a fixed batch size is required
+			# drop_remainder=settings.model.type == "transformer" # Drop any remainder for transformers because a fixed batch size is required
 		)
