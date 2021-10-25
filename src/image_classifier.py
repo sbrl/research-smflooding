@@ -10,6 +10,7 @@ import json
 import tensorflow as tf
 
 from lib.io.settings import settings_get, settings_load
+from lib.data.CategoryCalculator import CategoryCalculator
 from lib.data.TweetsImageData import TweetsImageData
 from lib.ai.ImageClassifier import ImageClassifier
 
