@@ -1,5 +1,6 @@
 import io
 import sys
+import os
 import json
 from functools import partial
 import numpy
@@ -101,6 +102,10 @@ class TweetsImageData(tf.data.Dataset):
 					image,
 					tf.one_hot(next_cat, cats.count, dtype="int32")
 				)
+		
+		
+		print(f"Epoch end; skipped {skipped} of {i+1} tweets")
+		
 	
 	
 	def __new__(cls, filepath_input, container):
