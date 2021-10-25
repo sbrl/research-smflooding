@@ -12,7 +12,6 @@ from ..glove.glove import GloVe
 from .CategoryCalculator import CategoryCalculator
 
 # HACK
-glove = None
 cats = None
 
 
@@ -64,6 +63,9 @@ class TweetsImageData(tf.data.Dataset):
 			
 			
 			for media in obj["media"]:
+				if media["type"] is not "image":
+					continue
+				
 				filename = os.path.join(
 					settings.data.paths.input_media_dir,
 					os.path.basename(media["url"])
