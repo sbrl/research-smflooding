@@ -74,18 +74,16 @@ class TweetsImageData(tf.data.Dataset):
 				)
 				
 				if settings.model.image_size < 32 and settings.model.type == "resnet":
-					image = image.resize((32, 32))
+					image = image.resize((settings.model.image_size, settings.model.image_size))
 				
 				image = tf.convert_to_tensor(image, dtype=tf.float32)
-				if settings.model.type != "resnet":
-					image = image.div(255)
 				
 				print("DEBUG image shape before", image.shape)
 				# Convert from channels first ot channels last, since indredibly there isn't actually an option for this
 				# I hate Tensorflow for Python so much....
 				image = tf.transpose(image, perm=[2,0,1])
 				# Ensure we have channels, because apparently the docs for load_img are wrong
-				if len(image.shape.length) < 4:
+				if len(image.shape) < 4:
 					image = tf.stack([image, image, image], axis=-1)
 				
 				print("DEBUG image shape after", image.shape)
@@ -96,6 +94,8 @@ class TweetsImageData(tf.data.Dataset):
 						data_format="channels_last"
 					)
 					print("DEBUG image shape resnet_after", image.shape)
+				else:
+					image = image.div(255)
 				
 				yield (
 					image,
