@@ -73,7 +73,7 @@ class TweetsImageData(tf.data.Dataset):
 				)
 				image = tf.keras.utils.load_img(
 					filename,
-					target_size=(settings.model.image_size, settings.mode.image_size),
+					target_size=(settings.model.image_size, settings.model.image_size),
 					color_mode="rgb"
 				)
 				
