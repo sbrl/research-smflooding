@@ -88,6 +88,8 @@ class TweetsImageData(tf.data.Dataset):
 				
 				image = tf.convert_to_tensor(image, dtype=tf.float32)
 				
+				logger.debug("DEBUG image shape before_transpose "+str(image.shape))
+				
 				# Convert from channels first ot channels last, since indredibly there isn't actually an option for this
 				# I hate Tensorflow for Python so much....
 				image = tf.transpose(image, perm=[2,0,1])
@@ -95,6 +97,8 @@ class TweetsImageData(tf.data.Dataset):
 				if len(image.shape) < 4:
 					image = tf.stack([image, image, image], axis=-1)
 				
+				
+				logger.debug("DEBUG image shape before_preprocess "+str(image.shape))
 				
 				if settings.model.type == "resnet":
 					image = tf.keras.applications.resnet50.preprocess_input(
