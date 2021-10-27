@@ -64,7 +64,7 @@ class TweetsImageData(tf.data.Dataset):
 			
 			
 			for media in obj["media"]:
-				if media["type"] != "image":
+				if media["type"] != "photo":
 					continue
 				
 				filename = os.path.join(
