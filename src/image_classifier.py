@@ -25,7 +25,7 @@ def init_logging(filepath_output):
 			os.makedirs(dirpath, 0o750)
 		
 		# Log to a file - ref https://github.com/conda/conda/issues/9412
-		logger.add(io.open(filepath_output, mode="r"))
+		logger.add(io.open(filepath_output, mode="w"))
 	
 	sys.stderr.write(f"tweet_media_classifier: Writing logs to {filepath_output}\n")
 	logger.info("tweet_media_classifier init! Here we go")
