@@ -18,8 +18,8 @@ module load cuda/11.5.0
 
 module load python/anaconda/4.6/miniconda/3.7
 
-CONFIG="${CONFIG:-configs/imageclassifier-fashionmnist.toml}"
-OUTPUT="${OUTPUT:-output/cct-fashion_mnist_l2}";
+CONFIG="${CONFIG:-configs/imageclassifier.toml}"
+OUTPUT="${OUTPUT:-output/CHANGE_ME}";
 
 MODE="FASHION_MNIST";
 
