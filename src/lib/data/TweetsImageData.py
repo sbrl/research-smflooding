@@ -33,6 +33,7 @@ class TweetsImageData(tf.data.Dataset):
 		reader = io.open(filepath_input, "r")
 		
 		skipped = 0
+		skipped_missingfile = 0
 		stats = {}
 		i = -1
 		for line in reader:
@@ -57,7 +58,7 @@ class TweetsImageData(tf.data.Dataset):
 				msg = ""
 				for catid in stats:
 					msg += f"{cats.index2name(catid)} = {stats[catid]} tweets "
-				print(f" [TweetsImageData] stats: {msg}, {skipped} skipped due to missing label or media")
+				print(f" [TweetsImageData] stats: {msg}, {skipped} skipped due to missing label, {skipped_missingfile} missing media files")
 			
 			if next_cat is None:
 				continue
@@ -71,6 +72,11 @@ class TweetsImageData(tf.data.Dataset):
 					settings.data.paths.input_media_dir,
 					os.path.basename(media["url"])
 				)
+				
+				if not os.path.exists(filename):
+					skipped_missingfile = skipped_missingfile + 1
+					continue
+				
 				image = tf.keras.utils.load_img(
 					filename,
 					target_size=(settings.model.image_size, settings.model.image_size),
