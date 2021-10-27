@@ -88,8 +88,6 @@ class TweetsImageData(tf.data.Dataset):
 				
 				image = tf.convert_to_tensor(image, dtype=tf.float32)
 				
-				logger.debug("DEBUG image shape before_preprocess "+str(image.shape))
-				
 				if settings.model.type == "resnet":
 					image = tf.keras.applications.resnet50.preprocess_input(
 						image,
@@ -98,7 +96,6 @@ class TweetsImageData(tf.data.Dataset):
 				else:
 					image = image.div(255)
 				
-				logger.debug("DEBUG image shape after "+str(image.shape))
 				yield (
 					image,
 					tf.one_hot(next_cat, cats.count, dtype="int32")
