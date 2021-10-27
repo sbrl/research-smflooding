@@ -104,7 +104,7 @@ class TweetsImageData(tf.data.Dataset):
 				else:
 					image = image.div(255)
 				
-				logger.dumps("DEBUG image shape after "+str(image.shape))
+				logger.debug("DEBUG image shape after "+str(image.shape))
 				yield (
 					image,
 					tf.one_hot(next_cat, cats.count, dtype="int32")
