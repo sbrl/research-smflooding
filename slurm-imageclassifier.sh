@@ -6,7 +6,7 @@
 #SBATCH -o %j.%N.%a.out
 #SBATCH -e %j.%N.%a.err
 #SBATCH -p gpu05,gpu
-#SBATCH --time=1-04:00:00
+#SBATCH --time=5-00:00:00
 #SBATCH --mem=25600
 
 
