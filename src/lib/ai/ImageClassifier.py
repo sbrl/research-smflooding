@@ -87,24 +87,35 @@ class ImageClassifier(AIModel):
 		
 		return model
 	
-	
-	def predict_class_ids(self, data, batch_size=None, min_confidence=0.5):
+	def predict_class_ids(self, filepaths, batch_size=None, buffer_size=64, min_confidence=0.5):
 		"""Makes a prediction, but returns the class ids instead of the probabilities."""
+
 		
-		predictions = self.predict(data, batch_size)
 		result = []
-		for item in predictions:
-			max_value = -1
-			max_index = -1
-			for i in range(0, predictions.shape[-1]):
-				value = item[i]
-				if value > max_value:
-					max_index = i
-					max_value = value
+		acc = []
+		for filepath in filepaths:
+			acc.append(filepath)
 			
-			if max_value > min_confidence:
-				result.append(max_index)
-			else:
-				result.append(None)
+			if len(acc) >= buffer_size:
+				# Make predictions
+				predictions = self.predict(data, batch_size)
+				
+				# Process the predictions, add them to the main results array
+				for itemi,item in enumerate(predictions):
+					max_value = -1
+					max_index = -1
+					for i in range(0, predictions.shape[-1]):
+						value = item[i]
+						if value > max_value:
+							max_index = i
+							max_value = value
+					
+					if max_value > min_confidence:
+						result.append([ acc[i], max_index ])
+					else:
+						result.append(None)
+				
+				# Clear the accumulator
+				acc = []
 		
 		return result
