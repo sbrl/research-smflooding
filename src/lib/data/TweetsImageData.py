@@ -11,6 +11,7 @@ from loguru import logger
 from ..io.settings import settings_get
 from ..glove.glove import GloVe
 from .CategoryCalculator import CategoryCalculator
+from .load_image import load_image
 
 # HACK
 cats = None
@@ -77,24 +78,11 @@ class TweetsImageData(tf.data.Dataset):
 					skipped_missingfile = skipped_missingfile + 1
 					continue
 				
-				image = tf.keras.utils.load_img(
+				image = load_image(
 					filename,
-					target_size=(settings.model.image_size, settings.model.image_size),
-					color_mode="rgb"
+					image_size,
+					mode=settings.model.type
 				)
-				
-				if settings.model.image_size < 32 and settings.model.type == "resnet":
-					image = image.resize((settings.model.image_size, settings.model.image_size))
-				
-				image = tf.convert_to_tensor(image, dtype=tf.float32)
-				
-				if settings.model.type == "resnet":
-					image = tf.keras.applications.resnet50.preprocess_input(
-						image,
-						data_format="channels_last"
-					)
-				else:
-					image = image.div(255)
 				
 				yield (
 					image,
