@@ -14,6 +14,7 @@ from .LayerPositionEmbedding import LayerPositionEmbedding
 from .LayerVisionTransformerEncoder import LayerVisionTransformerEncoder
 from .LayerCCTConvEmbedding import LayerCCTConvEmbedding
 from .LayerSequencePooling import LayerSequencePooling
+from ..data.load_image import load_image
 
 
 class ImageClassifier(AIModel):
@@ -97,6 +98,11 @@ class ImageClassifier(AIModel):
 			acc.append(filepath)
 			
 			if len(acc) >= buffer_size:
+				data = map(lambda filepath : load_image(
+					filepath,
+					self.settings.model.image_size
+				), acc)
+				
 				# Make predictions
 				predictions = self.predict(data, batch_size)
 				
