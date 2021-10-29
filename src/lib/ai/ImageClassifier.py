@@ -104,7 +104,7 @@ class ImageClassifier(AIModel):
 				), acc))
 				
 				# Make predictions
-				predictions = self.predict(data, batch_size)
+				predictions = self.predict(tf.stack(data), batch_size)
 				
 				# Process the predictions, add them to the main results array
 				for itemi,item in enumerate(predictions):
