@@ -98,10 +98,10 @@ class ImageClassifier(AIModel):
 			acc.append(filepath)
 			
 			if len(acc) >= buffer_size:
-				data = map(lambda filepath : load_image(
+				data = list(map(lambda filepath : load_image(
 					filepath,
 					self.settings.model.image_size
-				), acc)
+				), acc))
 				
 				# Make predictions
 				predictions = self.predict(data, batch_size)
