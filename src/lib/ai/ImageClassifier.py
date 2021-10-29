@@ -90,7 +90,8 @@ class ImageClassifier(AIModel):
 	
 	def predict_class_ids(self, filepaths, batch_size=None, buffer_size=64, min_confidence=0.5):
 		"""Makes a prediction, but returns the class ids instead of the probabilities."""
-
+		
+		image_size = self.model.input.shape[1]
 		
 		result = []
 		acc = []
@@ -100,7 +101,7 @@ class ImageClassifier(AIModel):
 			if len(acc) >= buffer_size:
 				data = list(map(lambda filepath : load_image(
 					filepath,
-					self.settings.model.image_size
+					image_size	# Use the model's input shape, as it may be different from the current config file
 				), acc))
 				
 				# Make predictions
