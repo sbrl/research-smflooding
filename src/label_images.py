@@ -10,11 +10,8 @@ import json
 import tensorflow as tf
 
 from lib.io.settings import settings_get, settings_load
-from lib.data.TweetsData import TweetsData
-from lib.ai.TweetClassifier import TweetClassifier
-from lib.io.TweetLabeller import TweetLabeller
-from lib.glove.glove import GloVe
 from lib.data.CategoryCalculator import CategoryCalculator
+from lib.ai.ImageClassifier import ImageClassifier
 
 
 def init_logging(filepath_output):
