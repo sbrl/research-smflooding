@@ -105,6 +105,7 @@ def main():
 		settings,
 		args.checkpoint
 	)
+	model.setup()
 	
 	results = model.predict_class_ids(filepaths_in)
 	
