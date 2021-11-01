@@ -57,6 +57,7 @@ def main():
 	stream_out = sys.stdout
 	
 	if args.output:
+		logger.info(f"label_images: Writing to {args.output}")
 		stream_out = open(args.output, "w")
 	
 	settings_load(args.config)
@@ -67,7 +68,7 @@ def main():
 	init_logging(None)
 	
 	gpus = tf.config.list_physical_devices('GPU')
-	logger.info(f"classify_images: Available gpus: {gpus}")
+	logger.info(f"label_images: Available gpus: {gpus}")
 	tf.__version__
 	if not gpus and args.only_gpu:
 		logger.info("No GPUs detected, exiting because --only-gpu was specified")
@@ -89,6 +90,7 @@ def main():
 	else:
 		filepaths_in = [ filepaths_in ]
 	
+	logger.debug(f"label_images: filepaths_in: {str(filepaths_in)}")
 	
 	###############################################################################
 	
@@ -108,6 +110,7 @@ def main():
 	model.setup()
 	
 	results = model.predict_class_ids(filepaths_in)
+	logger.info(f"label_images: results {str(results)}")
 	
 	for result in results:
 		if result is None:
