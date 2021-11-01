@@ -81,7 +81,7 @@ class TweetsImageData(tf.data.Dataset):
 				image = load_image(
 					filename,
 					settings.model.image_size,
-					mode=settings.model.type
+					model_type=settings.model.type
 				)
 				
 				yield (
