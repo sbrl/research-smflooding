@@ -21,7 +21,7 @@ module load python/anaconda/4.6/miniconda/3.7
 CONFIG="${CONFIG:-configs/imageclassifier.toml}"
 OUTPUT="${OUTPUT:-output/CHANGE_ME}";
 
-MODE="FASHION_MNIST";
+MODE="NORMAL";
 
 if [[ ! -r "${CONFIG}" ]]; then
 	echo "Error: Config file at ${CONFIG} doesn't exist or we don't have permission to read it." >&2;
