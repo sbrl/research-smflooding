@@ -56,7 +56,7 @@ def main():
 	filepaths_in = args.input
 	stream_out = sys.stdout
 	
-	if args.output:
+	if args.output and args.output != "-":
 		logger.info(f"label_images: Writing to {args.output}")
 		stream_out = open(args.output, "w")
 	
@@ -113,6 +113,8 @@ def main():
 	logger.info(f"label_images: results {str(results)}")
 	
 	for result in results:
+		logger.info(f"result: {str(result)}")
+		
 		if result is None:
 			continue
 		
