@@ -8,6 +8,10 @@ import numpy
 import tensorflow as tf
 from loguru import logger
 
+# Ref https://stackoverflow.com/a/23575424
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 from ..io.settings import settings_get
 from ..glove.glove import GloVe
 from .CategoryCalculator import CategoryCalculator
@@ -28,7 +32,9 @@ class TweetsImageData(tf.data.Dataset):
 	
 	@staticmethod
 	def generator(filepath_input):
-		global cats
+		global catsfrom PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 		
 		settings = settings_get()
 		reader = io.open(filepath_input, "r")
@@ -78,11 +84,17 @@ class TweetsImageData(tf.data.Dataset):
 					skipped_missingfile = skipped_missingfile + 1
 					continue
 				
-				image = load_image(
-					filename,
-					settings.model.image_size,
-					model_type=settings.model.type
-				)
+				image = None
+				
+				try:
+					image = load_image(
+						filename,
+						settings.model.image_size,
+						model_type=settings.model.type
+					)
+				except Exception as e:
+					logger.error(e)
+					continue
 				
 				yield (
 					image,
