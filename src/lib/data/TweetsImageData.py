@@ -32,8 +32,7 @@ class TweetsImageData(tf.data.Dataset):
 	
 	@staticmethod
 	def generator(filepath_input):
-		global catsfrom PIL import ImageFile
-ImageFile.LOAD_TRUNCATED_IMAGES = True
+		global cats
 
 		
 		settings = settings_get()
