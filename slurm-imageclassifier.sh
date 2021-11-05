@@ -21,7 +21,7 @@ module load python/anaconda/4.6/miniconda/3.7
 CONFIG="${CONFIG:-configs/imageclassifier.toml}"
 OUTPUT="${OUTPUT:-output/CHANGE_ME}";
 
-MODE="FASHION_MNIST";
+MODE="NORMAL";
 
 if [[ ! -r "${CONFIG}" ]]; then
 	echo "Error: Config file at ${CONFIG} doesn't exist or we don't have permission to read it." >&2;
@@ -37,5 +37,5 @@ fi
 echo ">>> Installing requirements";
 conda run -n py38 pip install -r requirements.txt;
 echo ">>> Training model";
-time conda run -n py38 src/image_classifier.py --only-gpu --config "${CONFIG}" --output "${OUTPUT}" ${extra_flags};
+/usr/bin/env time -v conda run -n py38 src/image_classifier.py --only-gpu --config "${CONFIG}" --output "${OUTPUT}" ${extra_flags};
 echo ">>> exited with code $?";

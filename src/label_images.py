@@ -10,11 +10,8 @@ import json
 import tensorflow as tf
 
 from lib.io.settings import settings_get, settings_load
-from lib.data.TweetsData import TweetsData
-from lib.ai.TweetClassifier import TweetClassifier
-from lib.io.TweetLabeller import TweetLabeller
-from lib.glove.glove import GloVe
 from lib.data.CategoryCalculator import CategoryCalculator
+from lib.ai.ImageClassifier import ImageClassifier
 
 
 def init_logging(filepath_output):
@@ -59,7 +56,8 @@ def main():
 	filepaths_in = args.input
 	stream_out = sys.stdout
 	
-	if args.output:
+	if args.output and args.output != "-":
+		logger.info(f"label_images: Writing to {args.output}")
 		stream_out = open(args.output, "w")
 	
 	settings_load(args.config)
@@ -70,7 +68,7 @@ def main():
 	init_logging(None)
 	
 	gpus = tf.config.list_physical_devices('GPU')
-	logger.info(f"classify_images: Available gpus: {gpus}")
+	logger.info(f"label_images: Available gpus: {gpus}")
 	tf.__version__
 	if not gpus and args.only_gpu:
 		logger.info("No GPUs detected, exiting because --only-gpu was specified")
@@ -85,13 +83,14 @@ def main():
 		sys.exit(2)
 	
 	if os.path.isdir(filepaths_in):
-		filepaths_in = map(
+		filepaths_in = list(map(
 			lambda filename : os.path.join(filepaths_in, filename),
 			os.listdir(filepaths_in)
-		)
+		))
 	else:
 		filepaths_in = [ filepaths_in ]
 	
+	logger.debug(f"label_images: filepaths_in: {str(filepaths_in)}")
 	
 	###############################################################################
 	
@@ -108,10 +107,14 @@ def main():
 		settings,
 		args.checkpoint
 	)
+	model.setup()
 	
 	results = model.predict_class_ids(filepaths_in)
+	logger.info(f"label_images: results {str(results)}")
 	
 	for result in results:
+		logger.info(f"result: {str(result)}")
+		
 		if result is None:
 			continue
 		

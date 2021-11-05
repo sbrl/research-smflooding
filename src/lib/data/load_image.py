@@ -4,7 +4,7 @@ import tensorflow as tf
 def load_image(filepath, image_size, model_type="resnet"):
     
     image = tf.keras.utils.load_img(
-        filename,
+        filepath,
         target_size=(image_size, image_size),
         color_mode="rgb"
     )

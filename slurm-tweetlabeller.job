@@ -88,5 +88,5 @@ echo "CONFIG $CONFIG";
 echo ">>> Installing requirements";
 conda run -n py38 pip install -r requirements.txt;
 echo ">>> Labelling tweets";
-conda run -n py38 src/label_tweets.py --input "${INPUT}" --config "${CONFIG}" --checkpoint "${CHECKPOINT}" --output  "${OUTPUT}";
+/usr/bin/env time -v conda run -n py38 src/label_tweets.py --input "${INPUT}" --config "${CONFIG}" --checkpoint "${CHECKPOINT}" --output  "${OUTPUT}";
 echo ">>> exited with code $?";
