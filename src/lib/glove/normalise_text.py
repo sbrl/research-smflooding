@@ -6,6 +6,8 @@ with small modifications by Jeffrey Pennington
 with translation to Python by Motoki Wu
 updated to Python 3 by Phil Pope (@ppope)
 with minor tweaks by Starbeamrainbowlabs (@sbrl)
+	• Add spaces surrounding punctation and <token_blocks>
+	• Limit runs of whitespace to a single space
 
 python preprocess-twitter.py "Some random text with #hashtags, @mentions and http://t.co/kdjfkdjf (links). :)"
 Ref original Ruby source http://nlp.stanford.edu/projects/glove/preprocess-twitter.rb
@@ -37,6 +39,10 @@ def allcaps(text):
 	return text.lower() + " <allcaps>"
 
 
+# Convenience function to reduce repetition
+def re_sub(pattern, repl, text):
+	return re.sub(pattern, repl, text, flags=FLAGS)
+
 def normalise(text):
 	"""
 	Preprocesses the given input textto make it suitable for GloVe.
@@ -47,26 +53,29 @@ def normalise(text):
 	eyes = r"[8:=;]"
 	nose = r"['`\-]?"
 
-	# Convenience function to reduce repetition
-	def re_sub(pattern, repl):
-		return re.sub(pattern, repl, text, flags=FLAGS)
 	
-	text = re_sub(r"https?:\/\/\S+\b|www\.(\w+\.)+\S*", "<url>")
-	text = re_sub(r"@\w+", "<user>")
-	text = re_sub(r"{}{}[)dD]+|[)dD]+{}{}".format(eyes, nose, nose, eyes), "<smile>")
-	text = re_sub(r"{}{}p+".format(eyes, nose), "<lolface>")
-	text = re_sub(r"{}{}\(+|\)+{}{}".format(eyes, nose, nose, eyes), "<sadface>")
-	text = re_sub(r"{}{}[\/|l*]".format(eyes, nose), "<neutralface>")
-	text = re_sub(r"/", " / ")
-	text = re_sub(r"<3", "<heart>")
-	text = re_sub(r"[-+]?[.\d]*[\d]+[:,.\d]*", "<number>")
-	text = re_sub(r"#\S+", hashtag)
-	text = re_sub(r"([!?.]){2,}", r"\1 <repeat>")
-	text = re_sub(r"\b(\S*?)(.)\2{2,}\b", r"\1\2 <elong>")
+	text = re_sub(r"https?:\/\/\S+\b|www\.(\w+\.)+\S*", " <url> ", text)
+	text = re_sub(r"@\w+", " <user> ", text)
+	text = re_sub(r"{}{}[)dD]+|[)dD]+{}{}".format(eyes, nose, nose, eyes), " <smile> ", text)
+	text = re_sub(r"{}{}p+".format(eyes, nose), " <lolface> ", text)
+	text = re_sub(r"{}{}\(+|\)+{}{}".format(eyes, nose, nose, eyes), " <sadface> ", text)
+	text = re_sub(r"{}{}[\/|l*]".format(eyes, nose), " <neutralface> ", text)
+	text = re_sub(r"/", " / ", text)
+	text = re_sub(r"<3", " <heart> ", text)
+	text = re_sub(r"[-+]?[.\d]*[\d]+[:,.\d]*", " <number> ", text)
+	text = re_sub(r"#\S+", hashtag, text)
+	text = re_sub(r"([!?.]){2,}", r" \1 <repeat> ", text)
+	text = re_sub(r"\b(\S*?)(.)\2{2,}\b", r" \1\2 <elong> ", text)
 	
 	# -- I just don't understand why the Ruby script adds <allcaps> to everything so I limited the selection.
 	# text = re_sub(r"([^a-z0-9()<>'`\-]){2,}", allcaps)
-	text = re_sub(r"([A-Z]){2,}", allcaps)
+	text = re_sub(r"([A-Z]){2,}", allcaps, text)
+	
+	# Added by @sbrl
+	
+	text = re_sub(r"([!?:;.,])", r" \1 ", text)	# Spaces around punctuation
+	
+	text = re_sub(r"\s+", r" ", text)	# Limit runs of whitespace to a single space
 	
 	return text.lower()
 

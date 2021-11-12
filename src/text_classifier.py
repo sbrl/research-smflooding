@@ -24,10 +24,10 @@ def init_logging(filepath_output):
 			os.makedirs(dirpath, 0o750)
 		
 		# Log to a file - ref https://github.com/conda/conda/issues/9412
-		logger.add(io.open(filepath_output, mode="r"))
+		logger.add(io.open(filepath_output, mode="w"))
 	
-	sys.stderr.write(f"lstm_tweet_classifier: Writing logs to {filepath_output}\n")
-	logger.info("lstm_text_classifier init! Here we go")
+	sys.stderr.write(f"text_classifier: Writing logs to {filepath_output}\n")
+	logger.info("text_classifier init! Here we go")
 	logger.info(f"This is Tensorflow {tf.__version__}")
 
 
@@ -76,11 +76,11 @@ def main():
 	else:
 		init_logging(os.path.join(
 			settings.output,
-			"lstm_text_classifier.log"
+			"this_run.log"
 		))
 	
 	gpus = tf.config.list_physical_devices('GPU')
-	logger.info(f"lstm_text_classifier: Available gpus: {gpus}")
+	logger.info(f"text_classifier: Available gpus: {gpus}")
 	tf.__version__
 	if not gpus and args.only_gpu:
 		logger.info("No GPUs detected, exiting because --only-gpu was specified")
