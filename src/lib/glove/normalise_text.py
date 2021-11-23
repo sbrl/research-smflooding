@@ -19,6 +19,7 @@ import re
 
 FLAGS = re.MULTILINE | re.DOTALL
 
+# CHANGED 2021-11 after 2nd rerun: Handle ’ → ' and putting spaces before / after <allcaps>, [, and ]
 
 def hashtag(text):
 	"""Handles hashtags."""
@@ -36,7 +37,7 @@ def hashtag(text):
 def allcaps(text):
 	"""Handles all caps text."""
 	text = text.group()
-	return text.lower() + " <allcaps>"
+	return text.lower() + " <allcaps> "
 
 
 # Convenience function to reduce repetition
@@ -53,7 +54,6 @@ def normalise(text):
 	eyes = r"[8:=;]"
 	nose = r"['`\-]?"
 
-	
 	text = re_sub(r"https?:\/\/\S+\b|www\.(\w+\.)+\S*", " <url> ", text)
 	text = re_sub(r"@\w+", " <user> ", text)
 	text = re_sub(r"{}{}[)dD]+|[)dD]+{}{}".format(eyes, nose, nose, eyes), " <smile> ", text)
@@ -73,7 +73,8 @@ def normalise(text):
 	
 	# Added by @sbrl
 	
-	text = re_sub(r"([!?:;.,])", r" \1 ", text)	# Spaces around punctuation
+	text = re_sub(r"’", "'", text)
+	text = re_sub(r"([!?:;.,\[\]])", r" \1 ", text)	# Spaces around punctuation
 	
 	text = re_sub(r"\s+", r" ", text)	# Limit runs of whitespace to a single space
 	
