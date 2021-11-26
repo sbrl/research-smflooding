@@ -115,7 +115,7 @@ def main():
 			continue
 		
 		cat_name = cats.index2name(result[1])
-		stream_out.write(result[0]+"\t"+str(cat_name)+"\n")
+		stream_out.write(os.path.basename(result[0])+"\t"+str(cat_name)+"\n")
 	
 	stream_out.close()
 
