@@ -93,6 +93,7 @@ class ImageClassifier(AIModel):
 		
 		image_size = self.model.input.shape[1]
 		
+		items_processed = 0
 		result = []
 		acc = []
 		for filepath in filepaths:
@@ -122,6 +123,9 @@ class ImageClassifier(AIModel):
 					else:
 						result.append(None)
 				
+				# Progress indicator
+				images_processed = images_processed + len(acc)
+				sys.stderr.write(f"{images_processed} images processed\r")
 				# Clear the accumulator
 				acc = []
 		
