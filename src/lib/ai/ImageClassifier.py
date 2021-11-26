@@ -99,8 +99,8 @@ class ImageClassifier(AIModel):
 			acc.append(filepath)
 			
 			if len(acc) >= buffer_size:
-				data = list(map(lambda filepath : load_image(
-					filepath,
+				data = list(map(lambda filepath_inner : load_image(
+					filepath_inner,
 					image_size	# Use the model's input shape, as it may be different from the current config file
 				), acc))
 				
