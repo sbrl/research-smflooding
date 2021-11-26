@@ -124,8 +124,8 @@ class ImageClassifier(AIModel):
 						result.append(None)
 				
 				# Progress indicator
-				images_processed = images_processed + len(acc)
-				sys.stderr.write(f"{images_processed} images processed\r")
+				items_processed = items_processed + len(acc)
+				sys.stderr.write(f"{items_processed} images processed\r")
 				# Clear the accumulator
 				acc = []
 		
