@@ -118,7 +118,7 @@ class ImageClassifier(AIModel):
 							max_value = value
 					
 					if max_value > min_confidence:
-						result.append([ acc[i], max_index ])
+						result.append([ acc[itemi], max_index ])
 					else:
 						result.append(None)
 				
