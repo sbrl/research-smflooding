@@ -16,8 +16,7 @@ def load_image(filepath, image_size, model_type="resnet"):
     
     # image = tf.convert_to_tensor(image, dtype=tf.float32)
     image = tf.keras.preprocessing.image.img_to_array(
-        image,
-        dtype=tf.float32
+        image # Apparently the dtype defaults to float32
     )
     
     
