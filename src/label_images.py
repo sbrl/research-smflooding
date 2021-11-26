@@ -108,7 +108,6 @@ def main():
 	model.setup()
 	
 	results = model.predict_class_ids(filepaths_in)
-	logger.info(f"label_images: results {str(results)}")
 	
 	for result in results:
 		if result is None:
