@@ -26,8 +26,8 @@ def init_logging(filepath_output):
 		# Log to a file - ref https://github.com/conda/conda/issues/9412
 		logger.add(io.open(filepath_output, mode="r"))
 	
-	sys.stderr.write(f"lstm_tweet_classifier: Writing logs to {filepath_output}\n")
-	logger.info("lstm_text_classifier init! Here we go")
+	sys.stderr.write(f"label_images: Writing logs to {filepath_output}\n")
+	logger.info("label_images init! Here we go")
 	logger.info(f"This is Tensorflow {tf.__version__}")
 
 
@@ -89,8 +89,6 @@ def main():
 		))
 	else:
 		filepaths_in = [ filepaths_in ]
-	
-	logger.debug(f"label_images: filepaths_in: {str(filepaths_in)}")
 	
 	###############################################################################
 	
