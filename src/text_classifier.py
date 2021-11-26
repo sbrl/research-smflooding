@@ -24,10 +24,10 @@ def init_logging(filepath_output):
 			os.makedirs(dirpath, 0o750)
 		
 		# Log to a file - ref https://github.com/conda/conda/issues/9412
-		logger.add(io.open(filepath_output, mode="r"))
+		logger.add(io.open(filepath_output, mode="w"))
 	
-	sys.stderr.write(f"lstm_tweet_classifier: Writing logs to {filepath_output}\n")
-	logger.info("lstm_text_classifier init! Here we go")
+	sys.stderr.write(f"text_classifier: Writing logs to {filepath_output}\n")
+	logger.info("text_classifier init! Here we go")
 	logger.info(f"This is Tensorflow {tf.__version__}")
 
 
@@ -40,7 +40,7 @@ def parse_args():
 	parser.add_argument("--only-gpu",
 		help="If the GPU is not available, exit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	parser.add_argument("--nobidi", help="Don't add the Bidirectional wrapper to the LSTM layers", action="store_true")
-	parser.add_argument("--smoteify", help="Apply SMOTE to the input training data. The training data should be UNBALANCED for this to work!", action="store_true")
+	# parser.add_argument("--smoteify", help="Apply SMOTE to the input training data. The training data should be UNBALANCED for this to work!", action="store_true")
 	parser.add_argument("--batchnorm", help="Enable Batch Normalisation", action="store_true")
 	parser.add_argument("--model", help="The type of model to create [training only; default: lstm].", choices=["lstm", "transformer"])
 	parser.add_argument("--batch-size", help="Sets the batch size.", type=int)
@@ -68,19 +68,19 @@ def main():
 		settings.model.type = args.model
 	if hasattr(args, "batch_size") and type(args.batch_size) is int:
 		settings.train.batch_size = args.batch_size
-	if hasattr(args, "smoteify") and args.smoteify:
-		settings.train.smoteify = True
+	# if hasattr(args, "smoteify") and args.smoteify:
+	# 	settings.train.smoteify = True
 	settings.output = args.output
 	if args.log_stdout:
 		init_logging(None)
 	else:
 		init_logging(os.path.join(
 			settings.output,
-			"lstm_text_classifier.log"
+			"this_run.log"
 		))
 	
 	gpus = tf.config.list_physical_devices('GPU')
-	logger.info(f"lstm_text_classifier: Available gpus: {gpus}")
+	logger.info(f"text_classifier: Available gpus: {gpus}")
 	tf.__version__
 	if not gpus and args.only_gpu:
 		logger.info("No GPUs detected, exiting because --only-gpu was specified")
@@ -119,12 +119,12 @@ def main():
 	container = {}
 	
 	dataset_train		= TweetsData(
-		settings.data.paths.input_train, container,
-		smote=settings.train.smoteify
+		settings.data.paths.input_train, container
+		# smote=settings.train.smoteify
 	)
 	dataset_validate	= TweetsData(
-		settings.data.paths.input_validate, container,
-		smote=False
+		settings.data.paths.input_validate, container
+		# smote=False
 	)
 	
 	ai = TweetClassifier(container)

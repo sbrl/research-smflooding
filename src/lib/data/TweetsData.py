@@ -81,7 +81,7 @@ class TweetsData(tf.data.Dataset):
 			)
 	
 	
-	def __new__(cls, filepath_input, container):
+	def __new__(cls, filepath_input, container, **kwargs):
 		"""
 		Returns a new tensorflow dataset object.
 		filepath_input (string): The path to the file that contains the input tweets to process.
