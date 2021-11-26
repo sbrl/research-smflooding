@@ -113,8 +113,6 @@ def main():
 	logger.info(f"label_images: results {str(results)}")
 	
 	for result in results:
-		logger.info(f"result: {str(result)}")
-		
 		if result is None:
 			continue
 		
