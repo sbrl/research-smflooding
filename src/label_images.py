@@ -83,9 +83,10 @@ def main():
 		sys.exit(2)
 	
 	if os.path.isdir(filepaths_in):
+		dir_name = filepaths_in
 		filepaths_in = list(map(
-			lambda filename : os.path.join(filepaths_in, filename),
-			os.listdir(filepaths_in)
+			lambda filename : os.path.join(dir_name, filename),
+			os.listdir(dir_name)
 		))
 	else:
 		filepaths_in = [ filepaths_in ]
