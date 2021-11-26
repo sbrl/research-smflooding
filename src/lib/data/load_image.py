@@ -14,7 +14,11 @@ def load_image(filepath, image_size, model_type="resnet"):
         image = image.resize((image_size, image_size))
     
     
-    image = tf.convert_to_tensor(image, dtype=tf.float32)
+    # image = tf.convert_to_tensor(image, dtype=tf.float32)
+    image = tf.keras.preprocessing.image.img_to_array(
+        image,
+        dtype=tf.float32
+    )
     
     
     if model_type == "resnet":
