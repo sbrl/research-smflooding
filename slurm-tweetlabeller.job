@@ -9,16 +9,22 @@
 #SBATCH --time=04:00:00
 #SBATCH --mem=25600
 
-# This slurm job file renders confusion matrices.
+# This slurm job file labels tweets using a checkpoint from a trained model.
+# 
+# By labelling a tweets file, an extra "label" property is added to each object
+# containing the name oft he predicted category as a string. If a tweets file
+# has already been labelled is labelled again, the pre-existing labels ar
+# overwritten.
+# 
 # Usage:
 # 
-# CHECKPOINT="PATH/TO/model/checkpoints/CHECKPOINT.HDF5" sbatch slurm-confusionmatrix.job
+# CHECKPOINT="PATH/TO/model/checkpoints/CHECKPOINT.HDF5" INPUT="path/to/tweets.jsonl" sbatch slurm-tweet-labeller.job
 # 
 # Environment Variables:
-#	CHECKPOINT		Filepath to the checkpoint file to evaluate
-#	INPUT			Filepath to the tweets file to use for validation. Default: tweets-all-valdate
+#	CHECKPOINT		Filepath to the checkpoint file use to label tweets with.
+#	INPUT			Filepath to the tweets file to label.
+#	OUTPUT			Filepath to write labelled tweets to (jsonl: 1 tweet object perline, just like the input but with an extra "label" key)
 #	CONFIG			Filepath to the config file to use (specifies GloVe & category files)
-#	POSTFIX			Optional postfix for output filename
 
 
 # 25600 = 25GiB memory required
