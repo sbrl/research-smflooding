@@ -105,6 +105,15 @@ class ImageClassifier(AIModel):
 					image_size	# Use the model's input shape, as it may be different from the current config file
 				), acc))
 				
+				# Remove any None values where images failed to load
+				i = 0
+				while i < len(data):
+					if data[i] is None:
+						data.pop(i)
+						acc.pop(i)
+					else:
+						i = i + 1
+				
 				# Make predictions
 				predictions = self.predict(tf.stack(data), batch_size)
 				

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#SBATCH -J TwtLabel
+#SBATCH -J ImgLabel
 #SBATCH -N 1
 #SBATCH -n 4
 #SBATCH --gres=gpu:1
@@ -9,21 +9,19 @@
 #SBATCH --time=04:00:00
 #SBATCH --mem=25600
 
-# This slurm job file labels tweets using a checkpoint from a trained model.
+# This slurm job file labels images using a checkpoint from a trained model.
 # 
-# By labelling a tweets file, an extra "label" property is added to each object
-# containing the name oft he predicted category as a string. If a tweets file
-# has already been labelled is labelled again, the pre-existing labels ar
-# overwritten.
+# Labels are written to the output as a tab separated values file in the form
+# "image_filename	category_name"
 # 
 # Usage:
 # 
 # CHECKPOINT="PATH/TO/model/checkpoints/CHECKPOINT.HDF5" INPUT="path/to/tweets.jsonl" sbatch slurm-tweet-labeller.job
 # 
 # Environment Variables:
-#	CHECKPOINT		Filepath to the checkpoint file use to label tweets with.
-#	INPUT			Filepath to the tweets file to label.
-#	OUTPUT			Filepath to write labelled tweets to (jsonl: 1 tweet object perline, just like the input but with an extra "label" key)
+#	CHECKPOINT		Filepath to the checkpoint file use to label images with.
+#	INPUT			Filepath to the media directory containing images to label.
+#	OUTPUT			Filepath to write labels to.
 #	CONFIG			Filepath to the config file to use (specifies GloVe & category files)
 
 
@@ -36,7 +34,7 @@ module load cuda/11.5.0
 module load python/anaconda/4.6/miniconda/3.7
 
 # TODO: expand this to pull this dynamically from the model
-INPUT="${INPUT:-$HOME/data/twitter/tweets-all-new.jsonl}";
+INPUT="${INPUT:-$HOME/data/twitter/media}";
 OUTPUT="${OUTPUT}";
 CHECKPOINT="${CHECKPOINT}"; # Example: output/20210629-128,128-c2-nobidi-batchnorm/checkpoints/checkpoint_e7_acc0.919.hdf5
 CONFIG="${CONFIG:-configs/g200a128,128c2pn.toml}"
@@ -50,9 +48,9 @@ if [[ -z "${INPUT}" ]]; then
 	exit 1;
 fi
 if [[ -z "${OUTPUT}" ]]; then
-	OUTPUT="$(echo "${INPUT}" | sed -e 's/\.jsonl$/-labelled.jsonl/')";
+	OUTPUT="$(echo "${INPUT}" | sed -e 's/\/$//; s/$/-labels.tsv/')";
 	if [[ "${INPUT}" == "${OUTPUT}" ]]; then
-		echo "Error: OUTPUT was not specified, but failed to do replacement .jsonl → -labelled.jsonl for auto-calculated output filename. Abort.";
+		echo "Error: OUTPUT was not specified, but failed to do replacement / → -labelled.jsonl for auto-calculated output filename. Abort.";
 		exit 1;
 	fi
 	echo "Auto-calculated output filename.";
@@ -94,5 +92,5 @@ echo "CONFIG $CONFIG";
 echo ">>> Installing requirements";
 conda run -n py38 pip install -r requirements.txt;
 echo ">>> Labelling tweets";
-/usr/bin/env time -v conda run -n py38 src/label_tweets.py --input "${INPUT}" --config "${CONFIG}" --checkpoint "${CHECKPOINT}" --output  "${OUTPUT}";
+/usr/bin/env time -v conda run -n py38 src/label_images.py --only-gpu --input "${INPUT}" --config "${CONFIG}" --checkpoint "${CHECKPOINT}" --output  "${OUTPUT}";
 echo ">>> exited with code $?";

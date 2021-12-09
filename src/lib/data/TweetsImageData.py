@@ -83,16 +83,13 @@ class TweetsImageData(tf.data.Dataset):
 					skipped_missingfile = skipped_missingfile + 1
 					continue
 				
-				image = None
+				image = load_image(
+					filename,
+					settings.model.image_size,
+					model_type=settings.model.type
+				)
 				
-				try:
-					image = load_image(
-						filename,
-						settings.model.image_size,
-						model_type=settings.model.type
-					)
-				except Exception as e:
-					logger.error(e)
+				if image is None:
 					continue
 				
 				yield (

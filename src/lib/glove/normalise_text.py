@@ -5,11 +5,12 @@ Translation of Ruby script to create features for GloVe vectors for Twitter data
 with small modifications by Jeffrey Pennington
 with translation to Python by Motoki Wu
 updated to Python 3 by Phil Pope (@ppope)
-with minor tweaks by Starbeamrainbowlabs (@sbrl)
+with bugfixes and improvements by Starbeamrainbowlabs (@sbrl)
+	• Tidy up code with help of linters
 	• Add spaces surrounding punctation and <token_blocks>
 	• Limit runs of whitespace to a single space
+	• Transliterate ’ to '
 
-python preprocess-twitter.py "Some random text with #hashtags, @mentions and http://t.co/kdjfkdjf (links). :)"
 Ref original Ruby source http://nlp.stanford.edu/projects/glove/preprocess-twitter.rb
 Ref https://gist.github.com/ppope/0ff9fa359fb850ecf74d061f3072633a
 """
