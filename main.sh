@@ -48,30 +48,56 @@ do
 			echo "Note: You need to have your tweets already downloaded to use this repository. For this, use twitter-academic-downloader:";
 			echo "    <https://www.npmjs.com/package/twitter-academic-downloader>";
 			echo "";
+			echo "To get help on a specific subcommand, do \"path/to/main.sh <subcommand> --help\".";
+			echo "";
 			echo "Subcommands:"
-			echo "    train";
-			echo 
-			echo "Options:"
-			echo "    --help"
-			echo "         Show this help message"
-			echo "    --dry-run"
-			echo "         Do a dry run - don't actually move any files."
-			exit 
+			echo "    train           Train a new tweet text classifier";
+			echo "    train-image     Train a new image classifier [requires a tweet text classifier to have been trained first]";
+			echo "    label-tweets    Given a trained tweet text classifier, label a tweets JSONL file.";
+			echo "    label-images    Given a trained image classifier and a directory of images, outputs filenames and predicted classes as tab-separated values.";
+			echo "";
+			echo "Extra subcommands for diagnostics:";
+			echo "(these are not guaranteed to have a stable CLI)";
+			echo "    confusion       Renders a confusion matrix for a tweet text classifier.";
+			echo "    glove-longest   Given a tweets JSONL file and a GloVe embeddings file, output the longest GloVe sequence length found.";
+			echo "    split-labelled  Split a LABELLED tweets JSONL file into multiple sub-files based on the attached labels. See the label-tweets subcommand for labelling tweets.";
+			echo "";
+			echo "Options:";
+			echo "    --help";
+			echo "         Show this help message";
+			exit 0;
 			;;
 		
 		train-text)
 			shift;
 			./src/text_classifier.py "$@";
 			;;
-			
+		
 		train-image )
 			shift;
 			./src/image_classifier.py "$@";
 			;;
 		
+		confusion )
+			shift;
+			./src/confusion_matrix.py "$@";
+			;;
+		glove-longest )
+			shift;
+			./src/glove_longest.py "$@";
+			;;
+		split-labelled )
+			shift;
+			./src/data_splitter.py "$@";
+			;;
+		
 		label-tweets )
 			shift;
 			./src/label_tweets.py "$@";
+			;;
+		label-images )
+			shift;
+			./src/label_images.py "$@";
 			;;
 		
 		# TODO: Add mroe subcommands here
