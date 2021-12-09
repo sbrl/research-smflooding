@@ -12,7 +12,7 @@ from lib.data.CategoryCalculator import CategoryCalculator
 def main():
 	"""Main entrypoint."""
 	
-	parser = argparse.ArgumentParser(description="This program calculates trains a tweet classification model.")
+	parser = argparse.ArgumentParser(description="This program splits a LABELLED tweets JSONL file into multiple subfiles based on the attached predicted labels.")
 	parser.add_argument("--input", "-i", help="Path to input tweets jsonl file to read.", required=True)
 	parser.add_argument("--cats", "-c", help="Filepath to the categories file to load.", required=True)
 	parser.add_argument("--output", "-o", help="Path to output directory to write data to (will be automatically created if it doesn't exist)", required=True)
