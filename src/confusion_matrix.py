@@ -44,7 +44,7 @@ def main():
 	args = parse_args()
 	
 	gpus = tf.config.list_physical_devices('GPU')
-	logger.info(f"lstm_text_classifier: Available gpus: {gpus}")
+	logger.info(f"confusion_matrix: Available gpus: {gpus}")
 	
 	if not gpus and args.only_gpu:
 		logger.info("No GPUs detected, exiting because --only-gpu was specified")
