@@ -65,10 +65,7 @@ def main():
 		print("Error: No categories file specified in the setting data.paths.categories.")
 		sys.exit(1)
 	if not os.path.exists(settings.data.paths.categories):
-		print(f"Error: No such file or directory {settings.data.paths.categories}")
-		sys.exit(2)
-	if not os.path.exists(settings.data.paths.glove):
-		print(f"Error: No such file or directory {settings.data.paths.glove}")
+		print(f"Error: No such category file '{settings.data.paths.categories}'")
 		sys.exit(2)
 	
 	###############################################################################
