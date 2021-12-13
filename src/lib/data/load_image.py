@@ -35,6 +35,7 @@ def load_image(filepath, image_size, model_type="resnet"):
             data_format="channels_last"
         )
     else:
+        # Eh? .div() doesn't appear to be a method on a numpy.ndarray, dispite the fact that we want a tensor not an array.....
         image = image.div(255)
     
     return image
