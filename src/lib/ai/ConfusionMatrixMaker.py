@@ -51,8 +51,8 @@ class ConfusionMatrixMaker:
 				# Process the predictions
 				for index in range(0, len(predictions_batch)):
 					item = predictions_batch[index]
-					print("ITEM", item)
-					print("LABEL", acc_truth[index])
+					# print("ITEM", item)
+					# print("LABEL", acc_truth[index])
 					if item is not None:
 						predictions.append(item)
 						ground_truth.append(acc_truth[index])
