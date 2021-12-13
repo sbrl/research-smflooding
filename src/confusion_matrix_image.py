@@ -27,12 +27,13 @@ def parse_args():
 	"""Defines and parses the CLI arguments."""
 	parser = argparse.ArgumentParser(description="This program creates a confusion matrix for a pre-trained image classification model.")
 	parser.add_argument("--config", "-c", help="Filepath to the TOML config file to load.", required=True)
-	parser.add_argument("--input", "-i", help="Path to input directory that contains the images to use to analyse the AI model", required=True)
+	parser.add_argument("--input-images", "-i", help="Path to input directory that contains the images to use to analyse the AI model")
+	parser.add_argument("--input-tweets", "-t", help="Path to input file that contains the LABELLED tweets to use to analyse the AI model")
 	parser.add_argument("--model", "-m", help="Filepath to the AI model checkpoint to load.", required=True)
 	parser.add_argument("--output", "-o", help="Path to the output file to write the output as a PNG to.", required=True)
 	parser.add_argument("--min-confidence", help="Minimum confidence interval from the AI model to require to include a given prediction in the resulting confusion matrix.")
 	parser.add_argument("--only-gpu",
-		help="If the GPU is not available, exit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
+		help="If the GPU is not available, exit with an error (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	
 	return parser.parse_args()
 
@@ -55,8 +56,11 @@ def main():
 	settings_load(args.config)
 	settings = settings_get()
 	
-	if not os.path.exists(args.input) or not os.path.isdir(args.input):
-		print(f"Error: No such directory {args.input} (do it exist, do you have permission to read it, and is it actually a directory and not a file?)")
+	if not os.path.exists(args.input_tweets) or not os.path.isfile(args.input_tweets):
+		print(f"Error: No such file {args.input_tweets} (does it exist, do you have permission to read it, and is it actually a file and not a directory?)")
+		sys.exit(2)
+	if os.path.exists(args.input_images) and not os.path.isdir(args.input_images):
+		print(f"Error: No such directory {args.input_images} (does it exist, do you have permission to read it, and is it actually a directory and not a file?)")
 		sys.exit(2)
 	if not os.path.exists(args.model):
 		print(f"Error: No such file or directory {args.model}")
@@ -68,6 +72,9 @@ def main():
 		print(f"Error: No such category file '{settings.data.paths.categories}'")
 		sys.exit(2)
 	
+	if args.input_images:
+		settings.data.paths.input_media_dir = args.input_images
+	
 	###############################################################################
 	
 	container = {}
@@ -76,7 +83,7 @@ def main():
 	cats = CategoryCalculator(settings.data.paths.categories)
 	
 	TweetsImageData.init_globals(settings.data.paths.categories)
-	dataset_predict = TweetsImageData.generator(args.input)
+	dataset_predict = TweetsImageData.generator(args.input_tweets)
 	matrix_maker = ConfusionMatrixMaker(
 		ImageClassifier(
 			container,
