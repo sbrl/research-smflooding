@@ -87,13 +87,17 @@ def main():
 	
 	TweetsImageData.init_globals(settings.data.paths.categories)
 	dataset_predict = TweetsImageData.generator(args.input_tweets)
+	
+	classifier = ImageClassifier(
+		container,
+		cats.count,
+		settings,
+		filepath_checkpoint=args.model
+	)
+	classifier.setup()
+	
 	matrix_maker = ConfusionMatrixMaker(
-		ImageClassifier(
-			container,
-			cats.count,
-			settings,
-			filepath_checkpoint=args.model
-		),
+		classifier,
 		cats,
 		min_confidence=args.min_confidence
 	)
