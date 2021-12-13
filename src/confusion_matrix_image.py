@@ -64,9 +64,6 @@ def main():
 	if not settings.data.paths.categories:
 		print("Error: No categories file specified in the setting data.paths.categories.")
 		sys.exit(1)
-	if not settings.data.paths.glove:
-		print("Error: No glove file specified in the setting data.paths.glove.")
-		sys.exit(1)
 	if not os.path.exists(settings.data.paths.categories):
 		print(f"Error: No such file or directory {settings.data.paths.categories}")
 		sys.exit(2)
