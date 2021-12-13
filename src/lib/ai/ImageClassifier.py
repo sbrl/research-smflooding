@@ -97,7 +97,7 @@ class ImageClassifier(AIModel):
 		
 		if isinstance(filepaths, tf.Tensor):
 			# It's a tensor, not a list of filenames. Return a list of ids instead.
-			predictions = self.predict(data, batch_size)
+			predictions = self.predict(filepaths, batch_size)
 			for itemi,item in enumerate(predictions):
 				max_value = -1
 				max_index = -1
