@@ -63,7 +63,6 @@ class ConfusionMatrixMaker:
 		
 		return ground_truth, predictions
 	
-	
 	def render(self, generator, filepath_output):
 		"""
 		Renders a confusion matrix using the given dataset.

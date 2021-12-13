@@ -93,8 +93,28 @@ class ImageClassifier(AIModel):
 		
 		image_size = self.model.input.shape[1]
 		
-		items_processed = 0
 		result = []
+		
+		if isinstance(filepaths, tf.Tensor):
+			# It's a tensor, not a list of filenames. Return a list of ids instead.
+			predictions = self.predict(data, batch_size)
+			for itemi,item in enumerate(predictions):
+				max_value = -1
+				max_index = -1
+				for i in range(0, predictions.shape[-1]):
+					value = item[i]
+					if value > max_value:
+						max_index = i
+						max_value = value
+				
+				if max_value > min_confidence:
+					result.append(max_index)
+				else:
+					result.append(None)
+			
+			return result
+		
+		items_processed = 0
 		acc = []
 		for filepath in filepaths:
 			acc.append(filepath)
