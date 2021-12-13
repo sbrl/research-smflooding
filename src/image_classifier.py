@@ -34,7 +34,7 @@ def init_logging(filepath_output):
 
 def parse_args():
 	"""Defines and parses the CLI arguments."""
-	parser = argparse.ArgumentParser(description="This program calculates trains a tweet media image classification model.")
+	parser = argparse.ArgumentParser(description="This program trains a tweet media image classification model.")
 	parser.add_argument("--config", "-c", help="Filepath to the TOML config file to load.", required=True)
 	parser.add_argument("--output", "-o", help="Path to output directory to write output to (will be automatically created if it doesn't exist)", required=True)
 	parser.add_argument("--log-stdout", help="Log to stdout, rather than a log file", action="store_true")
