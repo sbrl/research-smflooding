@@ -28,7 +28,7 @@ def parse_args():
 	parser = argparse.ArgumentParser(description="This program creates a confusion matrix for a pre-trained image classification model.")
 	parser.add_argument("--config", "-c", help="Filepath to the TOML config file to load.", required=True)
 	parser.add_argument("--input-images", "-i", help="Path to input directory that contains the images to use to analyse the AI model")
-	parser.add_argument("--input-tweets", "-t", help="Path to input file that contains the LABELLED tweets to use to analyse the AI model")
+	parser.add_argument("--input-tweets", "-t", help="Path to input file that contains the LABELLED tweets to use to analyse the AI model", required=True)
 	parser.add_argument("--model", "-m", help="Filepath to the AI model checkpoint to load.", required=True)
 	parser.add_argument("--output", "-o", help="Path to the output file to write the output as a PNG to.", required=True)
 	parser.add_argument("--min-confidence", help="Minimum confidence interval from the AI model to require to include a given prediction in the resulting confusion matrix.")
