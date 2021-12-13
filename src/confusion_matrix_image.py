@@ -59,7 +59,7 @@ def main():
 	if not os.path.exists(args.input_tweets) or not os.path.isfile(args.input_tweets):
 		print(f"Error: No such file {args.input_tweets} (does it exist, do you have permission to read it, and is it actually a file and not a directory?)")
 		sys.exit(2)
-	if os.path.exists(args.input_images) and not os.path.isdir(args.input_images):
+	if type(args.input_images) is str and os.path.exists(args.input_images) and not os.path.isdir(args.input_images):
 		print(f"Error: No such directory {args.input_images} (does it exist, do you have permission to read it, and is it actually a directory and not a file?)")
 		sys.exit(2)
 	if not os.path.exists(args.model):
