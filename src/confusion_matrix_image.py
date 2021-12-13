@@ -54,7 +54,7 @@ def main():
 		args.min_confidence = 0.8
 	
 	settings_load(
-		filepath_custom=args.config
+		filepath_custom=args.config,
 		filename_default="settings.media.default.toml" # Load the media settings 'cause we're working with images
 	)
 	settings = settings_get()
