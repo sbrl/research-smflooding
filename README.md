@@ -18,4 +18,8 @@ See also https://www.npmjs.com/package/twitter-academic-downloader, which used t
 ## Sources and further reading
  - [Text classification with Transformer](https://keras.io/examples/nlp/text_classification_with_transformer/) [Keras]
  - [The Illustrated Transformer - Representing The Order of The Sequence Using Positional Encoding](https://jalammar.github.io/illustrated-transformer/#representing-the-order-of-the-sequence-using-positional-encoding)
- - 
+ - LDA Topic modelling
+     - [GenSim LdaModel](https://radimrehurek.com/gensim/models/ldamodel.html)
+     - [Topic Modelling With LDA - A Hands-on Introduction](https://www.analyticsvidhya.com/blog/2021/07/topic-modelling-with-lda-a-hands-on-introduction/)
+     - <https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/>
+     - <https://www.tutorialspoint.com/gensim/gensim_creating_lda_topic_model.htm>
