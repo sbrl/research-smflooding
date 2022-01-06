@@ -19,14 +19,23 @@ class LDAAnalyser:
         
         self.model = LdaModel(
             dataset_vec,
-            id2word=
-            num_topics = self.count_topics
+            id2word=self.dictionary
+            num_topics=self.count_topics,
+            alpha='auto',
+            eta='auto'
         )
+        
+        # Ref https://radimrehurek.com/gensim/auto_examples/tutorials/run_lda.html
+        avg_topic_coherence = sum([t[1] for t in top_topics]) / num_topics
+        
+        topics = model.top_topics(dataset)
+        
+        return avg_topic_coherence, topics
+    
     
     def save(filepath):
         self.model.save(filepath)
     
     def load(filepath):
         self.model = LdaModel.load(filepath)
-    
     
