@@ -1,4 +1,7 @@
+import re
 
+from pprint import pprint
+import pysnooper
 from loguru import logger
 
 from gensim.parsing.preprocessing import preprocess_string, remove_stopwords
@@ -9,9 +12,14 @@ class LDAAnalyser:
     def __init__(self, count_topics = 10):
         self.count_topics = 10
     
+    
+    # Convenience function to reduce repetition
+    def re_sub(self, pattern, repl, text):
+    	return re.sub(pattern, repl, text, flags=re.MULTILINE | re.DOTALL)
+    
     def preprocess_dataset(self, dataset):
         return [ preprocess_string(
-            remove_stopwords(string)
+            self.re_sub(r"@\w+", " ", string) # this strips all digits, but we may not want it to do that
         ) for string in dataset ]
     
     def train(self, dataset):
@@ -19,7 +27,7 @@ class LDAAnalyser:
         logger.info("Preprocessing data [1 / 5]")
         dataset = self.preprocess_dataset(dataset)
         
-        logger.info("Conpiling dictionary [2 / 5]")
+        logger.info("Compiling dictionary [2 / 5]")
         self.dictionary = Dictionary(dataset)
         logger.info("Vectorising data [3 / 5]")
         self.dataset_vec = [ self.dictionary.doc2bow(item) for item in dataset ]
@@ -34,17 +42,23 @@ class LDAAnalyser:
         )
         
         logger.info("Calculating statistics [5 / 5]")
+        
         # Ref https://radimrehurek.com/gensim/auto_examples/tutorials/run_lda.html
-        avg_topic_coherence = sum([t[1] for t in top_topics]) / num_topics
+        topics = self.model.top_topics(
+            corpus=self.dataset_vec,
+            texts=dataset,
+            dictionary=self.dictionary,
+            topn=self.count_topics
+        )
+        avg_topic_coherence = sum([t[1] for t in topics]) / self.count_topics
+        perplexity = self.model.log_perplexity(self.dataset_vec)
         
-        topics = model.top_topics(dataset)
-        
-        return avg_topic_coherence, topics
+        return avg_topic_coherence, perplexity, topics
     
     
-    def save(filepath):
+    def save(self, filepath):
         self.model.save(filepath)
     
-    def load(filepath):
+    def load(self, filepath):
         self.model = LdaModel.load(filepath)
     
