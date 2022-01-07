@@ -19,7 +19,7 @@ class LDAAnalyser:
         
         self.model = LdaModel(
             dataset_vec,
-            id2word=self.dictionary
+            id2word=self.dictionary,
             num_topics=self.count_topics,
             alpha='auto',
             eta='auto'

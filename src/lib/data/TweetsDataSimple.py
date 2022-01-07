@@ -4,7 +4,7 @@ from functools import partial
 import numpy
 
 
-def tweets_data_simple(filepath):
+def tweets_data_simple(filepath_input):
     reader = io.open(filepath_input, "r")
     
     result = []

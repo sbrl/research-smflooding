@@ -9,7 +9,7 @@ from loguru import logger
 import json
 from datetime import datetime
 
-import tensorflow as tf
+import gensim
 
 from lib.lda.LDAAnalyser import LDAAnalyser
 from lib.data.TweetsDataSimple import tweets_data_simple
@@ -29,7 +29,7 @@ def init_logging(filepath_output):
 	
 	sys.stderr.write(f"lda_topics: Writing logs to {filepath_output}\n")
 	logger.info("lda_topics init! Here we go")
-	logger.info(f"This is Tensorflow {tf.__version__}")
+	logger.info(f"This is Tensorflow {gensim.__version__}")
 
 
 def main():
@@ -37,8 +37,8 @@ def main():
 	
 	parser = argparse.ArgumentParser(description="This program extracts common topics from tweets using an LDA model.")
 	parser.add_argument("--input", "-i", help="Filepath to the file containing the associated tweets. If not specified, data is read from stdin.")
-	parser.add_argument("--output", "-o", help="Path to a directory to write models and their outputs to. If it does not exist it will be created.")
-	parser.add_argument("--topic-count", "-t", help="The number of topics to group the input tweets into.", const=10, type=int)
+	parser.add_argument("--output", "-o", help="Path to a directory to write models and their outputs to. If it does not exist it will be created.", required=True)
+	parser.add_argument("--topic-count", "-t", help="The number of topics to group the input tweets into.", nargs="?", const=10, type=int)
 	
 	args = parser.parse_args()
 	
@@ -51,7 +51,7 @@ def main():
 	
 	if args.input:
 		stream_in = open(args.input, "r")
-	if not os.path.isdir(args.output)
+	if not os.path.isdir(args.output):
 		os.makedirs(args.output)
 	
 	init_logging(None)
