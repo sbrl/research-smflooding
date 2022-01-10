@@ -98,7 +98,7 @@ def main():
 		handle_topics.write("\t".join(colvalues) + "\n")
 	
 	# # Ref https://stackoverflow.com/a/70184166/1460422
-	# handle_topics.write(json.dumps(eval(str(topics)), indent="\t")) # HUGE HACK DON@T REPEAT THIS YOURSELF
+	# handle_topics.write(json.dumps(eval(str(topics)), indent="\t")) # HUGE HACK DON'T REPEAT THIS YOURSELF
 	handle_topics.close()
 	
 	handle = io.open(filepath_settings, "w")
