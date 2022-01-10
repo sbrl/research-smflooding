@@ -8,6 +8,7 @@ import argparse
 from loguru import logger
 import json
 from datetime import datetime
+from pprint import pprint
 
 import pysnooper
 import gensim
@@ -76,14 +77,28 @@ def main():
 	###########################################################################
 	
 	filepath_settings = os.path.join(args.output, "settings.txt")
-	filepath_topics = os.path.join(args.output, "topics.json")
+	filepath_topics = os.path.join(args.output, "topics.tsv")
 	filepath_model = os.path.join(args.output, "model.gensim.bin")
 	
 	ai.save(filepath_model)
 	
 	handle_topics = io.open(filepath_topics, "w")
-	# Ref https://stackoverflow.com/a/70184166/1460422
-	handle_topics.write(json.dumps(eval(str(topics)), indent="\t")) # HUGE HACK DON@T REPEAT THIS YOURSELF
+	colheadings = [ "coherence" ]
+	for i in range(len(topics)):
+		colheadings.append(f"coherence_{i}")
+		colheadings.append(f"item_{i}")
+	handle_topics.write("\t".join(colheadings)+"\n")
+	
+	for items, coherence in topics:
+		colvalues = [ str(coherence) ]
+		for item_stat, item_name in items:
+			colvalues.append(str(item_stat))
+			colvalues.append(item_name)
+		
+		handle_topics.write("\t".join(colvalues) + "\n")
+	
+	# # Ref https://stackoverflow.com/a/70184166/1460422
+	# handle_topics.write(json.dumps(eval(str(topics)), indent="\t")) # HUGE HACK DON@T REPEAT THIS YOURSELF
 	handle_topics.close()
 	
 	handle = io.open(filepath_settings, "w")
