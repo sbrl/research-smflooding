@@ -71,7 +71,7 @@ def main():
 		args.topic_count
 	)
 	
-	avg_topic_coherence. perplexity, topics = ai.train(tweets)
+	avg_topic_coherence, perplexity, topics = ai.train(tweets)
 	
 	###########################################################################
 	
