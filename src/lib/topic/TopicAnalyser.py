@@ -5,8 +5,9 @@ import pysnooper
 from loguru import logger
 
 from gensim.parsing.preprocessing import preprocess_string, remove_stopwords
-# from gensim.models.ldamodel import LdaModel
-from gensim.models.ldamulticore import LdaMulticore
+from gensim.models.ldamodel import LdaModel
+# Apparently the auto settings we're using don't work with LDAmulticore :-/
+# from gensim.models.ldamulticore import LdaMulticore
 from gensim.models.lsimodel import LsiModel
 from gensim.corpora.dictionary import Dictionary
 
@@ -69,7 +70,7 @@ class TopicAnalyser:
     def do_lda(self, dataset):
         
         logger.info("Constructing LDA [4 / 5]")
-        self.model = LdaMulticore(
+        self.model = LdaModel(
             self.dataset_vec,
             id2word=self.dictionary,
             num_topics=self.count_topics,
