@@ -13,7 +13,7 @@ from pprint import pprint
 import pysnooper
 import gensim
 
-from lib.lda.TopicAnalyser import TopicAnalyser
+from lib.topic.TopicAnalyser import TopicAnalyser
 from lib.data.TweetsDataSimple import tweets_data_simple
 
 
