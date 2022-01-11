@@ -48,7 +48,6 @@ def main():
 		print("Error: File at '" + args.input + "' does not exist.")
 		exit(1)
 	
-	topic_count = args.topic_count
 	stream_in = sys.stdin
 	
 	if args.input:

@@ -10,7 +10,7 @@ from gensim.corpora.dictionary import Dictionary
 
 class LDAAnalyser:
     def __init__(self, count_topics = 10):
-        self.count_topics = 10
+        self.count_topics = count_topics
     
     
     # Convenience function to reduce repetition
