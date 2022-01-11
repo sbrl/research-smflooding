@@ -79,7 +79,7 @@ def main():
 		args.words_per_topic
 	)
 	
-	avg_topic_coherence, perplexity, topics = ai.train(tweets)
+	avg_topic_coherence, perplexity, topics = ai.train(model, tweets)
 	
 	###########################################################################
 	
