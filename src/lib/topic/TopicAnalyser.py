@@ -35,15 +35,15 @@ class TopicAnalyser:
         self.dataset = self.preprocess_dataset(dataset)
         
         logger.info("Compiling dictionary [2 / 5]")
-        self.dictionary = Dictionary(dataset)
+        self.dictionary = Dictionary(self.dataset)
         logger.info("Vectorising data [3 / 5]")
-        self.dataset_vec = [ self.dictionary.doc2bow(item) for item in dataset ]
+        self.dataset_vec = [ self.dictionary.doc2bow(item) for item in self.dataset ]
         
         
         if model == "lda":
-            return self.do_lda(dataset)
+            return self.do_lda(self.dataset)
         elif model == "lsa":
-            return self.do_lsa(dataset)
+            return self.do_lsa(self.dataset)
         else:
             raise Exception(f"Error: Unknown model type '{model}' (valid types: lda [default], lsa).")
     
