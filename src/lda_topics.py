@@ -13,7 +13,7 @@ from pprint import pprint
 import pysnooper
 import gensim
 
-from lib.lda.LDAAnalyser import LDAAnalyser
+from lib.lda.TopicAnalyser import TopicAnalyser
 from lib.data.TweetsDataSimple import tweets_data_simple
 
 
@@ -41,6 +41,8 @@ def main():
 	parser.add_argument("--input", "-i", help="Filepath to the file containing the associated tweets. If not specified, data is read from stdin.")
 	parser.add_argument("--output", "-o", help="Path to a directory to write models and their outputs to. If it does not exist it will be created.", required=True)
 	parser.add_argument("--topic-count", "-t", help="The number of topics to group the input tweets into.", type=int)
+	parser.add_argument("--words-per-topic", "-n", help="The number of words per topic to return.", type=int)
+	parser.add_argument("--model", help="The type of model to use [default: lda].", choices=["lda", "lsa"])
 	
 	args = parser.parse_args()
 	
@@ -48,14 +50,19 @@ def main():
 		print("Error: File at '" + args.input + "' does not exist.")
 		exit(1)
 	
+	model = "lda"
 	stream_in = sys.stdin
 	
+	if args.model:
+		model = args.model
 	if args.input:
 		stream_in = open(args.input, "r")
 	else:
 		args.input = "-"
 	if not args.topic_count: # Seriously, why is it so difficult to specify a default value for a CLI arg?!
 		args.topic_count = 10
+	if not args.words_per_topic:
+		args.words_per_topic = 10
 	if not os.path.isdir(args.output):
 		os.makedirs(args.output)
 	
@@ -67,8 +74,9 @@ def main():
 	
 	tweets = tweets_data_simple(stream_in)
 	
-	ai = LDAAnalyser(
-		args.topic_count
+	ai = TopicAnalyser(
+		args.topic_count,
+		args.words_per_topic
 	)
 	
 	avg_topic_coherence, perplexity, topics = ai.train(tweets)

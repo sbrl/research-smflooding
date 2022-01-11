@@ -56,7 +56,7 @@ def normalise(text):
 	nose = r"['`\-]?"
 
 	text = re_sub(r"https?:\/\/\S+\b|www\.(\w+\.)+\S*", " <url> ", text)
-	text = re_sub(r"@\w+", " <user> ", text)
+	text = re_sub(r"@\S+", " <user> ", text)
 	text = re_sub(r"{}{}[)dD]+|[)dD]+{}{}".format(eyes, nose, nose, eyes), " <smile> ", text)
 	text = re_sub(r"{}{}p+".format(eyes, nose), " <lolface> ", text)
 	text = re_sub(r"{}{}\(+|\)+{}{}".format(eyes, nose, nose, eyes), " <sadface> ", text)
