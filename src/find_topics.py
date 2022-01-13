@@ -29,19 +29,19 @@ def init_logging(filepath_output):
 		# Log to a file - ref https://github.com/conda/conda/issues/9412
 		logger.add(io.open(filepath_output, mode="r"))
 	
-	sys.stderr.write(f"lda_topics: Writing logs to {filepath_output}\n")
-	logger.info("lda_topics init! Here we go")
+	sys.stderr.write(f"find_topics: Writing logs to {filepath_output}\n")
+	logger.info("find_topics init! Here we go")
 	logger.info(f"This is Tensorflow {gensim.__version__}")
 
 
 def main():
 	"""Main entrypoint."""
 	
-	parser = argparse.ArgumentParser(description="This program extracts common topics from tweets using an LDA model.")
+	parser = argparse.ArgumentParser(description="This program extracts common topics from tweets using an LDA (or LSA/LSI) model.")
 	parser.add_argument("--input", "-i", help="Filepath to the file containing the associated tweets. If not specified, data is read from stdin.")
 	parser.add_argument("--output", "-o", help="Path to a directory to write models and their outputs to. If it does not exist it will be created.", required=True)
-	parser.add_argument("--topic-count", "-t", help="The number of topics to group the input tweets into.", type=int)
-	parser.add_argument("--words-per-topic", "-n", help="The number of words per topic to return.", type=int)
+	parser.add_argument("--topic-count", "-t", help="The number of topics to group the input tweets into [default: 10].", type=int)
+	parser.add_argument("--words-per-topic", "-n", help="The number of words per topic to return [default].", type=int)
 	parser.add_argument("--model", help="The type of model to use [default: lda].", choices=["lda", "lsa"])
 	
 	args = parser.parse_args()

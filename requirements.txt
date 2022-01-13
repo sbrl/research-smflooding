@@ -4,3 +4,5 @@ toml
 numpy
 matplotlib
 loguru
+gensim
+Pyro4
