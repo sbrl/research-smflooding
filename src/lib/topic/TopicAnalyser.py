@@ -49,7 +49,7 @@ class TopicAnalyser:
             raise Exception(f"Error: Unknown model type '{model}' (valid types: lda [default], lsa).")
     
     def do_lsa(self, dataset):
-        logger.info("Constructing LDA [4 / 5]")
+        logger.info("Constructing LSA [4 / 5]")
         self.model = LsiModel(
             corpus=self.dataset_vec,
             num_topics=self.count_topics,
