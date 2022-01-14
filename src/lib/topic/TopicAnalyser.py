@@ -54,7 +54,7 @@ class TopicAnalyser:
             corpus=self.dataset_vec,
             num_topics=self.count_topics,
             id2word=self.dictionary,
-            distributed=True,
+            distributed=False, # Apparently uses a complicated networking setup
         )
         
         logger.info("Calculating statistics")
