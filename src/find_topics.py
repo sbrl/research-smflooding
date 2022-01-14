@@ -85,16 +85,21 @@ def main():
 	
 	filepath_settings = os.path.join(args.output, "settings.txt")
 	filepath_topics = os.path.join(args.output, "topics.tsv")
+	filepath_topics_wordsonly = os.path.join(args.output, "topics-wordsonly.tsv")
 	filepath_model = os.path.join(args.output, "model.gensim.bin")
 	
 	ai.save(filepath_model)
 	
 	handle_topics = io.open(filepath_topics, "w")
 	colheadings = [ "coherence" ]
-	for i in range(len(topics)):
+	for i in range(len(topics) + 1):
 		colheadings.append(f"coherence_{i}")
 		colheadings.append(f"item_{i}")
 	handle_topics.write("\t".join(colheadings)+"\n")
+	
+	handle_topics_wordsonly = io.open(filepath_topics_wordsonly, "w")
+	colheadings_wordsonly = [ f"item_{i}" for i in range(len(topics) + 1) ]
+	handle_topics_wordsonly.write("\t".join(colheadings_wordsonly)+"\n")
 	
 	pprint(topics)
 	for items, coherence in topics:
@@ -103,11 +108,13 @@ def main():
 			colvalues.append(str(item_stat))
 			colvalues.append(item_name)
 		
+		handle_topics_wordsonly.write("\t".join([item_name for _, item_name in items]) + "\n")
 		handle_topics.write("\t".join(colvalues) + "\n")
 	
 	# # Ref https://stackoverflow.com/a/70184166/1460422
 	# handle_topics.write(json.dumps(eval(str(topics)), indent="\t")) # HUGE HACK DON'T REPEAT THIS YOURSELF
 	handle_topics.close()
+	handle_topics_wordsonly.close()
 	
 	handle = io.open(filepath_settings, "w")
 	handle.write(f"topic_count	{args.topic_count}\n")
