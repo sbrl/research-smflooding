@@ -1,4 +1,5 @@
 import re
+import json
 
 from pprint import pprint
 import pysnooper
@@ -58,13 +59,19 @@ class TopicAnalyser:
         )
         
         logger.info("Calculating statistics")
-        topics = self.model.print_topics(
+        topics = self.model.show_topics(
             num_topics=self.count_topics,
-            num_words=self.words_per_topic
+            num_words=self.words_per_topic,
+            formatted=False
         )
-        avg_topic_coherence = sum([t[1] for t in topics]) / self.count_topics
         
-        return avg_topic_coherence, None, topics
+        topics_compat = [ ( [(item[1], item[0]) for item in topic[1]], None ) for topic in topics ]
+        # inline for loops are evaluated left to right.
+        # We double up the for loops to extract the individual items, and then use item[1] to extract the coherence value associated with the given word by referencing the iterated value from the *second* loop, not the first
+        # The second loop (as read from left to right) loops over the values iterated by the first loop.
+        coherence_values = [item[1] for topic in topics for item in topic[1]]
+        avg_topic_coherence = sum(coherence_values) / len(coherence_values)
+        return avg_topic_coherence, avg_topic_coherence, topics_compat
         
     
     def do_lda(self, dataset):

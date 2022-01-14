@@ -96,6 +96,7 @@ def main():
 		colheadings.append(f"item_{i}")
 	handle_topics.write("\t".join(colheadings)+"\n")
 	
+	pprint(topics)
 	for items, coherence in topics:
 		colvalues = [ str(coherence) ]
 		for item_stat, item_name in items:
