@@ -31,7 +31,7 @@ def init_logging(filepath_output):
 	
 	sys.stderr.write(f"find_topics: Writing logs to {filepath_output}\n")
 	logger.info("find_topics init! Here we go")
-	logger.info(f"This is Tensorflow {gensim.__version__}")
+	logger.info(f"This is gensim {gensim.__version__}")
 
 
 def main():

@@ -101,7 +101,15 @@ class TopicAnalyser:
     
     def save(self, filepath):
         self.model.save(filepath)
+        self.dictionary.save(f"{filepath}.dict")
     
     def load(self, filepath):
         self.model = LdaModel.load(filepath)
+        self.dictionary = Dictionary.load(f"{filepath}.dict")
     
+    def predict(self, source):
+        if not isinstance(source, list):
+            source = [ source ]
+        
+        preprocessed = [ self.dictionary.doc2bow(item) for item in self.preprocess_dataset(source) ]
+        return self.model.get_document_topics(preprocessed)
