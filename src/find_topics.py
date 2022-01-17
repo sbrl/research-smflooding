@@ -101,7 +101,6 @@ def main():
 	colheadings_wordsonly = [ f"item_{i}" for i in range(len(topics) + 1) ]
 	handle_topics_wordsonly.write("\t".join(colheadings_wordsonly)+"\n")
 	
-	pprint(topics)
 	for items, coherence in topics:
 		colvalues = [ str(coherence) ]
 		for item_stat, item_name in items:
