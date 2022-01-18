@@ -16,8 +16,8 @@
 # 
 # Environment Variables:
 #	CHECKPOINT		Filepath to the checkpoint file to evaluate
-#	INPUT			Filepath to the tweets file to use for validation. Default: tweets-all-valdate
-#	CONFIG			Filepath to the config file to use (specifies GloVe & category files)
+#	INPUT			Filepath to the tweets file to use for validation. Default: tweets-all-valdate [labelled]
+#	CONFIG			Filepath to the config file to use (category the file & media directory)
 #	POSTFIX			Optional postfix for output filename
 
 
