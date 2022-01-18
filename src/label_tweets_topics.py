@@ -52,13 +52,14 @@ def main():
 	
 	model = "lda"
 	stream_in = sys.stdin
+	stream_out = sys.stdout
 	
 	if args.model:
 		model = args.model
 	if args.input:
 		stream_in = open(args.input, "r")
-	else:
-		args.input = "-"
+	if args.output:
+		stream_output = open(args.output, "r")
 	if not args.topic_count: # Seriously, why is it so difficult to specify a default value for a CLI arg?!
 		args.topic_count = 10
 	if not args.words_per_topic:
@@ -73,7 +74,6 @@ def main():
 	filepath_model = os.path.join(args.output, "model.gensim.bin")
 	container = {}
 	
-	tweets = tweets_data_simple(stream_in)
 	
 	ai = TopicAnalyser(
 		args.topic_count,
@@ -81,6 +81,8 @@ def main():
 	)
 	ai.load(filepath_model)
 	
+	labeller = TopicLabeller(ai)
+	labeller.label(stream_in, stream_out)
 	# TODO: Implement TopicLabeller class here
 
 

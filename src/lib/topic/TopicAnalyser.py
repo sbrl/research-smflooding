@@ -23,6 +23,7 @@ class TopicAnalyser:
     	return re.sub(pattern, repl, text, flags=re.MULTILINE | re.DOTALL)
     
     def preprocess_str(self, string):
+        string = string.strip() # Trim leading and trailing whitespace
         string = self.re_sub(r"@\S+", " ", string)
         string = self.re_sub(r"https?:\/\/\S+\b|www\.(\w+\.)+\S*", " ", string)
         return preprocess_string(string)
