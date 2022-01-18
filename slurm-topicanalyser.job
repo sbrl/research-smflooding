@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+#SBATCH -J TweetLDA
+#SBATCH -N 1
+#SBATCH -n 8
+#SBATCH -o %j.%N.%a.out
+#SBATCH -e %j.%N.%a.err
+#SBATCH -p compute
+#SBATCH --time=04:00:00
+#SBATCH --mem=20000
+
+# This slurm job file generates LDA/LSA models from tweets.
+# 
+# Usage:
+# 
+# CHECKPOINT="PATH/TO/model/checkpoints/CHECKPOINT.HDF5" INPUT="path/to/tweets.jsonl" sbatch slurm-tweet-labeller.job
+# 
+# Environment Variables:
+#	INPUT			Filepath to the file containing the tweets to train on.
+#	OUTPUT			Directory to output tweets the trained model to.
+#	MODEL			Type of model to train. Possible values: lda [default], lsa
+
+
+# 25600 = 25GiB memory required
+module load utilities/multi
+module load readline/7.0
+module load gcc/10.2.0
+module load cuda/11.5.0
+
+module load python/anaconda/4.6/miniconda/3.7
+
+# TODO: expand this to pull this dynamically from the model
+INPUT="${INPUT:-$HOME/data/twitter/media}";
+OUTPUT="${OUTPUT}";
+CHECKPOINT="${CHECKPOINT}"; # Example: output/20210629-128,128-c2-nobidi-batchnorm/checkpoints/checkpoint_e7_acc0.919.hdf5
+CONFIG="${CONFIG:-configs/g200a128,128c2pn.toml}"
+
+if [[ -z "${CHECKPOINT}" ]]; then
+	echo "Error: No checkpoint specified in the CHECKPOINT environment variable.";
+	exit 1;
+fi
+if [[ -z "${INPUT}" ]]; then
+	echo "Error: No input file specified in the INPUT environment variable.";
+	exit 1;
+fi
+if [[ -z "${OUTPUT}" ]]; then
+	OUTPUT="$(echo "${INPUT}" | sed -e 's/\/$//; s/$/-labels.tsv/')";
+	if [[ "${INPUT}" == "${OUTPUT}" ]]; then
+		echo "Error: OUTPUT was not specified, but failed to do replacement / → -labelled.jsonl for auto-calculated output filename. Abort.";
+		exit 1;
+	fi
+	echo "Auto-calculated output filename.";
+fi
+if [[ -z "${CONFIG}" ]]; then
+	echo "Error: No config file specified in the CONFIG environment variable.";
+	exit 1;
+fi
+
+
+if [[ ! -r "${CONFIG}" ]]; then
+	echo "Error: That config file doesn't exist.";
+	exit 4;
+fi
+if [[ ! -r "${CHECKPOINT}" ]]; then
+	echo "Error: That checkpoint file doesn't exist.";
+	exit 2;
+fi
+if [[ ! -r "${INPUT}" ]]; then
+	echo "Error: That input file doesn't exist.";
+	exit 3;
+fi
+
+dir_output="$(dirname "${OUTPUT}")";
+
+if [[ ! -d "${dir_output}" ]]; then
+	mkdir -p "${dir_output}";
+fi
+
+export PATH=$HOME/software/bin:$PATH;
+
+echo ">>> Settings";
+
+echo "INPUT $INPUT";
+echo "OUTPUT $OUTPUT";
+echo "CHECKPOINT $CHECKPOINT";
+echo "CONFIG $CONFIG";
+
+echo ">>> Installing requirements";
+conda run -n py38 pip install -r requirements.txt;
+echo ">>> Labelling tweets";
+/usr/bin/env time -v conda run -n py38 src/label_images.py --only-gpu --input "${INPUT}" --config "${CONFIG}" --checkpoint "${CHECKPOINT}" --output  "${OUTPUT}";
+echo ">>> exited with code $?";
