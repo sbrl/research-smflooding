@@ -31,7 +31,7 @@ def init_logging(filepath_output):
 	
 	sys.stderr.write(f"find_topics: Writing logs to {filepath_output}\n")
 	logger.info("find_topics init! Here we go")
-	logger.info(f"This is Tensorflow {gensim.__version__}")
+	logger.info(f"This is gensim {gensim.__version__}")
 
 
 def main():
@@ -92,16 +92,15 @@ def main():
 	
 	handle_topics = io.open(filepath_topics, "w")
 	colheadings = [ "coherence" ]
-	for i in range(len(topics) + 1):
+	for i in range(len(args.words_per_topic) + 1):
 		colheadings.append(f"coherence_{i}")
 		colheadings.append(f"item_{i}")
 	handle_topics.write("\t".join(colheadings)+"\n")
 	
 	handle_topics_wordsonly = io.open(filepath_topics_wordsonly, "w")
-	colheadings_wordsonly = [ f"item_{i}" for i in range(len(topics) + 1) ]
+	colheadings_wordsonly = [ f"item_{i}" for i in range(len(args.words_per_topic) + 1) ]
 	handle_topics_wordsonly.write("\t".join(colheadings_wordsonly)+"\n")
 	
-	pprint(topics)
 	for items, coherence in topics:
 		colvalues = [ str(coherence) ]
 		for item_stat, item_name in items:
