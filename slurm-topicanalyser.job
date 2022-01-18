@@ -24,55 +24,34 @@
 module load utilities/multi
 module load readline/7.0
 module load gcc/10.2.0
-module load cuda/11.5.0
 
 module load python/anaconda/4.6/miniconda/3.7
 
-# TODO: expand this to pull this dynamically from the model
-INPUT="${INPUT:-$HOME/data/twitter/media}";
-OUTPUT="${OUTPUT}";
-CHECKPOINT="${CHECKPOINT}"; # Example: output/20210629-128,128-c2-nobidi-batchnorm/checkpoints/checkpoint_e7_acc0.919.hdf5
-CONFIG="${CONFIG:-configs/g200a128,128c2pn.toml}"
 
-if [[ -z "${CHECKPOINT}" ]]; then
-	echo "Error: No checkpoint specified in the CHECKPOINT environment variable.";
-	exit 1;
-fi
+# TODO: expand this to pull this dynamically from the model
+INPUT="${INPUT:-$HOME/data/twitter/tweets-all-new-20220117.jsonl}";
+OUTPUT="${OUTPUT}";
+MODEL="${MODEL:-lda}";
+TOPIC_COUNT="${TOPIC_COUNT:-20}";
+WORDS_PER_TOPIC="${WORDS_PER_TOPIC:-10}";
+
 if [[ -z "${INPUT}" ]]; then
 	echo "Error: No input file specified in the INPUT environment variable.";
 	exit 1;
 fi
 if [[ -z "${OUTPUT}" ]]; then
-	OUTPUT="$(echo "${INPUT}" | sed -e 's/\/$//; s/$/-labels.tsv/')";
-	if [[ "${INPUT}" == "${OUTPUT}" ]]; then
-		echo "Error: OUTPUT was not specified, but failed to do replacement / → -labelled.jsonl for auto-calculated output filename. Abort.";
-		exit 1;
-	fi
-	echo "Auto-calculated output filename.";
-fi
-if [[ -z "${CONFIG}" ]]; then
-	echo "Error: No config file specified in the CONFIG environment variable.";
+	echo "Error: No output directory was specified.";
 	exit 1;
 fi
 
 
-if [[ ! -r "${CONFIG}" ]]; then
-	echo "Error: That config file doesn't exist.";
-	exit 4;
-fi
-if [[ ! -r "${CHECKPOINT}" ]]; then
-	echo "Error: That checkpoint file doesn't exist.";
-	exit 2;
-fi
 if [[ ! -r "${INPUT}" ]]; then
 	echo "Error: That input file doesn't exist.";
 	exit 3;
 fi
 
-dir_output="$(dirname "${OUTPUT}")";
-
-if [[ ! -d "${dir_output}" ]]; then
-	mkdir -p "${dir_output}";
+if [[ ! -d "${OUTPUT}" ]]; then
+	mkdir -p "${OUTPUT}";
 fi
 
 export PATH=$HOME/software/bin:$PATH;
@@ -81,11 +60,9 @@ echo ">>> Settings";
 
 echo "INPUT $INPUT";
 echo "OUTPUT $OUTPUT";
-echo "CHECKPOINT $CHECKPOINT";
-echo "CONFIG $CONFIG";
 
 echo ">>> Installing requirements";
 conda run -n py38 pip install -r requirements.txt;
 echo ">>> Labelling tweets";
-/usr/bin/env time -v conda run -n py38 src/label_images.py --only-gpu --input "${INPUT}" --config "${CONFIG}" --checkpoint "${CHECKPOINT}" --output  "${OUTPUT}";
+/usr/bin/env time -v conda run -n py38 src/find_topics.py --input "${INPUT}" --output "${OUTPUT}" --topic-count "${TOPIC_COUNT}" --words-per-topic "${WORDS_PER_TOPIC}" --model "${MODEL}";
 echo ">>> exited with code $?";

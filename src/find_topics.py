@@ -117,6 +117,7 @@ def main():
 	
 	handle = io.open(filepath_settings, "w")
 	handle.write(f"topic_count	{args.topic_count}\n")
+	handle.write(f"words_per_topic	{args.words_per_topic}\n")
 	handle.write(f"filepath_input	{args.input}\n")
 	handle.write(f"perplexity	{perplexity}\n")
 	handle.write(f"average topic coherence	{avg_topic_coherence}\n")

@@ -113,4 +113,4 @@ class TopicAnalyser:
             source = [ source ]
         
         preprocessed = [ self.dictionary.doc2bow(item) for item in self.preprocess_dataset(source) ]
-        return self.model.get_document_topics(preprocessed)
+        return [ self.model.get_document_topics(item) for item in preprocessed ]

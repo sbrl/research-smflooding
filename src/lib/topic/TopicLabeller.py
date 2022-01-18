@@ -1,15 +1,27 @@
-from loguru import logger
+import sys
 import json
+from pprint import pprint
+
+from loguru import logger
 
 import tensorflow as tf
 
-class TweetLabeller():
+class TopicLabeller():
 	"""Labels tweets using a given (pre-initialised) TopicAnalyser instance."""
 	
 	def __init__(self, model, batch_size=512):
 		self.model = model
 		self.batch_size = batch_size
 	
+	def top_topic(self, prediction):
+		top_i = float("-inf")
+		top_prediction = float("-inf")
+		for i, value in prediction:
+			if value > top_prediction:
+				top_i = i
+				top_prediction = value
+		
+		return top_i, top_prediction
 	
 	def label(self, stream_in, stream_out):
 		"""
@@ -17,29 +29,19 @@ class TweetLabeller():
 		them to the given output stream.
 		"""
 		
-		acc = []
+		i = 0
 		for tweet_str in stream_in:
 			tweet = json.loads(tweet_str)
 			
-			acc.append({
-				"obj": tweet,
-				"tensor": self.tweet2tensor(tweet["text"])
-			})
-			if len(acc) >= self.batch_size:
-				strings = [ item.obj.text ]
-				predictions_batch = self.model.predict(strings)
-				# Process the predictions
-				# for index in range(0, len(predictions_batch)):
-				for batch_index in range(0, len(predictions_batch)):
-					label_index = predictions_batch[batch_index]
-					if label_index is not None:
-						acc[batch_index]["obj"]["label_topic"] = self.cats.index2name(label_index)
-						stream_out.write(json.dumps(acc[batch_index]["obj"]))
-						stream_out.write("\n")
-						stream_out.flush()
-				
-				# Empty the accumulators
-				del acc[:]
-	
-	
+			prediction = self.model.predict(tweet["text"])[0]
+			topic_id, confidence = self.top_topic(prediction)
+			tweet["label_topic"] = int(topic_id)
+			tweet["label_topic_confidence"] = round(float(confidence), 4)
+			stream_out.write(json.dumps(tweet))
+			stream_out.write("\n")
+			stream_out.flush()
+			
+			if i % 10000 == 0:
+				sys.stderr.write(f"{i} tweets processed\r")
+			i = i+1
 	
