@@ -18,9 +18,29 @@ In the future, a bash-based wrapper to the below scripts will be implemented.
  - `src/data_splitter.py`: Splits the specified file of tweets up into multiple separate files based on a given category file. Used when balancing dataset.
  - `src/label_tweets.py`: Labels a JSONL tweets file using the given pre-trained sentiment analysis model (see `text_classifier.py`)
  - `src/label_images.py`: Similar to `label_tweets.py`, but for image (see `image_classifier.py`)
- - `src/lda_topics.py`: Run an LDA topic analysis over the specified tweets file.
+ - `src/label_tweets_topics.py`: Label a JSONL tweets file using a pre-trained LDA model (LSA/LSI models are NOT supported because gensim does not appear to support query trained LSIModel instances). Labels use a different key to src/label_images.py, so can coexist therewith.
+ - `src/find_topics.py`: Run an LDA topic analysis over the specified tweets file.
  - `src/glove_longest.py`: Finds the longest sequence of tokens in the input
  - `src/test_glove.py`: Simple test script to check the GloVe parsing & conversion.
+
+
+## Useful commands
+
+### Tally topics against sentiment
+```bash
+jq --raw-output '[.label_topic, .label] | @tsv' <./output/lda-all-t20/tweets-all-new-20220117-labelled.jsonl | sort | uniq -c | sort -k2,2n -k3 | paste -s -d' \n' | awk 'BEGIN { OFS="\t"; print("topic", "negative", "positive", "order"); } { print($2, $1, $4, $3 "-" $6); }'
+```
+
+Example output:
+
+```
+topic	negative	positive	order
+0	2182	5354	negative-positive
+1	4513	4831	negative-positive
+2	9430	1808	negative-positive
+3	3812	5767	negative-positive
+...
+```
 
 
 ## Sources and further reading
