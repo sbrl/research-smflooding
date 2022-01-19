@@ -14,7 +14,7 @@ import pysnooper
 import gensim
 
 from lib.topic.TopicAnalyser import TopicAnalyser
-from lib.data.TweetsDataSimple import tweets_data_simple
+from lib.topic.TopicLabeller import TopicLabeller
 
 
 def init_logging(filepath_output):
@@ -39,10 +39,8 @@ def main():
 	
 	parser = argparse.ArgumentParser(description="Labels tweets with a given LDA model.")
 	parser.add_argument("--input", "-i", help="Filepath to the file containing the associated tweets to label. If not specified, data is read from stdin.")
-	parser.add_argument("--output", "-o", help="Path to a directory to write models and their outputs to. If it does not exist it will be created.", required=True)
-	parser.add_argument("--topic-count", "-t", help="The number of topics to group the input tweets into [default: 10].", type=int)
-	parser.add_argument("--words-per-topic", "-n", help="The number of words per topic to return [default].", type=int)
-	parser.add_argument("--checkpoint", help="The filepath to the *directory* that contains the model to load.")
+	parser.add_argument("--output", "-o", help="Path to a directory to write labelled tweets to. Defaults to stdout.")
+	parser.add_argument("--checkpoint", help="The filepath to the *directory* that contains the model to load.", required=True)
 	
 	args = parser.parse_args()
 	
@@ -50,37 +48,27 @@ def main():
 		print("Error: File at '" + args.input + "' does not exist.")
 		exit(1)
 	
-	model = "lda"
 	stream_in = sys.stdin
+	stream_out = sys.stdout
 	
-	if args.model:
-		model = args.model
 	if args.input:
 		stream_in = open(args.input, "r")
-	else:
-		args.input = "-"
-	if not args.topic_count: # Seriously, why is it so difficult to specify a default value for a CLI arg?!
-		args.topic_count = 10
-	if not args.words_per_topic:
-		args.words_per_topic = 10
-	if not os.path.isdir(args.output):
-		os.makedirs(args.output)
+	if args.output:
+		stream_out = open(args.output, "w")
 	
 	init_logging(None)
 	
 	###########################################################################
 	
-	filepath_model = os.path.join(args.output, "model.gensim.bin")
+	filepath_model = os.path.join(args.checkpoint, "model.gensim.bin")
 	container = {}
 	
-	tweets = tweets_data_simple(stream_in)
 	
-	ai = TopicAnalyser(
-		args.topic_count,
-		args.words_per_topic
-	)
+	ai = TopicAnalyser()
 	ai.load(filepath_model)
 	
+	labeller = TopicLabeller(ai)
+	labeller.label(stream_in, stream_out)
 	# TODO: Implement TopicLabeller class here
 
 

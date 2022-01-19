@@ -92,13 +92,13 @@ def main():
 	
 	handle_topics = io.open(filepath_topics, "w")
 	colheadings = [ "coherence" ]
-	for i in range(len(args.words_per_topic) + 1):
+	for i in range(args.words_per_topic + 1):
 		colheadings.append(f"coherence_{i}")
 		colheadings.append(f"item_{i}")
 	handle_topics.write("\t".join(colheadings)+"\n")
 	
 	handle_topics_wordsonly = io.open(filepath_topics_wordsonly, "w")
-	colheadings_wordsonly = [ f"item_{i}" for i in range(len(args.words_per_topic) + 1) ]
+	colheadings_wordsonly = [ f"item_{i}" for i in range(args.words_per_topic + 1) ]
 	handle_topics_wordsonly.write("\t".join(colheadings_wordsonly)+"\n")
 	
 	for items, coherence in topics:
@@ -117,6 +117,7 @@ def main():
 	
 	handle = io.open(filepath_settings, "w")
 	handle.write(f"topic_count	{args.topic_count}\n")
+	handle.write(f"words_per_topic	{args.words_per_topic}\n")
 	handle.write(f"filepath_input	{args.input}\n")
 	handle.write(f"perplexity	{perplexity}\n")
 	handle.write(f"average topic coherence	{avg_topic_coherence}\n")

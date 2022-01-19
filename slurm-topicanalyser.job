@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+#SBATCH -J TweetLDA
+#SBATCH -N 1
+#SBATCH -n 8
+#SBATCH -o %j.%N.%a.out
+#SBATCH -e %j.%N.%a.err
+#SBATCH -p compute
+#SBATCH --time=04:00:00
+#SBATCH --mem=20000
+
+# This slurm job file generates LDA/LSA models from tweets.
+# 
+# Usage:
+# 
+# CHECKPOINT="PATH/TO/model/checkpoints/CHECKPOINT.HDF5" INPUT="path/to/tweets.jsonl" sbatch slurm-tweet-labeller.job
+# 
+# Environment Variables:
+#	INPUT			Filepath to the file containing the tweets to train on.
+#	OUTPUT			Directory to output tweets the trained model to.
+#	MODEL			Type of model to train. Possible values: lda [default], lsa
+
+
+# 25600 = 25GiB memory required
+module load utilities/multi
+module load readline/7.0
+module load gcc/10.2.0
+
+module load python/anaconda/4.6/miniconda/3.7
+
+
+# TODO: expand this to pull this dynamically from the model
+INPUT="${INPUT:-$HOME/data/twitter/tweets-all-new-20220117.jsonl}";
+OUTPUT="${OUTPUT}";
+MODEL="${MODEL:-lda}";
+TOPIC_COUNT="${TOPIC_COUNT:-20}";
+WORDS_PER_TOPIC="${WORDS_PER_TOPIC:-10}";
+
+if [[ -z "${INPUT}" ]]; then
+	echo "Error: No input file specified in the INPUT environment variable.";
+	exit 1;
+fi
+if [[ -z "${OUTPUT}" ]]; then
+	echo "Error: No output directory was specified.";
+	exit 1;
+fi
+
+
+if [[ ! -r "${INPUT}" ]]; then
+	echo "Error: That input file doesn't exist.";
+	exit 3;
+fi
+
+if [[ ! -d "${OUTPUT}" ]]; then
+	mkdir -p "${OUTPUT}";
+fi
+
+export PATH=$HOME/software/bin:$PATH;
+
+echo ">>> Settings";
+
+echo "INPUT $INPUT";
+echo "OUTPUT $OUTPUT";
+
+echo ">>> Installing requirements";
+conda run -n py38 pip install -r requirements.txt;
+echo ">>> Labelling tweets";
+/usr/bin/env time -v conda run -n py38 src/find_topics.py --input "${INPUT}" --output "${OUTPUT}" --topic-count "${TOPIC_COUNT}" --words-per-topic "${WORDS_PER_TOPIC}" --model "${MODEL}";
+echo ">>> exited with code $?";
