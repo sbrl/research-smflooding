@@ -67,5 +67,5 @@ export PATH=$HOME/software/bin:$PATH;
 echo ">>> Installing requirements";
 conda run -n py38 pip install -r requirements.txt;
 echo ">>> Training model";
-/usr/bin/env time -v conda run -n py38 src/confusion_matrix_image.py --config "${CONFIG}" --input-tweets "${INPUT}" --output "${filename_output}" --only-gpu --model "${CHECKPOINT}"
+/usr/bin/env time -v conda run -n py38 src/confusion_matrix_image.py --config "${CONFIG}" --input-tweets "${INPUT}" --output "${target_output}" --only-gpu --model "${CHECKPOINT}"
 echo ">>> exited with code $?";
