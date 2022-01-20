@@ -13,7 +13,6 @@ from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 from ..io.settings import settings_get
-from ..glove.glove import GloVe
 from .CategoryCalculator import CategoryCalculator
 from .load_image import load_image
 
