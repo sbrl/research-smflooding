@@ -53,8 +53,11 @@ do
 			echo "Subcommands:"
 			echo "    train           Train a new tweet text classifier";
 			echo "    train-image     Train a new image classifier [requires a tweet text classifier to have been trained first]";
+			echo "    train-topics    Train an LDA/LSA topic analysis model";
 			echo "    label-tweets    Given a trained tweet text classifier, label a tweets JSONL file.";
 			echo "    label-images    Given a trained image classifier and a directory of images, outputs filenames and predicted classes as tab-separated values.";
+			echo "    label-tweets-topics";
+			echo "                    Given a trained LDA model, labels the given tweet JSON objects with their associated topics.";
 			echo "";
 			echo "Extra subcommands for diagnostics:";
 			echo "(these are not guaranteed to have a stable CLI)";
@@ -77,6 +80,10 @@ do
 			shift;
 			./src/image_classifier.py "$@";
 			;;
+		train-topics )
+			shift;
+			./src/find_topics.py "$@";
+			;;
 		
 		confusion )
 			shift;
@@ -90,10 +97,14 @@ do
 			shift;
 			./src/data_splitter.py "$@";
 			;;
-		
+			
 		label-tweets )
 			shift;
 			./src/label_tweets.py "$@";
+			;;
+		label-tweets-topics )
+			shift;
+			./src/label_tweets_topics.py "$@";
 			;;
 		label-images )
 			shift;
