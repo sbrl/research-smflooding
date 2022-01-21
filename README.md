@@ -42,6 +42,22 @@ topic	negative	positive	order
 ...
 ```
 
+### Tally topics against media urls
+To join topic ids against *image* sentiment, do this:
+
+```bash
+cat path/to/tweets-labelled.jsonl | jq --raw-output -c 'select(has("media")) | [ .label, .label_topic, (.media[] | select(.type=="photo") | .url) ] | @tsv' | awk 'BEGIN{OFS="\t";} {for(i=3; i<NF; i++) { sub(".*/", "", $i); print($i, $1, $2); }}' | csvjoin -c 1 -H -t - path/to/media-labels.tsv | sed -e '1s/.*/filename,sentiment_tweet,topic_id,sentiment_image/' | tr "," "\t" >path.to/output.jsonl
+```
+
+This produces a TSV file out that has the following columns:
+
+1.  **`filename`:** The filename of the media file in question
+2.  **`sentiment_tweet`:** The sentiment of the _tweet_
+3.  **`topic_id`:** The LDA topic ID
+4.  **`sentiment_image`:** The sentiment of the _image_
+
+Note that the input file must be labelled by both the tweet classifier (transformer or LSTM) AND an LDA model to use this function. In addition, an image classification model must be also trained and used to label all input images beforehand too (see the `src/image_classifier.py` and `src/label_images.py` endpoints and their associated SLURM scripts).
+
 
 ## Sources and further reading
  - [Text classification with Transformer](https://keras.io/examples/nlp/text_classification_with_transformer/) [Keras]
