@@ -59,12 +59,32 @@ This produces a TSV file out that has the following columns:
 Note that the input file must be labelled by both the tweet classifier (transformer or LSTM) AND an LDA model to use this function. In addition, an image classification model must be also trained and used to label all input images beforehand too (see the `src/image_classifier.py` and `src/label_images.py` endpoints and their associated SLURM scripts).
 
 ### Then, to compare media sentiment with topic id:
-
 ```bash
 cut -f 3-4 <output/lda-all-t20/media_sentiment-tweets_topic_sentiment-media.tsv | tail -n +2 | sort -n | uniq -c | sort -k2,2n -k 3,3 | paste -s -d' \n' | awk 'BEGIN { OFS="\t"; print("topic", "media-negative", "media-positive", "order"); } { print($2, $1, $4, $3 "-" $6); }' >output/lda-all-t20/topics-media-sentiments.tsv
 ```
 
 The columns this generates as output have pretty much the same meaning as the *Tally topics against sentiment* example above.
+
+### Alternatively, to sample images:
+With media filenames annotated with topic ids and associated sentiment, we can now sample images with this bash 3-liner:
+
+```bash
+# Function to sample for a single topic id and sentiment
+sample() { mediadir=/mnt/research-data/main/twitter/media; rootdir="$1"; number="$2"; sentiment="$3"; mkdir -p "${rootdir}/${number}/${sentiment}"; tail -n+2 media_sentiment-tweets_topic_sentiment-media.tsv | awk -v "sentiment=${sentiment}" -v "number=${number}" '$3 == number && $4 == sentiment { print $1 }' | shuf | head | xargs -I {} cp "${mediadir}/{}" "${rootdir}/${number}/${sentiment}/{}"; }
+# Sample for all topic ids and sentiments
+for i in {0..19}; do sample /tmp/topicsample $i positive; sample /tmp/topicsample $i negative; done
+# Montage the samples together
+find /tmp/topicsample/ -mindepth 2 -maxdepth 2 -type d -print0 | xargs -P "$(nproc)" -0 -I {} sh -c 'dir="{}"; echo "${dir}"; montage $(find "${dir}" -type f) -geometry 512x512+10+10 -tile 10x1 "${dir}.png"';
+
+# WIP: Stitch samples together
+# Find and order files to stitch:
+find /tmp/topicsample/ -mindepth 2 -maxdepth 2 -type f | sort -t '/' -k 4,4n -k 5,5
+# TODO: Wrap this in a montage call with labels
+```
+
+
+...replace `/mnt/research-data/main/twitter/media` with the path to the directory containing your downloaded media images, `0` and `19` with the min/max topic ids (`0` and `19` are for 20 topics), and `/tmp/topicsample` with the target directory to sample to.
+
 
 
 ## Sources and further reading
