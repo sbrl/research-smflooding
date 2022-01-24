@@ -46,7 +46,7 @@ topic	negative	positive	order
 To join topic ids against *image* sentiment, do this:
 
 ```bash
-cat path/to/tweets-labelled.jsonl | jq --raw-output -c 'select(has("media")) | [ .label, .label_topic, (.media[] | select(.type=="photo") | .url) ] | @tsv' | awk 'BEGIN{OFS="\t";} {for(i=3; i<NF; i++) { sub(".*/", "", $i); print($i, $1, $2); }}' | csvjoin -c 1 -H -t - path/to/media-labels.tsv | sed -e '1s/.*/filename,sentiment_tweet,topic_id,sentiment_image/' | tr "," "\t" >path.to/output.jsonl
+cat path/to/tweets-labelled.jsonl | jq --raw-output -c 'select(has("media")) | [ .label, .label_topic, (.media[] | select(.type=="photo") | .url) ] | @tsv' | awk 'BEGIN{OFS="\t";} {for(i=3; i<NF; i++) { sub(".*/", "", $i); print($i, $1, $2); }}' | csvjoin -c 1 -H -t - path/to/media-labels.tsv | sed -e '1s/.*/filename,sentiment_tweet,topic_id,sentiment_image/' | tr "," "\t" >path/to/output.jsonl
 ```
 
 This produces a TSV file out that has the following columns:
