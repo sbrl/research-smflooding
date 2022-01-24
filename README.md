@@ -58,6 +58,14 @@ This produces a TSV file out that has the following columns:
 
 Note that the input file must be labelled by both the tweet classifier (transformer or LSTM) AND an LDA model to use this function. In addition, an image classification model must be also trained and used to label all input images beforehand too (see the `src/image_classifier.py` and `src/label_images.py` endpoints and their associated SLURM scripts).
 
+### Then, to compare media sentiment with topic id:
+
+```bash
+cut -f 3-4 <output/lda-all-t20/media_sentiment-tweets_topic_sentiment-media.tsv | tail -n +2 | sort -n | uniq -c | sort -k2,2n -k 3,3 | paste -s -d' \n' | awk 'BEGIN { OFS="\t"; print("topic", "media-negative", "media-positive", "order"); } { print($2, $1, $4, $3 "-" $6); }' >output/lda-all-t20/topics-media-sentiments.tsv
+```
+
+The columns this generates as output have pretty much the same meaning as the *Tally topics against sentiment* example above.
+
 
 ## Sources and further reading
  - [Text classification with Transformer](https://keras.io/examples/nlp/text_classification_with_transformer/) [Keras]
