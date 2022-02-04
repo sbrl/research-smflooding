@@ -69,19 +69,18 @@ The columns this generates as output have pretty much the same meaning as the *T
 With media filenames annotated with topic ids and associated sentiment, we can now sample images with this bash 3-liner:
 
 ```bash
+targetdir="/tmp/topicsample";
 # Function to sample for a single topic id and sentiment
 sample() { mediadir=/mnt/research-data/main/twitter/media; rootdir="$1"; number="$2"; sentiment="$3"; mkdir -p "${rootdir}/${number}/${sentiment}"; tail -n+2 media_sentiment-tweets_topic_sentiment-media.tsv | awk -v "sentiment=${sentiment}" -v "number=${number}" '$3 == number && $4 == sentiment { print $1 }' | shuf | head | xargs -I {} cp "${mediadir}/{}" "${rootdir}/${number}/${sentiment}/{}"; }
 # Sample for all topic ids and sentiments
 for i in {0..19}; do sample /tmp/topicsample $i positive; sample /tmp/topicsample $i negative; done
 # Montage the samples together
-find /tmp/topicsample/ -mindepth 2 -maxdepth 2 -type d -print0 | xargs -P "$(nproc)" -0 -I {} sh -c 'dir="{}"; echo "${dir}"; montage $(find "${dir}" -type f) -geometry 512x512+10+10 -tile 10x1 "${dir}.png"';
-
-# WIP: Stitch samples together
-# Find and order files to stitch:
-find /tmp/topicsample/ -mindepth 2 -maxdepth 2 -type f | sort -t '/' -k 4,4n -k 5,5
-# TODO: Wrap this in a montage call with labels
+find "${targetdir}" -mindepth 2 -maxdepth 2 -type d -print0 | xargs -P "$(nproc)" -0 -I {} sh -c 'dir="{}"; echo "${dir}"; montage $(find "${dir}" -type f) -geometry 512x512+10+10 -tile 10x1 "${dir}.png"';
+find "${targetdir}" -name 'positive.png' -print0 | xargs -P "$(nproc)" -0 -n1 mogrify -bordercolor '#43ad29' -border 25x25;
+find "${targetdir}" -name 'negative.png' -print0 | xargs -P "$(nproc)" -0 -n1 mogrify -bordercolor '#ad2929' -border 25x25;
+find "${targetdir}" -mindepth 2 -maxdepth 2 -type f -print0 | xargs -P "$(nproc)" -0 -I {} sh -c 'file="{}"; convert "${file}" -gravity center -pointsize 100 -size 500x140 label:"$(basename "$(dirname "${file}")") $(basename "${file%.*}")" -append -resize 9999x375 "${file}.png"; mv -f "${file}.png" "${file}";';
+convert -append $(find "${targetdir}" -mindepth 2 -maxdepth 2 -type f | sort -t '/' -k 4,4n -k 5,5) /tmp/result.jpeg
 ```
-
 
 ...replace `/mnt/research-data/main/twitter/media` with the path to the directory containing your downloaded media images, `0` and `19` with the min/max topic ids (`0` and `19` are for 20 topics), and `/tmp/topicsample` with the target directory to sample to.
 
