@@ -6,3 +6,9 @@ matplotlib
 loguru
 gensim
 Pyro4
+
+ftfy
+regex
+tqdm
+torch>=1.7.1
+torchvision

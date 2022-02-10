@@ -1,0 +1,24 @@
+# Overwritten by the CLI arg
+output = ""
+
+[data]
+sequence_length = 100
+categories = 2
+
+[data.paths]
+# Path to the tweets.jsonl file to train on
+input_train = ""
+# Same as input_train, but for validation
+input_validate = ""
+# Path to the categories.tsv file
+categories = ""
+
+
+
+[model]
+
+
+
+[train]
+batch_size = 64					# The batch size
+epochs = 50						# The number of epochs to train for
