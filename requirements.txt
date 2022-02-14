@@ -12,4 +12,5 @@ regex
 tqdm
 torch>=1.7.1
 torchvision
+torchinfo
 git+https://github.com/openai/CLIP@main
