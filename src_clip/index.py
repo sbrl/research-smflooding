@@ -13,6 +13,10 @@ from lib.io.settings import settings_get, settings_load
 from lib.data.TweetsData import TweetsData
 from lib.ai.TweetClassifier import TweetClassifier
 
+from CLIPDataset import CLIPDataset
+from CLIPClassifier import CLIPClassifier
+
+
 
 def init_logging(filepath_output):
 	"""Initialises the logging subsystem."""
@@ -77,15 +81,17 @@ def main():
 		sys.exit(1)
 	
 	
-	if not settings.data.paths.categories:
+	if not settings.data.paths.categories or len(settings.data.paths.categories) === 0:
 		print("Error: No path to the categories file specified (data.paths.categories)")
 		sys.exit(1)
-	if not settings.data.paths.input_train:
+	if not settings.data.paths.input_train or len(settings.data.paths.input_train) === 0:
 		print("Error: No path to the input tweets jsonl file specified to train on (data.paths.input_train)")
 		sys.exit(1)
-	if not settings.data.paths.input_validate:
+	if not settings.data.paths.input_validate or len(settings.data.paths.input_validate) === 0:
 		print("Error: No path to the input tweets jsonl file specified to validate with (data.paths.input_validate)")
 		sys.exit(1)
+	if not settings.data.paths.dir_media or len(settings.data.paths.dir_media) === 0:
+		print("Error: No path to the media directory specified (data.paths.dir_media)")
 	
 	if not os.path.exists(settings.data.paths.input_train):
 		print(f"Error: No such file or directory {settings.data.paths.input_train}")
@@ -96,18 +102,44 @@ def main():
 	if not os.path.exists(settings.data.paths.categories):
 		print(f"Error: No such file or directory {settings.data.paths.categories}")
 		sys.exit(2)
+	if not os.path.exists(settings.data.paths.dir_media):
+		print(f"Error: No such file or directory {settings.data.paths.dir_media}")
+		sys.exit(2)
 	
 	
 	###############################################################################
 	
-	container = {}
+	###
+	## 1: Create datasets
+	###
+	cats = CategoryCalculator(settings.data.paths.categories)
 	
-    
-	# TODO: Create the dataset here
+	dataset_settings_common = {
+		"dir_media": settings.data.dir_media,
+		"cats": cats,
+		"device": settings.model.device,
+		"clip_model_name": settings.model.clip_name
+	}
 	
-	# TODO: Create the CLIPClassifier instance here
+    dataset_train = torch.utils.data.DataLoader(CLIPDataset(
+		filepath_tweets=settings.data.paths.input_train,
+		**dataset_settings_common
+	), batch_size=settings.train.batch_size)
+	dataset_validate = torch.utils.data.DataLoader(CLIPDataset(
+		filepath_tweets=settings.data.paths.input_validate,
+		**dataset_settings_common
+	), batch_size=settings.train.batch_size)
 	
-	# TODO: Train the CLIPClassifier with the initialised dataset here
+	###
+	## 2: Create AI model & train
+	###
+	ai = CLIPClassifier(
+		dir_output=args.output,
+		epochs=settings.train.epochs,
+		batch_size=settings.train.batch_size
+	)
+	
+	ai.train(dataset_train, dataset_validate)
 
 if __name__ == "__main__":
 	main()

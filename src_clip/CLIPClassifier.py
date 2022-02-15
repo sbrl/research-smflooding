@@ -5,7 +5,7 @@ import torch
 import torchinfo
 import clip
 
-import model_clip from model
+import CLIPModel from model
 
 class CLIPClassifier(object):
     def __init__(self, dir_output, epochs=50, batch_size=64, **kwargs):
@@ -17,11 +17,10 @@ class CLIPClassifier(object):
         
         self.dir_checkpoint = filepath_checkpoint = os.path.join(self.dir_output, "checkpoint")
         
-        
         self.epochs = epochs
         self.batch_size = batch_size
         
-        self.model = model_clip(**kwargs)
+        self.model = CLIPModel(**kwargs)
         self.loss = torch.nn.CrossEntropyLoss()
         self.optimiser = torch.optim.AdamW(self.model.parameters())
     

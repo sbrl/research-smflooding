@@ -4,10 +4,10 @@ import clip
 
 from PIL import Image
 
-class CLIP(torch.nn.Module):
+class CLIPModel(torch.nn.Module):
     def _init__(self, units=512, classes=2, device="cpu", **kwargs):
         super(CLIP, self).__init__()
-        self.clip = clip.load("ViT-B/32", device=device)
+        self.clip, _ = clip.load("ViT-B/32", device=device)
         self.clip_units_out = 512
         self.classifier = torch.nn.Sequential(
             torch.nn.Linear(512, units),
