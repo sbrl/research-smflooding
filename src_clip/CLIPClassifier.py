@@ -5,7 +5,7 @@ import torch
 import torchinfo
 import clip
 
-import CLIPModel from model
+from model import CLIPModel
 
 class CLIPClassifier(object):
     def __init__(self, dir_output, epochs=50, batch_size=64, **kwargs):

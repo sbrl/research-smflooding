@@ -9,10 +9,7 @@ import json
 
 import torch
 
-from lib.io.settings import settings_get, settings_load
-from lib.data.TweetsData import TweetsData
-from lib.ai.TweetClassifier import TweetClassifier
-
+from CategoryCalculator import CategoryCalculator
 from CLIPDataset import CLIPDataset
 from CLIPClassifier import CLIPClassifier
 
@@ -81,16 +78,16 @@ def main():
 		sys.exit(1)
 	
 	
-	if not settings.data.paths.categories or len(settings.data.paths.categories) === 0:
+	if not settings.data.paths.categories or len(settings.data.paths.categories) == 0:
 		print("Error: No path to the categories file specified (data.paths.categories)")
 		sys.exit(1)
-	if not settings.data.paths.input_train or len(settings.data.paths.input_train) === 0:
+	if not settings.data.paths.input_train or len(settings.data.paths.input_train) == 0:
 		print("Error: No path to the input tweets jsonl file specified to train on (data.paths.input_train)")
 		sys.exit(1)
-	if not settings.data.paths.input_validate or len(settings.data.paths.input_validate) === 0:
+	if not settings.data.paths.input_validate or len(settings.data.paths.input_validate) == 0:
 		print("Error: No path to the input tweets jsonl file specified to validate with (data.paths.input_validate)")
 		sys.exit(1)
-	if not settings.data.paths.dir_media or len(settings.data.paths.dir_media) === 0:
+	if not settings.data.paths.dir_media or len(settings.data.paths.dir_media) == 0:
 		print("Error: No path to the media directory specified (data.paths.dir_media)")
 	
 	if not os.path.exists(settings.data.paths.input_train):
@@ -121,7 +118,7 @@ def main():
 		"clip_model_name": settings.model.clip_name
 	}
 	
-    dataset_train = torch.utils.data.DataLoader(CLIPDataset(
+	dataset_train = torch.utils.data.DataLoader(CLIPDataset(
 		filepath_tweets=settings.data.paths.input_train,
 		**dataset_settings_common
 	), batch_size=settings.train.batch_size)
