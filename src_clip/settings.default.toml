@@ -2,7 +2,6 @@
 output = ""
 
 [data]
-sequence_length = 100
 categories = 2
 
 [data.paths]

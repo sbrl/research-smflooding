@@ -9,6 +9,8 @@ import json
 
 import torch
 
+from settings import settings_get, settings_load
+
 from CategoryCalculator import CategoryCalculator
 from CLIPDataset import CLIPDataset
 from CLIPClassifier import CLIPClassifier
