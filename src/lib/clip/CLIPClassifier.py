@@ -5,7 +5,7 @@ import torch
 import torchinfo
 import clip
 
-from model import CLIPModel
+from .CLIPModel import CLIPModel
 
 class CLIPClassifier(object):
     def __init__(self, dir_output, epochs=50, batch_size=64, **kwargs):
@@ -24,30 +24,38 @@ class CLIPClassifier(object):
         self.loss = torch.nn.CrossEntropyLoss()
         self.optimiser = torch.optim.AdamW(self.model.parameters())
     
-    def train(self, dataloader_train, dataloader_validate):
+    def preamble(self):
         handle_metrics = open(os.path.join(self.dir_output, "metrics.tsv"), "w")
         handle_metrics.write("epoch\taccuracy\tloss\tval_accuracy\tval_loss\n")
         
         handle_settings = open(os.path.join(self.dir_output, "settings.txt"), "w")
-        handle_settings.write(f"dir_output: {dir_output}\n")
-        handle_settings.write(f"epochs:     {epochs}\n")
-        handle_settings.write(f"batch_size: {batch_size}\n")
+        handle_settings.write(f"dir_output: {self.dir_output}\n")
+        handle_settings.write(f"epochs:     {self.epochs}\n")
+        handle_settings.write(f"batch_size: {self.batch_size}\n")
         handle_settings.write(f"kwargs:")
         handle_settings.write(json.dumps(self.__kwargs, indent="\t"))
         handle_settings.close()
         
-        handle_summary = open(os.path.join(self.output, "summary.txt"), "w")
-        handle_summary.write(torchinfo.summary(
+        summary = torchinfo.summary(
             self.model,
             # 3, 224, 224 here is a magic string we've pre-set from a manual test for the ViT-B/32 model, because apparently PyTorch requires this to calculate output shapes :-/
             # WARNING: May not be accurate for other model types!
-            (self.batch_size, 3, 224, 224)
-        ))
+            [
+                (self.batch_size, clip.tokenize("test").shape[1]),
+                (self.batch_size, 3, 224, 224)
+            ],
+            dtypes = [ torch.IntTensor, torch.FloatTensor ]
+        )
+        handle_summary = open(os.path.join(self.dir_output, "summary.txt"), "w")
+        handle_summary.write(str(summary))
         handle_summary.close()
+    
+    def train(self, dataloader_train, dataloader_validate):
+        self.preamble()
         
         for epoch_i in range(self.epochs):
             print(f"*** Epoch {epoch_i} ***")
-            loss, acc = self.__train(self, dataloader_train)
+            loss, acc = self.__train(dataloader_train)
             val_loss, val_acc = self.__validate(dataloader_validate)
             
             handle_metrics.write(f"{epoch_i}\t{acc}\t{loss}\t{val_acc}\t{val_loss}\n")   

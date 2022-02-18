@@ -1,3 +1,4 @@
+import os
 import io
 import json
 
@@ -16,8 +17,12 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 		self.device = device
 		self.dir_media = dir_media
 		
+		
 		self.cats = cats
 		_, self.preprocess = clip.load(self.clip_model_name, device=device)
+		self.clip_sequence_length = clip.tokenize.__defaults__[0]
+		if type(self.clip_sequence_length) != int:
+			self.clip_sequence_length = 77
 		
 		###
 		## State-specific member variables
@@ -64,9 +69,7 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 			if cat is None:
 				continue
 			
-			next_cat = cats.get_category_index(text)
-			tweet_text = clip.tokenize([ text ])[0].to(device)
-			
+			tweet_text = clip.tokenize(text, truncate=True).squeeze(0).to(self.device)
 			
 			for media in obj["media"]:
 				filename = os.path.join(

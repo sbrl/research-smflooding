@@ -58,7 +58,7 @@ def main():
 	
 	settings_load(
 		filepath_custom=args.config,
-		filepath_default="settings.clip.default.toml"
+		filename_default="settings.clip.default.toml"
 	)
 	
 	settings = settings_get()
@@ -75,13 +75,13 @@ def main():
 			"this_run.log"
 		))
 	
-	gpus = tf.config.list_physical_devices('GPU')
-	logger.info(f"clip_classifier: Available gpus: {gpus}")
-	tf.__version__
-	if not gpus and args.only_gpu:
+	device = "cuda" if torch.cuda.is_available() else "cpu"
+	
+	gpus = torch.cuda.device_count()
+	logger.info(f"clip_classifier: {gpus} gpus available")
+	if not torch.cuda.is_available() and args.only_gpu:
 		logger.info("No GPUs detected, exiting because --only-gpu was specified")
 		sys.exit(1)
-	
 	
 	if not settings.data.paths.categories or len(settings.data.paths.categories) == 0:
 		print("Error: No path to the categories file specified (data.paths.categories)")
@@ -90,7 +90,7 @@ def main():
 		print("Error: No path to the input tweets jsonl file specified to train on (data.paths.input_train)")
 		sys.exit(1)
 	if not settings.data.paths.input_validate or len(settings.data.paths.input_validate) == 0:
-		print("Error: No path to the input tweets jsonl file specified to validate with (data.paths.input_validate)")
+		print("Error: No path to the input tweets jsonl file specified to validate with text,(data.paths.input_validate)")
 		sys.exit(1)
 	if not settings.data.paths.dir_media or len(settings.data.paths.dir_media) == 0:
 		print("Error: No path to the media directory specified (data.paths.dir_media)")
@@ -117,10 +117,10 @@ def main():
 	cats = CategoryCalculator(settings.data.paths.categories)
 	
 	dataset_settings_common = {
-		"dir_media": settings.data.dir_media,
+		"dir_media": settings.data.paths.dir_media,
 		"cats": cats,
 		"device": settings.model.device,
-		"clip_model_name": settings.model.clip_name
+		"clip_model_name": settings.model.clip
 	}
 	
 	dataset_train = torch.utils.data.DataLoader(CLIPDataset(
