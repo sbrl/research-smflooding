@@ -9,11 +9,11 @@ import json
 
 import torch
 
-from settings import settings_get, settings_load
+from lib.io.settings import settings_get, settings_load
 
-from CategoryCalculator import CategoryCalculator
-from CLIPDataset import CLIPDataset
-from CLIPClassifier import CLIPClassifier
+from lib.data.CategoryCalculator import CategoryCalculator
+from lib.clip.CLIPDataset import CLIPDataset
+from lib.clip.CLIPClassifier import CLIPClassifier
 
 
 
@@ -56,7 +56,10 @@ def main():
 		print("Error: File at '" + args.config + "' does not exist.")
 		exit(1)
 	
-	settings_load(args.config)
+	settings_load(
+		filepath_custom=args.config,
+		filepath_default="settings.clip.default.toml"
+	)
 	
 	settings = settings_get()
 	if hasattr(args, "batch_size") and type(args.batch_size) is int:
