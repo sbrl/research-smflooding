@@ -25,7 +25,8 @@ class CLIPClassifier(object):
         self.optimiser = torch.optim.AdamW(self.model.parameters())
     
     def preamble(self):
-        os.makedirs(self.dir_output)
+        if not os.path.exists(self.dir_output):
+            os.makedirs(self.dir_output)
         
         handle_metrics = open(os.path.join(self.dir_output, "metrics.tsv"), "w")
         handle_metrics.write("epoch\taccuracy\tloss\tval_accuracy\tval_loss\n")
