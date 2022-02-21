@@ -123,14 +123,14 @@ def main():
 		"clip_model_name": settings.model.clip
 	}
 	
-	dataset_train = torch.utils.data.DataLoader(CLIPDataset(
+	dataset_train = CLIPDataset(
 		filepath_tweets=settings.data.paths.input_train,
 		**dataset_settings_common
-	), batch_size=settings.train.batch_size)
-	dataset_validate = torch.utils.data.DataLoader(CLIPDataset(
+	)
+	dataset_validate = CLIPDataset(
 		filepath_tweets=settings.data.paths.input_validate,
 		**dataset_settings_common
-	), batch_size=settings.train.batch_size)
+	)
 	
 	###
 	## 2: Create AI model & train

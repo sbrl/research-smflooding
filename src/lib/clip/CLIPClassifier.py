@@ -50,13 +50,13 @@ class CLIPClassifier(object):
         handle_summary.write(str(summary))
         handle_summary.close()
     
-    def train(self, dataloader_train, dataloader_validate):
+    def train(self, dataset_train, dataset_validate):
         self.preamble()
         
         for epoch_i in range(self.epochs):
             print(f"*** Epoch {epoch_i} ***")
-            loss, acc = self.__train(dataloader_train)
-            val_loss, val_acc = self.__validate(dataloader_validate)
+            loss, acc = self.__train(dataset_train)
+            val_loss, val_acc = self.__validate(dataset_validate)
             
             handle_metrics.write(f"{epoch_i}\t{acc}\t{loss}\t{val_acc}\t{val_loss}\n")   
             handle_metrics.flush()         
@@ -72,14 +72,15 @@ class CLIPClassifier(object):
         script = torch.jit.script(self.model)
         script.save(filepath_target)
     
-    def __train(self, dataloader):
+    
+    def __train(self, dataset):
         loss_total = 0
         correct = 0
         count_batches = 0
         
-        for i, ((images, text), labels) in enumerate(dataloader):
-            predictions = self.model(images, text)
-            loss = self.loss(predictions, labels)
+        for data in enumerate(dataset):
+            predictions = self.model(data["images"], data["text"])
+            loss = self.loss(predictions, data["labels"])
             
             self.optimiser.zero_grad()
             self.loss.backward()
@@ -91,7 +92,7 @@ class CLIPClassifier(object):
             
         return (loss_total / count_batches), (correct / (count_batches * self.batch_size))
     
-    def __validate(self, dataloader):
+    def __validate(self, dataset):
         """
         The validation driver loop for a single epoch.
         
@@ -102,10 +103,11 @@ class CLIPClassifier(object):
         count_batches = 0
         
         with torch.no_grad():
-            for i, ((images, text), labels) in enumerate(dataloader):
-                predictions = self.model(images, text)
-                loss_total += self.loss(predictions, labels).item()
-                correct += (predictions.argmax(1) == labels).type(torch.float).sum().item()
+            for data in enumerate(dataset):
+                break
+                predictions = self.model(data["images"], data["text"])
+                loss_total += self.loss(predictions, data["labels"]).item()
+                correct += (predictions.argmax(1) == data["labels"]).type(torch.float).sum().item()
                 
                 count_batches += 1
                 
