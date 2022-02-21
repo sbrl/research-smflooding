@@ -25,6 +25,8 @@ class CLIPClassifier(object):
         self.optimiser = torch.optim.AdamW(self.model.parameters())
     
     def preamble(self):
+        os.makedirs(self.dir_output)
+        
         handle_metrics = open(os.path.join(self.dir_output, "metrics.tsv"), "w")
         handle_metrics.write("epoch\taccuracy\tloss\tval_accuracy\tval_loss\n")
         
@@ -79,6 +81,8 @@ class CLIPClassifier(object):
         count_batches = 0
         
         for data in enumerate(dataset):
+            print(f"train: batch {count_batches}")
+            
             predictions = self.model(data["images"], data["text"])
             loss = self.loss(predictions, data["labels"])
             
@@ -104,7 +108,8 @@ class CLIPClassifier(object):
         
         with torch.no_grad():
             for data in enumerate(dataset):
-                break
+                print(f"validate: batch {count_batches}")
+                
                 predictions = self.model(data["images"], data["text"])
                 loss_total += self.loss(predictions, data["labels"]).item()
                 correct += (predictions.argmax(1) == data["labels"]).type(torch.float).sum().item()
