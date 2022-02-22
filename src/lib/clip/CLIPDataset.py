@@ -69,7 +69,7 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 	def do_collate(self, items):
 		return {
 			"labels": torch.stack([ torch.as_tensor(item["label"], dtype=torch.float32) for item in items]),
-			"text": torch.stack([ item["text"] for item in items]),
+			"text": torch.stack([ item["text"] for item in items]).int(),
 			"images": torch.stack([ item["image"] for item in items])
 		}
 	

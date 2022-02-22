@@ -21,11 +21,13 @@ class CLIPModel(torch.nn.Module):
 	
 	def forward(self, text, images):
 		with torch.no_grad():
-			text_encoded = self.clip.encode_text(text)
+			text_encoded = self.clip.encode_text(text.int())
 			images_encoded = self.clip.encode_image(images)
 		
 		print(f"DEBUG text_encoded shape {text_encoded.shape}")
 		print(f"DEBUG images_encoded shape {images_encoded.shape}")
+		
+		# NOTE: We *may* need to run this through the model itself, but whether we need to do this or not is curently unclear.
 		
 		# text_encoded and images_encoded should look like [ 1, 512 ]
 		result = torch.stack([text_encoded, images_encoded], -1)

@@ -81,7 +81,7 @@ class CLIPClassifier(object):
         correct = 0
         count_batches = 0
         
-        for data in enumerate(dataset):
+        for i, data in enumerate(dataset):
             print(f"train: batch {count_batches}")
             
             predictions = self.model(data["images"], data["text"])
@@ -108,7 +108,7 @@ class CLIPClassifier(object):
         count_batches = 0
         
         with torch.no_grad():
-            for data in enumerate(dataset):
+            for i, data in enumerate(dataset):
                 print(f"validate: batch {count_batches}")
                 
                 predictions = self.model(data["images"], data["text"])
