@@ -1,0 +1,28 @@
+# Overwritten by the CLI arg
+output = ""
+
+[data]
+categories = 2
+
+[data.paths]
+# Path to the tweets.jsonl file to train on
+input_train = ""
+# Same as input_train, but for validation
+input_validate = ""
+# Path to the categories.tsv file
+categories = ""
+# Path to the directory that holds the media files
+dir_media = ""
+
+[model]
+# The PyTorch device to use.
+# For example, this could also be set to "cuda
+device = "cpu"
+# The CLIP model name to use.
+# Note that support for values other than the default value is not necessarily implemented yet.
+# See https://github.com/openai/CLIP for mroe information.
+clip = "ViT-B/32"
+
+[train]
+batch_size = 64					# The batch size
+epochs = 50						# The number of epochs to train for
