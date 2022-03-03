@@ -1,6 +1,7 @@
 import os
 import json
 
+from loguru import logger
 import torch
 import torchinfo
 import clip
@@ -44,8 +45,8 @@ class CLIPClassifier(object):
             # 3, 224, 224 here is a magic string we've pre-set from a manual test for the ViT-B/32 model, because apparently PyTorch requires this to calculate output shapes :-/
             # WARNING: May not be accurate for other model types!
             [
+                (self.batch_size, 3, 224, 224),
                 (self.batch_size, clip.tokenize("test").shape[1]),
-                (self.batch_size, 3, 224, 224)
             ],
             dtypes = [ torch.IntTensor, torch.FloatTensor ]
         )
@@ -82,17 +83,17 @@ class CLIPClassifier(object):
         count_batches = 0
         
         for i, data in enumerate(dataset):
-            print(f"train: batch {count_batches}")
+            logger.info(f"train: batch {count_batches}")
             
             predictions = self.model(data["images"], data["text"])
-            loss = self.loss(predictions, data["labels"])
+            loss_current = self.loss(predictions, data["labels"])
             
             self.optimiser.zero_grad()
-            self.loss.backward()
+            loss_current.backward()
             self.optimiser.step()
             
-            loss_total += self.loss(predictions, labels).item()
-            correct += (predictions.argmax(1) == labels).type(torch.float).sum().item()
+            loss_total += self.loss(predictions, data["labels"]).item()
+            correct += (predictions.argmax(1) == data["labels"]).type(torch.float).sum().item()
             count_batches += 1
             
         return (loss_total / count_batches), (correct / (count_batches * self.batch_size))
@@ -109,7 +110,7 @@ class CLIPClassifier(object):
         
         with torch.no_grad():
             for i, data in enumerate(dataset):
-                print(f"validate: batch {count_batches}")
+                logger.info(f"validate: batch {count_batches}")
                 
                 predictions = self.model(data["images"], data["text"])
                 loss_total += self.loss(predictions, data["labels"]).item()

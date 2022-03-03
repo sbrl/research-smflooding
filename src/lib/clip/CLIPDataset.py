@@ -68,7 +68,7 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 	
 	def do_collate(self, items):
 		return {
-			"labels": torch.stack([ torch.as_tensor(item["label"], dtype=torch.float32) for item in items]),
+			"labels": torch.stack([ torch.as_tensor(item["label"], dtype=torch.long) for item in items]),
 			"text": torch.stack([ item["text"] for item in items]).int(),
 			"images": torch.stack([ item["image"] for item in items])
 		}
@@ -104,7 +104,7 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 				if not os.path.exists(filename):
 					continue
 				
-				image = self.preprocess(Image.open(filename)).unsqueeze(0).to(self.device)
+				image = self.preprocess(Image.open(filename)).to(self.device)
 				
 				self.queue.append({
 					"label": cat,
