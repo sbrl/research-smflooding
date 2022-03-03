@@ -40,6 +40,7 @@ CONFIG="${CONFIG:-configs/clip.toml}";
 if [[ -z "${CONFIG}" ]]; then
 	echo -e "Error: No CONFIG environment variable specified.\n" >&2;
 	show_help;
+	exit 0;
 fi
 
 if [[ ! -e "${CONFIG}" ]]; then
