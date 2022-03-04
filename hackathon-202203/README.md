@@ -4,7 +4,9 @@
 
 Welcome to project 3 of the sustainability hackathon! This repository contains some sample code to get you started.
 
+The canonical URL for this lab sheet is: TODO_INSERT_LINK_HERE
 
+Please visit this link for the most up-to-date version of this lab sheet.
 
 ## System Requirements
  - Python 3.7+, pip
@@ -19,7 +21,32 @@ TODO: Include instructions on cloning the repository here. As of 2022-02-28, we 
 
 
 ### Step 2: Download the dataset and model
-TODO: Fill this out once we've organised the specifics of this
+
+**Important:** You must be on the University's network to access these links! Any of the following will work:
+
+ - Using a Lab PC on-campus
+ - Using your own device on-campus connected to eduroam (UoH-Guest will NOT work)
+ - Using the University's VPN
+
+
+To get started, you will need 2 things:
+
+1. A pretrained model
+2. A data to make predictions with
+
+Download the pretrained model from this link: <http://hackathon2022.mooncarrot.space/aimodel/transformer-g25.zip> [102.2MiB, 247MiB extracted, 78.6% accurate]
+
+Download the StormFranklin dataset from this link: <http://hackathon2022.mooncarrot.space/dataset-StormFranklin.zip> [4.7MiB, 18MiB extracted]
+
+For those who are adventurous, a full list of datasets and pre-trained models available, visit the following page: <http://hackathon2022.mooncarrot.space/README.html>
+
+This includes:
+
+ - Many more tweets
+ - Images associated with tweets [TODO Download StormFranklin images]
+ - Larger and slightly more accurate pretrained models
+
+Downloading these extra resources is **not required** to follow this guide.
 
 
 #### Dataset files
@@ -136,8 +163,10 @@ If you are a **Linux user**, run this command instead:
 sudo pip3 install -r requirements.txt
 ```
 
+## Step 4: Making predictions
+Now that we have our dependencies installed, we can look at running the codebase. Let's take a quick look at the files you'll see when you first look at the example code.
 
-## Code layout
+### Step 4.1: Code layout
 There are several Python files here, but don't worry! Most of them you can ignore. Here's a quick overview as to what they do:
 
  - `make_predictions.py`: The main sample code! This shows you how to load the pre-trained model you downloaded above and maek a prediction with it.
@@ -145,6 +174,33 @@ There are several Python files here, but don't worry! Most of them you can ignor
  - `requirements.txt`: Contains a list of Python pip packages that you'll need to install. See above for how to install these.
  - `glove/`: Ignore this. Contains functions for working with [GloVe](https://nlp.stanford.edu/projects/glove/), which is used as an embedding layer by the AI model.
  - `ai_layers/`: Definitely ignore this (it's significantly complicated)! This is the internal layer definitions required by the model in order to work.
+
+
+### Step 4.2: Filepaths
+Before we can run the code, we need to update the filepaths in `make_predictions.py` so that they point to the right place. Find the lines that look like this:
+
+```python
+# Change these filepaths to match your own filesystem.
+# Note in particular the "g25" number, which may also be "g50", "g100", or "g200"
+# depending on which model you are using.
+# WARNING: The "g200" model requires at least 20GB of RAM!
+filepath_checkpoint = "transformer-g25/transformer_checkpoint_g25.hdf5"
+filepath_glove = "glove.twitter.27B.25d.txt"
+
+filepath_tweets = "dataset/tweets.jsonl"
+```
+
+....and edit them to be paths to the right files.
+
+ - `filepath_checkpoint` needs to point to the `.hdf5` checkpoint file you downloaded.
+ - `filepath_glove` needs to point to the file that sits next to the `.hdf5` file that is named something like `glove.twitter.27B.25d.txt` for example.
+ - `filepath_tweets` needs to point tot he file containing the tweets you want to make predictions for, which in the above sample datasets is called `tweets.jsonl`.
+
+These filepaths can be relative to `make_predictions.py`.
+
+
+### Step 4.3: Making predictions
+TODO: Talk about how to actually run the code here. Need to open a terminal / command prompt **and `cd` alongside `make_predictions.py`
 
 
 ## Frequently Asked Questions
