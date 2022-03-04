@@ -17,10 +17,13 @@ Please visit this link for the most up-to-date version of this lab sheet.
 ## Getting Started
 
 ### Step 1: Download the code
-TODO: Include instructions on cloning the repository here. As of 2022-02-28, we don't currently know where we're hosting the GitHub repo
+TODO: Include instructions on cloning the repository here. As of 2022-02-28, we don't currently know where we're hosting the GitHub repo.
 
 
 ### Step 2: Download the dataset and model
+The example code does not include the pretrained model or datasets, as these are larger files that can't be hosted in a git repository on GitHub.
+
+Instead, these are hosted on-campus for faster downloads. We'll need to download a pre-trained model and some tweets to work with.
 
 **Important:** You must be on the University's network to access these links! Any of the following will work:
 
@@ -200,19 +203,51 @@ These filepaths can be relative to `make_predictions.py`.
 
 
 ### Step 4.3: Making predictions
-TODO: Talk about how to actually run the code here. Need to open a terminal / command prompt **and `cd` alongside `make_predictions.py`
+Now we're ready to make some predictions! To make some predictions, we need to run the `make_predictions.py` Python script. This is easy to do, but differs slightly depending on your operating system.
+
+**Windows users:** Navigate to the folder that contains `make_predictions.py` in Windows File Explorer. Then, click in the address bar, type `cmd`, and then hit enter to open your command prompt.
+
+**macOS users:** Open a terminal, and then use the `ls` command to list the contents of the current directory. Using this information, you should be able to use the `cd` command to change directory into the directory that contains `make_predictions.py`. if you have your directory structure nested, it make take several `cd` commands to find it.
+
+**Linux users:** Navigate to the location of `make_predictions.py` in your file manager, and then right click on the background → click "Open in Terminal". If this option doesn't appear for you, follow the instructions for macOS useers above.
+
+Once you have your terminal or command prompt option, run the following command:
+
+```bash
+python3 make_predictions.py
+```
+
+It might take a minute to run. Once it's complete, you should see something like this:
+
+```
+TODO: Show some example output here
+```
+
+
+### Step 5: What comes next
+Thanks for following this guide! If you need any help or have any questions, we're happy to assist in the lab :-)
+
+See also the *Frequently Asked Questions* section below for some common questions.
+
+There is additional data available for you to make use of should you wish to on the download server: <http://hackathon2022.mooncarrot.space/README.html>
+
+This includes:
+
+ - Images associated with tweets
+ - More tweets
+
 
 
 ## Frequently Asked Questions
 
-### Why are all the usernames gibberish?
+### Why are all the twitter usernames / author names gibberish?
 Usernames (and a few other things) are anonymised to protect the privacy of the users who made the tweets. This is required for ethical approval, so an deanonymised dataset is unfortunately unavailable.
 
 Despite this, it is guaranteed that if an anonymised username is mentioned multiple times, it will always be the *same* gibberish (this is because a hash function is used to anonymise the data).
 
 
 ### Can I have the images associated with the tweets please?
-Sure! Just ask me (Lydia) in-person for the download URL. The download will be **very big** however (~19 GiB when extracted, 168952 images), so do be prepared for that! Windows users will need [7-Zip](https://7-zip.org) to extract it, as it's packed into a `.tar.xz` rather than a `.zip` to increase compression.
+Sure! You can download them from here: <http://hackathon2022.mooncarrot.space/README.html>. Depending on which one you pick, the download will be **very big** however (the largest one is ~19 GiB when extracted, 168952 images), so do be prepared for that! Windows users will need [7-Zip](https://7-zip.org) to extract it, as it's packed into a `.tar.xz` rather than a `.zip` to increase compression.
 
 
 ### How do the users and tweets relate to one another?
