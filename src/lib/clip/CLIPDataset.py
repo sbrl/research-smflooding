@@ -89,6 +89,8 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 			if cat is None:
 				continue
 			
+			cat = torch.as_tensor(cat, dtype=torch.int).to(self.device)
+			
 			tweet_text = clip.tokenize(text, truncate=True).squeeze(0).to(self.device)
 			
 			added = 0
@@ -107,9 +109,9 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 				image = self.preprocess(Image.open(filename)).to(self.device)
 				
 				self.queue.append({
-					"label": cat,
-					"text": tweet_text,
-					"image": image
+					"label": cat.to(device=device),
+					"text": tweet_text.to(device=device),
+					"image": image.to(device=device)
 				})
 				added += 1
 			
