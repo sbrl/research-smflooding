@@ -114,13 +114,14 @@ def main():
 	###
 	## 1: Create datasets
 	###
+	clip_model, clip_preprocess = clip.load("ViT-B/32", device=self.device).to(self.device)
 	cats = CategoryCalculator(settings.data.paths.categories)
 	
 	dataset_settings_common = {
 		"dir_media": settings.data.paths.dir_media,
 		"cats": cats,
 		"device": settings.model.device,
-		"clip_model_name": settings.model.clip
+		"clip_preprocess": clip_preprocess
 	}
 	
 	dataset_train = CLIPDataset(
@@ -138,7 +139,9 @@ def main():
 	ai = CLIPClassifier(
 		dir_output=args.output,
 		epochs=settings.train.epochs,
-		batch_size=settings.train.batch_size
+		batch_size=settings.train.batch_size,
+		clip_model=clip_model,
+		device=device
 	)
 	
 	ai.train(dataset_train, dataset_validate)

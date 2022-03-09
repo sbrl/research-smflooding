@@ -8,7 +8,7 @@ import clip
 
 
 class CLIPDataset(torch.utils.data.IterableDataset):
-	def __init__(self, filepath_tweets, dir_media, cats, batch_size=64, device="cpu", clip_model_name="ViT-B/32", **kwargs):
+	def __init__(self, filepath_tweets, dir_media, cats, clip_model, batch_size=64, device="cpu", **kwargs):
 		super(CLIPDataset).__init__()
 		
 		
@@ -69,7 +69,7 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 	def do_collate(self, items):
 		return {
 			"labels": torch.stack([ torch.as_tensor(item["label"], dtype=torch.long) for item in items]),
-			"text": torch.stack([ item["text"] for item in items]).int(),
+			"text": torch.stack([ item["text"] for item in items]).int().to(self.device),
 			"images": torch.stack([ item["image"] for item in items])
 		}
 	
