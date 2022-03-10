@@ -28,8 +28,6 @@ class CLIPModel(torch.nn.Module):
 		result = torch.stack([text_encoded, images_encoded], -1)
 		
 		# result = torch.adaptive_avg_pool1d(result, 1).squeeze(-1)
-		result = result.flatten(start_dim=1)
-			.type(torch.FloatTensor)
-			.to(self.device) # [ batch_size, 1024 ]
+		result = result.flatten(start_dim=1).type(torch.FloatTensor).to(self.device) # [ batch_size, 1024 ]
 		result = self.classifier(result.type(torch.FloatTensor)) # [ batch_size, 2 ]
 		return result
