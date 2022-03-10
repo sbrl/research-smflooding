@@ -12,7 +12,6 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 		super(CLIPDataset).__init__()
 		
 		
-		self.clip_model_name = clip_model_name
 		self.filepath_tweets = filepath_tweets
 		self.device = device
 		self.dir_media = dir_media
