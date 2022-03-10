@@ -2,6 +2,7 @@ import os
 import io
 import json
 
+from loguru import logger
 import torch
 from PIL import Image
 import clip
@@ -71,11 +72,18 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 		}
 	
 	def add_to_queue(self):
+		i = 0
 		while True:
 			line = self.handle_tweets.readline()
-			if line is None:
+			if line == "" or line is None:
 				return # We've reach the end of the output
-			obj = json.loads(line)
+			i = i + 1
+			try:
+				obj = json.loads(line)
+			except Exception as error:
+				logger.warning(f"Error while parsing JSON on line {i}, skipping: {error}")
+				continue
+				
 			text = obj["text"].strip()
 			
 			if "media" not in obj:
