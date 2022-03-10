@@ -37,7 +37,11 @@ class CLIPClassifier(object):
         handle_settings.write(f"epochs:     {self.epochs}\n")
         handle_settings.write(f"batch_size: {self.batch_size}\n")
         handle_settings.write(f"kwargs:")
-        handle_settings.write(json.dumps(self.__kwargs, indent="\t"))
+        handle_settings.write(json.dumps(
+            self.__kwargs,
+            indent="\t",
+            default=lambda o: f"<<non-serializable: {type(o).__qualname__}>>"
+        ))
         handle_settings.close()
         
         summary = torchinfo.summary(
