@@ -24,6 +24,8 @@ class CLIPClassifier(object):
         self.model = CLIPModel(**kwargs)
         self.loss = torch.nn.CrossEntropyLoss()
         self.optimiser = torch.optim.AdamW(self.model.parameters())
+        
+        self.debug_tinyepochs = False
     
     def preamble(self):
         if not os.path.exists(self.dir_output):
@@ -100,6 +102,9 @@ class CLIPClassifier(object):
             correct += (predictions.argmax(1) == data["labels"]).type(torch.float).sum().item()
             count_batches += 1
             
+            if self.debug_tinyepochs == True and count_batches >= 10:
+                break
+            
         return (loss_total / count_batches), (correct / (count_batches * self.batch_size))
     
     def __validate(self, dataset):
@@ -122,5 +127,7 @@ class CLIPClassifier(object):
                 
                 count_batches += 1
                 
+                if self.debug_tinyepochs == True and count_batches >= 10:
+                    break
         
         return (loss_total / count_batches), (correct / (count_batches * self.batch_size))
