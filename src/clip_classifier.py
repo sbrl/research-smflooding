@@ -8,6 +8,7 @@ from loguru import logger
 import json
 
 import torch
+import clip
 
 from lib.io.settings import settings_get, settings_load
 

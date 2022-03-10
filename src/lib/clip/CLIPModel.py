@@ -1,6 +1,5 @@
 import torch
 
-import clip
 from PIL import Image
 
 class CLIPModel(torch.nn.Module):
