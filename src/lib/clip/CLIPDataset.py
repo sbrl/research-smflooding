@@ -38,7 +38,6 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 		self.handle_tweets = io.open(self.filepath_tweets, "r")
 		
 		self.queue = []
-		print("DEBUG THIS IS __iter__")
 		return self
 	
 	

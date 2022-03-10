@@ -25,14 +25,17 @@ class CLIPClassifier(object):
         self.loss = torch.nn.CrossEntropyLoss()
         self.optimiser = torch.optim.AdamW(self.model.parameters())
         
+        self.handle_metrics = None
+        
+        
         self.debug_tinyepochs = False
     
     def preamble(self):
         if not os.path.exists(self.dir_output):
             os.makedirs(self.dir_output)
         
-        handle_metrics = open(os.path.join(self.dir_output, "metrics.tsv"), "w")
-        handle_metrics.write("epoch\taccuracy\tloss\tval_accuracy\tval_loss\n")
+        self.handle_metrics = open(os.path.join(self.dir_output, "metrics.tsv"), "w")
+        self.handle_metrics.write("epoch\taccuracy\tloss\tval_accuracy\tval_loss\n")
         
         handle_settings = open(os.path.join(self.dir_output, "settings.txt"), "w")
         handle_settings.write(f"dir_output: {self.dir_output}\n")
@@ -68,11 +71,12 @@ class CLIPClassifier(object):
             loss, acc = self.__train(dataset_train)
             val_loss, val_acc = self.__validate(dataset_validate)
             
-            handle_metrics.write(f"{epoch_i}\t{acc}\t{loss}\t{val_acc}\t{val_loss}\n")   
-            handle_metrics.flush()         
+            self.handle_metrics.write(f"{epoch_i}\t{acc}\t{loss}\t{val_acc}\t{val_loss}\n")   
+            self.handle_metrics.flush()         
             self.checkpoint(f"checkpoint_e${epoch_i}_valacc={val_acc}.pt")
         
-        handle_metrics.close()    
+        self.handle_metrics.close()    
+        self.handle_metrics = None
     
     def checkpoint(self, filepath_target):
         """
