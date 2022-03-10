@@ -8,7 +8,7 @@ import clip
 
 
 class CLIPDataset(torch.utils.data.IterableDataset):
-	def __init__(self, filepath_tweets, dir_media, cats, clip_model, batch_size=64, device="cpu", **kwargs):
+	def __init__(self, filepath_tweets, dir_media, cats, clip_preprocess, batch_size=64, device="cpu", **kwargs):
 		super(CLIPDataset).__init__()
 		
 		
@@ -19,7 +19,7 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 		self.batch_size = batch_size
 		
 		self.cats = cats
-		_, self.preprocess = clip.load(self.clip_model_name, device=device)
+		self.preprocess = clip_preprocess
 		self.clip_sequence_length = clip.tokenize.__defaults__[0]
 		if type(self.clip_sequence_length) != int:
 			self.clip_sequence_length = 77
