@@ -107,9 +107,9 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 				image = self.preprocess(Image.open(filename)).to(self.device)
 				
 				self.queue.append({
-					"label": cat.to(device=device),
-					"text": tweet_text.to(device=device),
-					"image": image.to(device=device)
+					"label": cat.to(device=self.device),
+					"text": tweet_text.to(device=self.device),
+					"image": image.to(device=self.device)
 				})
 				added += 1
 			
