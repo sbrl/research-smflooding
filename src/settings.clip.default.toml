@@ -16,8 +16,9 @@ dir_media = ""
 
 [model]
 # The PyTorch device to use.
-# For example, this could also be set to "cuda
-device = "cpu"
+# For example, this could also be set to "cuda".
+# By default, this is set to "auto", which means use CUDA if available, else fallback to the CPU.
+device = "auto"
 # The CLIP model name to use.
 # Note that support for values other than the default value is not necessarily implemented yet.
 # See https://github.com/openai/CLIP for mroe information.

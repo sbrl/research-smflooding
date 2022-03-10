@@ -77,6 +77,10 @@ def main():
 		))
 	
 	device = "cuda" if torch.cuda.is_available() else "cpu"
+	if settings.model.device != "auto":
+		device = settings.model.device
+	
+	logger.info(f"Compute device selected: {device}")
 	
 	gpus = torch.cuda.device_count()
 	logger.info(f"clip_classifier: {gpus} gpus available")
@@ -121,7 +125,7 @@ def main():
 	dataset_settings_common = {
 		"dir_media": settings.data.paths.dir_media,
 		"cats": cats,
-		"device": settings.model.device,
+		"device": device,
 		"clip_preprocess": clip_preprocess
 	}
 	
