@@ -11,7 +11,6 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 	def __init__(self, filepath_tweets, dir_media, cats, clip_preprocess, batch_size=64, device="cpu", **kwargs):
 		super(CLIPDataset).__init__()
 		
-		
 		self.filepath_tweets = filepath_tweets
 		self.device = device
 		self.dir_media = dir_media

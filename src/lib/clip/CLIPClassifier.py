@@ -10,7 +10,7 @@ from .CLIPModel import CLIPModel
 
 class CLIPClassifier(object):
     def __init__(self, dir_output, epochs=50, batch_size=64, **kwargs):
-        super(CLIPClassifier, self).__init__(**kwargs)
+        super(CLIPClassifier, self).__init__()
         
         self.__kwargs = kwargs
         
