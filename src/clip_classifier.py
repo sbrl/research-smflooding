@@ -115,7 +115,7 @@ def main():
 	###
 	## 1: Create datasets
 	###
-	clip_model, clip_preprocess = clip.load("ViT-B/32", device=self.device).to(self.device)
+	clip_model, clip_preprocess = clip.load("ViT-B/32", device=device).to(device)
 	cats = CategoryCalculator(settings.data.paths.categories)
 	
 	dataset_settings_common = {
