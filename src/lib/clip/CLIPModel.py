@@ -19,8 +19,8 @@ class CLIPModel(torch.nn.Module):
 	
 	def forward(self, images, text):
 		with torch.no_grad():
-			text_encoded = self.clip.encode_text(text.int())
-			images_encoded = self.clip.encode_image(images)
+			text_encoded = self.clip.encode_text(text.int().to(self.device))
+			images_encoded = self.clip.encode_image(images.to(self.device))
 		
 		# NOTE: We *may* need to run this through the model itself, but whether we need to do this or not is curently unclear.
 		
