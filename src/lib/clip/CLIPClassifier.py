@@ -73,19 +73,35 @@ class CLIPClassifier(object):
             
             self.handle_metrics.write(f"{epoch_i}\t{acc}\t{loss}\t{val_acc}\t{val_loss}\n")   
             self.handle_metrics.flush()         
-            self.checkpoint(f"checkpoint_e${epoch_i}_valacc={val_acc}.pt")
+            self.checkpoint(
+                f"checkpoint_e${epoch_i}_valacc={val_acc}.pt",
+                epoch_i=epoch_i,
+                metrics={ "loss": loss, "acc": acc, "val_loss": val_loss, "val_acc": val_acc }
+            )
         
         self.handle_metrics.close()    
         self.handle_metrics = None
     
-    def checkpoint(self, filepath_target):
+    def checkpoint(self, filepath_target, epoch_i=-1, metrics=None):
         """
         Saves a model as a TorchScript checkpoint file.
         The recommended file extension is apparently ".pt".
         """
-        script = torch.jit.script(self.model)
-        script.save(filepath_target)
+        script = torch.save({
+            "epoch": epoch_i,
+            "model_state_dict": self.model.state_dict(),
+            "optimiser_state_dict": self.optimiser.state_dict(),
+            "metrics": metrics
+        }, filepath_target)
     
+    def checkpoint_load(self, filepath_source):
+        checkpoint = torch.load(filepath_source)
+        self.model.load_state_dict(checkpoint["model_state_dict"])
+        self.optimiser.load_state_dict(checkpoint["optimiser_state_dict"])
+        logger.info(
+            "Loaded checkpoint at epoch ", checkpoint["epoch_i"],
+            ", metrics: ", json.dumps(checkpoint["metrics"])
+        )
     
     def __train(self, dataset):
         loss_total = 0
