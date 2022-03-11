@@ -31,7 +31,7 @@ class GloVe:
 	
 	def load(self):
 		"""Loads the GloVe database from a given file."""
-		print()
+		sys.stderr.write("\n")
 		start = time.time()
 		handle = io.open(self.filepath, "r")
 		for i, line in enumerate(handle):

@@ -1,3 +1,6 @@
+dataset/
+hackathon-202203/transformer-g25/
+hackathon-202203/glove.twitter.27B.*d.txt
 datasets/
 output
 configs/
