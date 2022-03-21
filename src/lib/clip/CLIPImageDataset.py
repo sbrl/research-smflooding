@@ -15,7 +15,7 @@ class CLIPImageDataset(torch.utils.data.Dataset):
 		self.preprocess = clip_preprocess
 		
 		self.files = os.listdir(self.dir_media)
-		self.files = [ filename for filename in self.files if not filename.is_dir() ]
+		self.files = [ filename for filename in self.files if not os.path.is_dir(filename) ]
 		self.length = len(self.files)
 	
 	def __len__(self):
