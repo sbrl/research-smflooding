@@ -97,9 +97,6 @@ def main():
 	if not os.path.exists(settings.input):
 		print(f"Error: No such file or directory {settings.input}")
 		sys.exit(2)
-	if not os.path.exists(settings.output):
-		print(f"Error: No such file or directory {settings.output}")
-		sys.exit(2)
 	if not os.path.exists(settings.data.paths.categories):
 		print(f"Error: No such file or directory {settings.data.paths.categories}")
 		sys.exit(2)
