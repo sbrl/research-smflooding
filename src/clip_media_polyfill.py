@@ -82,10 +82,10 @@ def main():
 		sys.exit(1)
 	
 	
-	if not settings.input or len(settings.input):
+	if not settings.input or len(settings.input) == 0:
 		print(f"Error: No path to the input file specified.")
 		sys.exit(2)
-	if not settings.output or len(settings.output):
+	if not settings.output or len(settings.output) == 0:
 		print(f"Error: No path to the output file specified.")
 		sys.exit(2)
 	if not settings.data.paths.categories or len(settings.data.paths.categories) == 0:
