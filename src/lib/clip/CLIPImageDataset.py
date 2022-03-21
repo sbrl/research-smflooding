@@ -5,7 +5,7 @@ from PIL import Image
 
 class CLIPImageDataset(torch.utils.data.Dataset):
     
-    def __init__(self, dir_media, device, clip_preprocess)
+    def __init__(self, dir_media, device, clip_preprocess):
 		super(CLIPImageDataset).__init__()
         
         self.dir_media = dir_media
