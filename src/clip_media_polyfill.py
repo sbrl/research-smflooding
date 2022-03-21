@@ -12,9 +12,8 @@ import clip
 
 from lib.io.settings import settings_get, settings_load
 
-from lib.data.CategoryCalculator import CategoryCalculator
-from lib.clip.CLIPDataset import CLIPDataset
-from lib.clip.CLIPClassifier import CLIPClassifier
+from lib.clip.CLIPImageDataset import CLIPImageDataset
+from lib.clip.CLIPImagePolyfiller import CLIPImagePolyfiller
 
 
 
@@ -119,32 +118,24 @@ def main():
 	## 1: Create datasets
 	###
 	clip_model, clip_preprocess = clip.load("ViT-B/32", device=device)
-	cats = CategoryCalculator(settings.data.paths.categories)
 	
-	dataset_settings_common = {
-		"dir_media": settings.data.paths.dir_media,
-		"cats": cats,
-		"device": device,
-		"clip_preprocess": clip_preprocess
-	}
-	
-	dataset_train = CLIPDataset(
-		filepath_tweets=settings.data.paths.input_train,
-		**dataset_settings_common
+	dataset_images = CLIPImageDataset(
+		dir_media=settings.data.paths.dir_media,
+        device=device,
+        clip_preprocess=clip_preprocess
 	)
 	
 	###
 	## 2: Create AI model & train
 	###
-	ai = CLIPClassifier(
-		dir_output=args.output,
-		epochs=settings.train.epochs,
-		batch_size=settings.train.batch_size,
-		clip_model=clip_model,
-		device=device
+	polyfiller = CLIPImagePolyfiller(
+        dataset_images=dataset_images,
+        clip_model=clip_model,
+        device=device,
+		batch_size=settings.train.batch_size
 	)
 	
-	ai.train(dataset_train, dataset_validate)
+    polyfiller.label(settings.input, settings.output)
 
 if __name__ == "__main__":
 	main()
