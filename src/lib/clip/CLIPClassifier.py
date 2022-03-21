@@ -31,8 +31,8 @@ class CLIPClassifier(object):
         self.debug_tinyepochs = False
     
     def preamble(self):
-        if not os.path.exists(self.dir_output):
-            os.makedirs(self.dir_output)
+        if not os.path.exists(self.dir_checkpoint):
+            os.makedirs(self.dir_checkpoint)
         
         self.handle_metrics = open(os.path.join(self.dir_output, "metrics.tsv"), "w")
         self.handle_metrics.write("epoch\taccuracy\tloss\tval_accuracy\tval_loss\n")
@@ -74,7 +74,7 @@ class CLIPClassifier(object):
             self.handle_metrics.write(f"{epoch_i}\t{acc}\t{loss}\t{val_acc}\t{val_loss}\n")   
             self.handle_metrics.flush()         
             self.checkpoint(
-                f"checkpoint_e${epoch_i}_valacc={val_acc}.pt",
+                os.path.join(self.dir_checkpoint, f"checkpoint_e${epoch_i}_valacc={val_acc}.pt"),
                 epoch_i=epoch_i,
                 metrics={ "loss": loss, "acc": acc, "val_loss": val_loss, "val_acc": val_acc }
             )
@@ -87,6 +87,7 @@ class CLIPClassifier(object):
         Saves a model as a TorchScript checkpoint file.
         The recommended file extension is apparently ".pt".
         """
+        logger.info(f"CHECKPOINT to {filepath_target}")
         script = torch.save({
             "epoch": epoch_i,
             "model_state_dict": self.model.state_dict(),
