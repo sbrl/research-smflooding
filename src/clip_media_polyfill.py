@@ -67,7 +67,7 @@ def main():
 	settings.input = args.input
 	settings.output = args.output
 	
-    init_logging(None)
+	init_logging(None)
 	
 	device = "cuda" if torch.cuda.is_available() else "cpu"
 	if settings.model.device != "auto":
@@ -81,7 +81,7 @@ def main():
 		logger.info("No GPUs detected, exiting because --only-gpu was specified")
 		sys.exit(1)
 	
-    
+	
 	if not settings.input or len(settings.input):
 		print(f"Error: No path to the input file specified.")
 		sys.exit(2)
@@ -110,10 +110,10 @@ def main():
 	
 	###############################################################################
 	
-    ###############################################################################
-    # TODO: EVERYTHING BELOW HERE NEEDS CHANGING
-    ###############################################################################
-    
+	###############################################################################
+	# TODO: EVERYTHING BELOW HERE NEEDS CHANGING
+	###############################################################################
+	
 	###
 	## 1: Create datasets
 	###
@@ -121,21 +121,21 @@ def main():
 	
 	dataset_images = CLIPImageDataset(
 		dir_media=settings.data.paths.dir_media,
-        device=device,
-        clip_preprocess=clip_preprocess
+		device=device,
+		clip_preprocess=clip_preprocess
 	)
 	
 	###
 	## 2: Create AI model & train
 	###
 	polyfiller = CLIPImagePolyfiller(
-        dataset_images=dataset_images,
-        clip_model=clip_model,
-        device=device,
+		dataset_images=dataset_images,
+		clip_model=clip_model,
+		device=device,
 		batch_size=settings.train.batch_size
 	)
 	
-    polyfiller.label(settings.input, settings.output)
+	polyfiller.label(settings.input, settings.output)
 
 if __name__ == "__main__":
 	main()
