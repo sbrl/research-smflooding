@@ -16,7 +16,7 @@ class CLIPClassifier(object):
         
         self.dir_output = dir_output
         
-        self.dir_checkpoint = filepath_checkpoint = os.path.join(self.dir_output, "checkpoint")
+        self.dir_checkpoint = filepath_checkpoint = os.path.join(self.dir_output, "checkpoints")
         
         self.epochs = epochs
         self.batch_size = batch_size
