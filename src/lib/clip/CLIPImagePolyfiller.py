@@ -1,5 +1,9 @@
 import io
 import json
+import random
+import time
+import sys
+import os
 
 from loguru import logger
 import torch
@@ -17,7 +21,8 @@ class CLIPImagePolyfiller(object):
 		self.data = torch.utils.data.DataLoader(
 			dataset_images,
 			batch_size=self.batch_size,
-			shuffle=False
+			shuffle=False,
+			num_workers=os.cpu_count()
 		)
 		
 		self.clip_model = clip_model
@@ -44,7 +49,11 @@ class CLIPImagePolyfiller(object):
 			if "media" in obj:
 				continue
 			
+			# TODO: If the tweet text doesn't contain any supported emojis, then don't bother either
+			
 			with torch.no_grad():
+				time_start = time.time()
+				
 				text = self.clip_model.encode_text(
 					clip.tokenize(obj["text"].strip(), truncate=True).to(self.device)
 				).to(self.device)
@@ -64,20 +73,29 @@ class CLIPImagePolyfiller(object):
 					similarity = (100 * torch.matmul(text_features, image_features.T)).softmax(dim=-1)
 					similarity = similarity[0]
 					
-					for i, value in enumerate(similarity):
+					for similarity_i, value in enumerate(similarity):
 						if value > image_confidence:
-							image_id_best = self.batch_size * step + i
+							image_id_best = self.batch_size * step + similarity_i
 							image_confidence = value
 						if value > self.candidate_threshold:
-							candidates.append([self.batch_size * step + i, value])
+							candidates.append([self.batch_size * step + similarity_i, value])
 					
-					print(f"STEP {step}, image {step*self.batch_size} / {self.dataset.length} id_best:", image_id_best, "filename:", self.dataset.get_filename(image_id_best), "confidence:", image_confidence, "candidates:", len(candidates))
+					sys.stdout.write(f"STEP {step}, image {step*self.batch_size} / {self.dataset.length} id_best: {image_id_best} filename: {self.dataset.get_filename(image_id_best)} confidence: {image_confidence.item()} candidates: {len(candidates)}\r")
 					# TODO Do something with it here
-			
-			obj.media_clip = "TODO" # self.dataset.get_filename(image_id_best)
-			obj.media_clip_confidence = image_confidence
-			
-			handle_out.write(json.dumps(obj) + "\n")
-			if i % 100:
-				handle_out.flush()
+				
+				selected_id = image_id_best
+				selected_confidence = image_confidence
+				# If we found at least 1 item above the confidence threshold, randomly select one to avoid a consistent high scorer from being picked every time
+				if candidates:
+					picked = random.choice(candidates)
+					selected_id = picked[0]
+					selected_confidence = picked[1]
+				
+				obj.media_clip = self.dataset.get_filename(selected_id)
+				obj.media_clip_confidence = selected_confidence
+				logger.info(f"Tweet {i}: selected {selected_id} → {obj.media_clip} confidence {obj.media_clip_confidence} in {time.time() - time_start}")
+				
+				handle_out.write(json.dumps(obj) + "\n")
+				if i % 100:
+					handle_out.flush()
 			
