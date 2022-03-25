@@ -74,7 +74,7 @@ class CLIPClassifier(object):
             self.handle_metrics.write(f"{epoch_i}\t{acc}\t{loss}\t{val_acc}\t{val_loss}\n")   
             self.handle_metrics.flush()         
             self.checkpoint(
-                os.path.join(self.dir_checkpoint, f"checkpoint_e${epoch_i}_valacc={val_acc}.pt"),
+                os.path.join(self.dir_checkpoint, f"checkpoint_e{epoch_i}_valacc={round(val_acc, 3)}.pt"),
                 epoch_i=epoch_i,
                 metrics={ "loss": loss, "acc": acc, "val_loss": val_loss, "val_acc": val_acc }
             )
