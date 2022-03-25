@@ -1,8 +1,9 @@
 import os
 
+from loguru import logger
+
 import torch
 from PIL import Image
-
 
 class CLIPImageDataset(torch.utils.data.Dataset):
 	
@@ -15,8 +16,9 @@ class CLIPImageDataset(torch.utils.data.Dataset):
 		self.preprocess = clip_preprocess
 		
 		self.files = os.listdir(self.dir_media)
-		self.files = [ filename for filename in self.files if not os.path.isdir(filename) ]
+		self.files = [ os.path.join(self.dir_media, filename) for filename in self.files if not os.path.isdir(filename) ]
 		self.length = len(self.files)
+		logger.info(f"Loaded {self.length} image filenames")
 	
 	def __len__(self):
 		return self.length

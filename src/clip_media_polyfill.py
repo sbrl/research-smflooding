@@ -40,6 +40,7 @@ def parse_args():
 	parser.add_argument("--config", "-c", help="Filepath to the TOML config file to load.", required=True)
 	parser.add_argument("--input", "-i", help="Path to the file to read tweets from.", required=True)
 	parser.add_argument("--output", "-o", help="Path to the file to write tweets to.", required=True)
+	parser.add_argument("--media", "-m", help="Directory containing media. Overrides the value defined in the config file.", required=True)
 	parser.add_argument("--only-gpu",
 		help="If the GPU is not available, exit with an error (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	parser.add_argument("--batch-size", help="Sets the batch size.", type=int)
@@ -64,6 +65,8 @@ def main():
 	settings = settings_get()
 	if hasattr(args, "batch_size") and type(args.batch_size) is int:
 		settings.train.batch_size = args.batch_size
+	if hasattr(args, "media") and type(args.media) is str:
+		settings.data.paths.dir_media = args.media
 	settings.input = args.input
 	settings.output = args.output
 	

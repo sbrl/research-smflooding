@@ -1,4 +1,5 @@
 import io
+import json
 
 from loguru import logger
 import torch
@@ -10,9 +11,10 @@ class CLIPImagePolyfiller(object):
 		
 		self.device = device
 		self.batch_size = batch_size
+		self.candidate_threshold = 0.9
 		
 		self.dataset = dataset_images
-		self.data = torch.utils.data.Dataloader(
+		self.data = torch.utils.data.DataLoader(
 			dataset_images,
 			batch_size=self.batch_size,
 			shuffle=False
@@ -42,20 +44,34 @@ class CLIPImagePolyfiller(object):
 			if "media" in obj:
 				continue
 			
-			text = clip.tokenize(obj["text"].strip(), truncate=True).squeeze(0).to(self.device)
-			
-			text_batch = torch.stack([text]*self.batch_size, 0)
-			
-			image_id_best = -1		# The id of the one we're most confident about
-			image_confidence = -1	# How confident we are in the current best
 			with torch.no_grad():
+				text = self.clip_model.encode_text(
+					clip.tokenize(obj["text"].strip(), truncate=True).to(self.device)
+				).to(self.device)
+				text_features = torch.stack([text]*self.batch_size, 0).squeeze(1)
+				
+				text_features /= text_features.norm(dim=-1, keepdim=True)
+				logger.info(f"text_features.shape {text_features.shape}")
+				
+				candidates = []
+				image_id_best = -1		# The id of the one we're most confident about
+				image_confidence = -1	# How confident we are in the current best
+				
 				for step, image_batch in enumerate(self.data):
-					logger.info(f"STEP {step}")
+					image_features = self.clip_model.encode_image(image_batch)
+					image_features /= image_features.norm(dim=-1, keepdim=True)
 					
-					result = self.clip_model(text_batch, image_batch)
+					similarity = (100 * torch.matmul(text_features, image_features.T)).softmax(dim=-1)
+					similarity = similarity[0]
 					
-					print("BATCH_RESULT", result.shape, result)
+					for i, value in enumerate(similarity):
+						if value > image_confidence:
+							image_id_best = self.batch_size * step + i
+							image_confidence = value
+						if value > self.candidate_threshold:
+							candidates.append([self.batch_size * step + i, value])
 					
+					print(f"STEP {step}, image {step*self.batch_size} / {self.dataset.length} id_best:", image_id_best, "filename:", self.dataset.get_filename(image_id_best), "confidence:", image_confidence, "candidates:", len(candidates))
 					# TODO Do something with it here
 			
 			obj.media_clip = "TODO" # self.dataset.get_filename(image_id_best)
