@@ -4,6 +4,7 @@ from loguru import logger
 
 import torch
 from PIL import Image
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 class CLIPImageDataset(torch.utils.data.Dataset):
 	
