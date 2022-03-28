@@ -122,7 +122,8 @@ def main():
 	dataset_images = CLIPImageDataset(
 		dir_media=settings.data.paths.dir_media,
 		device="cpu", # When using more than 1 worker, we hafta keep data on the CPU because otherwise it throws an error :-(
-		clip_preprocess=clip_preprocess
+		image_size=clip_model.input_resolution.item()
+		# clip_preprocess=clip_preprocess
 	)
 	
 	###

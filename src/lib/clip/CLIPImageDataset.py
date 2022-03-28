@@ -1,20 +1,28 @@
-import os
+import os]
+import io
 
 from loguru import logger
 
 import torch
-import torchvision
-# from simplejpeg import decode_jpeg
+simplejpeg
 
 class CLIPImageDataset(torch.utils.data.Dataset):
 	
-	def __init__(self, dir_media, device, clip_preprocess):
+	def __init__(self, dir_media, device, image_size): # clip_preprocess
 		super(CLIPImageDataset).__init__()
 		
 		self.dir_media = dir_media
 		self.device = device
 		
-		self.preprocess = clip_preprocess
+		# self.preprocess = clip_preprocess
+		self.image_size = image_size
+		# From https://github.com/openai/CLIP/blob/40f5484c1c74edd83cb9cf687c6ab92b28d8b656/clip/clip.py#L78 with the conversion to RGB removed so we can use simplejpeg instead
+		self.preprocess = Compose([
+			Resize(image_size, interpolation=BICUBIC),
+			CenterCrop(image_size),
+			ToTensor(),
+			Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711)),
+		])
 		
 		self.files = os.listdir(self.dir_media)
 		self.files = [ os.path.join(self.dir_media, filename) for filename in self.files if not os.path.isdir(filename) ]
@@ -25,9 +33,14 @@ class CLIPImageDataset(torch.utils.data.Dataset):
 		return self.length
 	
 	def __getitem__(self, image_id):
-		return self.preprocess(
-			torchvision.io.read_image(self.files[image_id])
-		).to(device=self.device)
+		filename = self.files[image_id].replace(".png", ".jpg")
+		# Note: You need to run this command to convert everything to jpeg first:
+		# find path/to/media -iname '*.png' | xargs --verbose -n3 -P "$(nproc)" mogrify -format jpg
+		# TODO: Replace png → jpg
+		with io.open(filename, "rb") as handle:
+			image = simplejpeg.decode_jpeg(handle.read(), fastdct=True, fastupsample=True)
+			return self.preprocess(image).to(device=self.device)
+		
 		# return self.preprocess(Image.open(self.files[image_id])).to(device=self.device)
 	
 	
