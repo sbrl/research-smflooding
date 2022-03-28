@@ -3,8 +3,8 @@ import os
 from loguru import logger
 
 import torch
-from PIL import Image
-ImageFile.LOAD_TRUNCATED_IMAGES = True
+import torchvision
+# from simplejpeg import decode_jpeg
 
 class CLIPImageDataset(torch.utils.data.Dataset):
 	
@@ -25,7 +25,10 @@ class CLIPImageDataset(torch.utils.data.Dataset):
 		return self.length
 	
 	def __getitem__(self, image_id):
-		return self.preprocess(Image.open(self.files[image_id])).to(device=self.device)
+		return self.preprocess(
+			torchvision.io.read_image(self.files[image_id])
+		).to(device=self.device)
+		# return self.preprocess(Image.open(self.files[image_id])).to(device=self.device)
 	
 	
 	# If one knows the batch size and the number of batches processed, one can determine the index of the filename in question
