@@ -39,8 +39,8 @@ class CLIPImageDataset(torch.utils.data.Dataset):
 		# TODO: Replace png → jpg
 		with io.open(filename, "rb") as handle:
 			image = simplejpeg.decode_jpeg(handle.read(), fastdct=True, fastupsample=True)
-			return self.preprocess(image).to(device=self.device)
 		
+		return self.preprocess(image).to(device=self.device)
 		# return self.preprocess(Image.open(self.files[image_id])).to(device=self.device)
 	
 	

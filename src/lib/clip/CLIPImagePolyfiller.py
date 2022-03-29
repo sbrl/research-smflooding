@@ -14,13 +14,15 @@ def clear_line():
     sys.stderr.write("{}\r".format(' '*os.get_terminal_size().columns))
 
 class CLIPImagePolyfiller(object):
-	def __init__(self, dataset_images, clip_model, device, batch_size=64):
+	def __init__(self, dataset_images, clip_model, cats, device, batch_size=64, use_tensor_cache=True):
 		super(CLIPImagePolyfiller, self).__init__()
 		
+		self.use_tensor_cache = use_tensor_cache
 		self.device = device
 		self.batch_size = batch_size
 		self.candidate_threshold = 0.9
 		
+		self.cats = cats
 		self.dataset = dataset_images
 		
 		self.data = torch.utils.data.DataLoader(
@@ -31,6 +33,34 @@ class CLIPImagePolyfiller(object):
 		)
 		
 		self.clip_model = clip_model
+		
+		self.tensor_cache = {}
+		if self.use_tensor_cache:
+			self.prefill_cache()
+	
+	def prefill_cache(self):
+		logger.info(f"Prefilling image tensor cache.")
+		
+		time_start = time.time()
+		time_last_update = time.time()
+		for step, image_batch in enumerate(self.data):
+			self.tensor_cache[step] = self.encode_image_batch(image_batch)
+			
+			time_current = time.time()
+			if step == 0 or time_current - time_last_update > 2:
+				elapsed = time_current - time_start
+				percent = round(((step*self.batch_size)/self.dataset.length)*100, 2)
+				eta = elapsed/(step*self.batch_size) * (self.dataset.length - step)
+				sys.stdout.write(f"Prefill tensor cache: {step} / {self.dataset.length} ({percent}%) | Time: {elapsed}s > {eta}\r")
+		
+		logger.info(f"Tensor cache filled in {round(time.time() - time_start, 2)}s.")
+	
+	
+	def encode_image_batch(self, image_batch):
+		image_features = self.clip_model.encode_image(image_batch.to(self.device))
+		image_features /= image_features.norm(dim=-1, keepdim=True)
+		return image_features
+	
 	
 	def label(self, filepath_input, filepath_output):
 		handle_in = io.open(filepath_input, "r")
@@ -54,13 +84,27 @@ class CLIPImagePolyfiller(object):
 			if "media" in obj:
 				continue
 			
-			# TODO: If the tweet text doesn't contain any supported emojis, then don't bother either
+			
+				handle_out.write(json.dumps(obj) + "\n")
+				if i % 100:
+					handle_out.flush()
+			text = obj["text"].strip()
+			
+			# If the tweet text doesn't contain any supported emojis, then don't bother either
+			if self.cats and self.cats.get_category_index(text) is None:
+				obj["media_clip"] = None
+				obj["media_clip_confidence"] = -1
+				
+				handle_out.write(json.dumps(obj) + "\n")
+				if i % 100:
+					handle_out.flush()
+				continue
 			
 			with torch.no_grad():
 				time_start = time.time()
 				
 				text = self.clip_model.encode_text(
-					clip.tokenize(obj["text"].strip(), truncate=True).to(self.device)
+					clip.tokenize(text, truncate=True).to(self.device)
 				).to(self.device)
 				text_features = torch.stack([text]*self.batch_size, 0).squeeze(1)
 				
@@ -73,10 +117,14 @@ class CLIPImagePolyfiller(object):
 				
 				time_step = time.time()
 				time_dataset = 0
-				for step, image_batch in enumerate(self.data):
+				enumerator = None
+				if self.use_tensor_cache:
+					enumerator = self.tensor_cache.items()
+				else:
+					enumerator = enumerate(self.data)
+				for step, image_batch in enumerator:
 					time_dataset += time.time() - time_step
-					image_features = self.clip_model.encode_image(image_batch.to(self.device))
-					image_features /= image_features.norm(dim=-1, keepdim=True)
+					image_features = self.encode_image_batch(image_batch)
 					
 					similarity = (100 * torch.matmul(text_features, image_features.T)).softmax(dim=-1)
 					similarity = similarity[0]
