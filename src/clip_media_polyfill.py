@@ -14,7 +14,7 @@ from lib.io.settings import settings_get, settings_load
 
 from lib.clip.CLIPImageDataset import CLIPImageDataset
 from lib.clip.CLIPImagePolyfiller import CLIPImagePolyfiller
-
+from lib.data.CategoryCalculator import CategoryCalculator
 
 
 def init_logging(filepath_output):
@@ -36,11 +36,12 @@ def init_logging(filepath_output):
 
 def parse_args():
 	"""Defines and parses the CLI arguments."""
-	parser = argparse.ArgumentParser(description="This program annotates tweets as to which images best fit them.")
+	parser = argparse.ArgumentParser(description="This program annotates tweets without images as to which images best fit them.")
 	parser.add_argument("--config", "-c", help="Filepath to the TOML config file to load.", required=True)
 	parser.add_argument("--input", "-i", help="Path to the file to read tweets from.", required=True)
 	parser.add_argument("--output", "-o", help="Path to the file to write tweets to.", required=True)
 	parser.add_argument("--media", "-m", help="Directory containing media. Overrides the value defined in the config file.", required=True)
+	parser.add_argument("--cats", help="Path to the categories file. If specified, only tweets that have at least 1 emoji as defined in this file will be annotated with an image with CLIP. Tweets without an emoji are passed through with the media_clip field set to null and media_clip_confidence set to -1..")
 	parser.add_argument("--only-gpu",
 		help="If the GPU is not available, exit with an error (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	parser.add_argument("--batch-size", help="Sets the batch size.", type=int)
@@ -67,6 +68,8 @@ def main():
 		settings.train.batch_size = args.batch_size
 	if hasattr(args, "media") and type(args.media) is str:
 		settings.data.paths.dir_media = args.media
+	if hasattr(args, "cats") and type(args.cats) is str:
+		settings.data.paths.categories = args.cats
 	settings.input = args.input
 	settings.output = args.output
 	
@@ -91,16 +94,13 @@ def main():
 	if not settings.output or len(settings.output) == 0:
 		print(f"Error: No path to the output file specified.")
 		sys.exit(2)
-	if not settings.data.paths.categories or len(settings.data.paths.categories) == 0:
-		print("Error: No path to the categories file specified (data.paths.categories)")
-		sys.exit(1)
 	if not settings.data.paths.dir_media or len(settings.data.paths.dir_media) == 0:
 		print("Error: No path to the media directory specified (data.paths.dir_media)")
 	
 	if not os.path.exists(settings.input):
 		print(f"Error: No such file or directory {settings.input}")
 		sys.exit(2)
-	if not os.path.exists(settings.data.paths.categories):
+	if settings.data.paths.categories and len(settings.data.paths.categories) > 0 and not os.path.exists(settings.data.paths.categories):
 		print(f"Error: No such file or directory {settings.data.paths.categories}")
 		sys.exit(2)
 	if not os.path.exists(settings.data.paths.dir_media):
@@ -108,6 +108,7 @@ def main():
 		sys.exit(2)
 	
 	
+	logger.info(f"Only annotating tweets with emojis as per {settings.data.paths.categories}.")
 	###############################################################################
 	
 	###############################################################################
@@ -117,12 +118,15 @@ def main():
 	###
 	## 1: Create datasets
 	###
+	cats = CategoryCalculator(settings.data.paths.categories)
+	
 	clip_model, clip_preprocess = clip.load("ViT-B/32", device=device)
+	clip_image_resolution = clip_preprocess.transforms[1].size[0]
 	
 	dataset_images = CLIPImageDataset(
 		dir_media=settings.data.paths.dir_media,
 		device="cpu", # When using more than 1 worker, we hafta keep data on the CPU because otherwise it throws an error :-(
-		image_size=clip_model.input_resolution.item()
+		image_size=clip_image_resolution
 		# clip_preprocess=clip_preprocess
 	)
 	
@@ -133,7 +137,8 @@ def main():
 		dataset_images=dataset_images,
 		clip_model=clip_model,
 		device=device,
-		batch_size=settings.train.batch_size
+		batch_size=settings.train.batch_size,
+		cats=cats
 	)
 	
 	polyfiller.label(settings.input, settings.output)

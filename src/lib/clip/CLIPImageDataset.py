@@ -1,16 +1,20 @@
-import os]
+import os
 import io
 
 from loguru import logger
 
 import torch
-simplejpeg
+import torchvision
+import simplejpeg
+
+from torchvision.transforms import Compose, Resize, CenterCrop, ToTensor, Normalize
+from torchvision.transforms import InterpolationMode
 
 class CLIPImageDataset(torch.utils.data.Dataset):
 	
 	def __init__(self, dir_media, device, image_size): # clip_preprocess
 		super(CLIPImageDataset).__init__()
-		
+		logger.info(f"IMAGE SIZE {image_size}")
 		self.dir_media = dir_media
 		self.device = device
 		
@@ -18,9 +22,9 @@ class CLIPImageDataset(torch.utils.data.Dataset):
 		self.image_size = image_size
 		# From https://github.com/openai/CLIP/blob/40f5484c1c74edd83cb9cf687c6ab92b28d8b656/clip/clip.py#L78 with the conversion to RGB removed so we can use simplejpeg instead
 		self.preprocess = Compose([
-			Resize(image_size, interpolation=BICUBIC),
+			Resize(image_size, interpolation=InterpolationMode.BICUBIC),
 			CenterCrop(image_size),
-			ToTensor(),
+			# ToTensor(), # Not needed, as we're feeding tensors in rather than PIL images
 			Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711)),
 		])
 		
@@ -39,6 +43,8 @@ class CLIPImageDataset(torch.utils.data.Dataset):
 		# TODO: Replace png → jpg
 		with io.open(filename, "rb") as handle:
 			image = simplejpeg.decode_jpeg(handle.read(), fastdct=True, fastupsample=True)
+		
+		image = torch.as_tensor(image, dtype=torch.float32).permute(2, 0, 1)
 		
 		return self.preprocess(image).to(device=self.device)
 		# return self.preprocess(Image.open(self.files[image_id])).to(device=self.device)
