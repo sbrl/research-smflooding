@@ -45,7 +45,7 @@ class CLIPImagePolyfiller(object):
 		time_last_update = time.time()
 		for step, image_batch in enumerate(self.data):
 			self.tensor_cache[step] = self.encode_image_batch(image_batch)
-			
+			del image_batch
 			time_current = time.time()
 			if step == 0 or time_current - time_last_update > 2:
 				elapsed = time_current - time_start
