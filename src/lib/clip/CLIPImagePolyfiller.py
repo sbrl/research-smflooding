@@ -2,6 +2,7 @@ import io
 import json
 import random
 import time
+import datetime
 import sys
 import os
 import subprocess
@@ -38,20 +39,24 @@ class CLIPImagePolyfiller(object):
 		if self.use_tensor_cache:
 			self.prefill_cache()
 	
+	
 	def prefill_cache(self):
 		logger.info(f"Prefilling image tensor cache.")
 		
 		time_start = time.time()
 		time_last_update = time.time()
 		for step, image_batch in enumerate(self.data):
+			print(torch.cuda.memory_stats())
 			self.tensor_cache[step] = self.encode_image_batch(image_batch)
 			del image_batch
 			time_current = time.time()
-			if step == 0 or time_current - time_last_update > 2:
+			if step == 0 or time_current - time_last_update > 1:
 				elapsed = time_current - time_start
 				percent = round(((step*self.batch_size)/self.dataset.length)*100, 2)
-				eta = elapsed/(step*self.batch_size) * (self.dataset.length - step)
-				sys.stdout.write(f"Prefill tensor cache: {step} / {self.dataset.length} ({percent}%) | Time: {elapsed}s > {eta}\r")
+				eta = -1
+				if step > 0:
+					eta = elapsed/(step*self.batch_size) * (self.dataset.length - step)
+				sys.stdout.write(f"Prefill tensor cache: {step} / {self.dataset.length} ({percent}%) | Time: {datetime.timedelta(seconds=elapsed)}s ETA: {datetime.timedelta(seconds=eta)}s\r")
 		
 		logger.info(f"Tensor cache filled in {round(time.time() - time_start, 2)}s.")
 	
