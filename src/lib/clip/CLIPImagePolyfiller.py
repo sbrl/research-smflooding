@@ -44,14 +44,12 @@ class CLIPImagePolyfiller(object):
 		logger.info(f"Prefilling image tensor cache.")
 		
 		time_start = time.time()
-		time_last_update = time.time()
 		for step, image_batch in enumerate(self.data):
 			print(torch.cuda.memory_stats())
-			self.tensor_cache[step] = self.encode_image_batch(image_batch)
+			self.tensor_cache[step] = self.encode_image_batch(image_batch).to(device="cpu")
 			del image_batch
-			time_current = time.time()
-			if step == 0 or time_current - time_last_update > 1:
-				elapsed = time_current - time_start
+			if step % 100 == 0:
+				elapsed = time.time() - time_start
 				percent = round(((step*self.batch_size)/self.dataset.length)*100, 2)
 				eta = -1
 				if step > 0:
@@ -125,7 +123,7 @@ class CLIPImagePolyfiller(object):
 					enumerator = enumerate(self.data)
 				for step, image_batch in enumerator:
 					time_dataset += time.time() - time_step
-					image_features = self.encode_image_batch(image_batch)
+					image_features = self.encode_image_batch(image_batch.to(self.device))
 					
 					similarity = (100 * torch.matmul(text_features, image_features.T)).softmax(dim=-1)
 					similarity = similarity[0]
