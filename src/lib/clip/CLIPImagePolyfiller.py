@@ -154,7 +154,7 @@ class CLIPImagePolyfiller(object):
 					percent = ((step*self.batch_size)/self.dataset.length)*100
 					percent_dataset = (time_dataset/(time.time()-time_start))*100
 					clear_line()
-					if step > 0 and step % 1000:
+					if step > 0 and step % 1000 == 0:
 						sys.stdout.write(f"STEP {i}:{step}, {step*self.batch_size}/{self.dataset.length} ({round(percent, 2)}%) id_best: {image_id_best} filename: {self.dataset.get_filename(image_id_best)} confidence: {image_confidence.item()} candidates: {len(candidates)}, {round(percent_dataset, 2)}% dataset overhead\r")
 					
 					time_step = time.time()
