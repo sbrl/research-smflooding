@@ -19,7 +19,7 @@ class CLIPImagePolyfiller(object):
 	def __init__(self, dataset_images, clip_model, device, cats=None, batch_size=64, use_tensor_cache=True):
 		super(CLIPImagePolyfiller, self).__init__()
 		
-		self.debug = True
+		self.debug = False
 		self.use_tensor_cache = use_tensor_cache
 		self.device = device
 		self.batch_size = batch_size
@@ -62,7 +62,8 @@ class CLIPImagePolyfiller(object):
 					eta = -1
 					if step > 0:
 						eta = round(elapsed/(step*self.batch_size) * (self.dataset.length - step), 3)
-					print(f"Prefill tensor cache: {step} / {self.dataset.length} ({percent}%) | Time: {datetime.timedelta(seconds=elapsed)}s ETA: {datetime.timedelta(seconds=eta)}s | Memory: {human_filesize(memory_used)}\r")
+					
+					logger.info(f"Prefill tensor cache: {step} / {self.dataset.length} ({percent}%) | Time: {datetime.timedelta(seconds=elapsed)}s ETA: {datetime.timedelta(seconds=eta)}s | Memory: {human_filesize(memory_used)}\r")
 				
 				if self.debug == True and step > 30:
 					break
@@ -93,9 +94,6 @@ class CLIPImagePolyfiller(object):
 				logger.warning(f"Error while parsing JSON on line {i}, skipping: {error}")
 				continue
 			
-			if i % 1000 == 0:
-				logger.info(f"Labelled {i} tweets")
-			
 			if "media" in obj:
 				continue
 			
@@ -120,7 +118,6 @@ class CLIPImagePolyfiller(object):
 				text_features = torch.stack([text]*self.batch_size, 0).squeeze(1)
 				
 				text_features /= text_features.norm(dim=-1, keepdim=True)
-				logger.info(f"text_features.shape {text_features.shape}")
 				
 				candidates = []
 				image_id_best = -1		# The id of the one we're most confident about
@@ -154,7 +151,8 @@ class CLIPImagePolyfiller(object):
 					percent = ((step*self.batch_size)/self.dataset.length)*100
 					percent_dataset = (time_dataset/(time.time()-time_start))*100
 					clear_line()
-					sys.stdout.write(f"STEP {i}:{step}, {step*self.batch_size}/{self.dataset.length} ({round(percent, 2)}%) id_best: {image_id_best} filename: {self.dataset.get_filename(image_id_best)} confidence: {image_confidence.item()} candidates: {len(candidates)}, {round(percent_dataset, 2)}% dataset overhead\r")
+					if step > 0 and step % 1000:
+						sys.stdout.write(f"STEP {i}:{step}, {step*self.batch_size}/{self.dataset.length} ({round(percent, 2)}%) id_best: {image_id_best} filename: {self.dataset.get_filename(image_id_best)} confidence: {image_confidence.item()} candidates: {len(candidates)}, {round(percent_dataset, 2)}% dataset overhead\r")
 					
 					time_step = time.time()
 				
@@ -168,8 +166,7 @@ class CLIPImagePolyfiller(object):
 				
 				obj["media_clip"] = os.path.basename(self.dataset.get_filename(selected_id))
 				obj["media_clip_confidence"] = selected_confidence.item()
-				print("DEBUG media_clip", obj["media_clip"])
-				print("DEBUG media_clip_confidence", obj["media_clip_confidence"])
+				
 				logger.info(f"Tweet {i}: selected {selected_id} → "+obj["media_clip"]+f" confidence "+str(obj["media_clip_confidence"])+f" in {round(time.time() - time_start, 2)}s")
 				
 				handle_out.write(json.dumps(obj) + "\n")
