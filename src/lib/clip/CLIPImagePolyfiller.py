@@ -10,7 +10,7 @@ import subprocess
 from loguru import logger
 import torch
 import clip
-import human_filesize from ..polyfills.human_filesize
+from ..polyfills.human_filesize import human_filesize
 
 def clear_line():
     sys.stderr.write("{}\r".format(' '*os.get_terminal_size().columns))
