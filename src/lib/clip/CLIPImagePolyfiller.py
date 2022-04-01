@@ -10,9 +10,9 @@ import subprocess
 from loguru import logger
 import torch
 import clip
-import nonechucks
 
 from ..polyfills.human_filesize import human_filesize
+from ..data.collate_filter_none import do_collate_filter_none
 
 def clear_line():
     sys.stderr.write("{}\r".format(' '*os.get_terminal_size().columns))
@@ -29,13 +29,13 @@ class CLIPImagePolyfiller(object):
 		
 		self.cats = cats
 		self.dataset = dataset_images
-		self.dataset_safe = nonechucks.SafeDataset(self.dataset)
 		
-		self.data = nonechucks.SafeDataLoader(
-			self.dataset_safe,
+		self.data = torch.utils.data.DataLoader(
+			self.dataset,
 			batch_size=self.batch_size,
 			shuffle=False,
-			num_workers=os.cpu_count()
+			num_workers=os.cpu_count(),
+			collate_fn=lambda batch : do_collate_filter_none(self.dataset, batch)
 		)
 		
 		self.clip_model = clip_model
