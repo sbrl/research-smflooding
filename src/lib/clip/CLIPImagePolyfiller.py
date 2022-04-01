@@ -15,7 +15,12 @@ from ..polyfills.human_filesize import human_filesize
 from ..data.collate_filter_none import do_collate_filter_none
 
 def clear_line():
-    sys.stderr.write("{}\r".format(' '*os.get_terminal_size().columns))
+	terminal_size = 0
+	try:
+		os.get_terminal_size().columns
+	except:
+		terminal_size = 0
+    sys.stderr.write("{}\r".format(' '*terminal_size))
 
 class CLIPImagePolyfiller(object):
 	def __init__(self, dataset_images, clip_model, device, cats=None, batch_size=64, use_tensor_cache=True):
