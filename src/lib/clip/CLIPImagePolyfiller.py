@@ -66,7 +66,7 @@ class CLIPImagePolyfiller(object):
 					if step > 0:
 						eta = round(elapsed/(step*self.batch_size) * (self.dataset.length - step), 3)
 					
-					logger.info(f"Prefill tensor cache: {step} / {self.dataset.length} ({percent}%) | Time: {datetime.timedelta(seconds=elapsed)}s ETA: {datetime.timedelta(seconds=eta)}s | Memory: {human_filesize(memory_used)}\r")
+					logger.info(f"Prefill tensor cache: {step*self.batch_size} / {self.dataset.length} ({percent}%) | Time: {datetime.timedelta(seconds=elapsed)}s ETA: {datetime.timedelta(seconds=eta)}s | Memory: {human_filesize(memory_used)}\r")
 				
 				if self.debug == True and step > 30:
 					break
