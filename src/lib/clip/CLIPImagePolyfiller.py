@@ -56,11 +56,11 @@ class CLIPImagePolyfiller(object):
 				self.tensor_cache[step] = encoded
 				
 				if step % 10 == 0:
-					elapsed = time.time() - time_start
+					elapsed = round(time.time() - time_start, 3)
 					percent = round(((step*self.batch_size)/self.dataset.length)*100, 2)
 					eta = -1
 					if step > 0:
-						eta = elapsed/(step*self.batch_size) * (self.dataset.length - step)
+						eta = round(elapsed/(step*self.batch_size) * (self.dataset.length - step), 3)
 					print(f"Prefill tensor cache: {step} / {self.dataset.length} ({percent}%) | Time: {datetime.timedelta(seconds=elapsed)}s ETA: {datetime.timedelta(seconds=eta)}s | Memory: {human_filesize(memory_used)}\r")
 			
 			logger.info(f"Tensor cache filled in {round(time.time() - time_start, 2)}s.")
@@ -131,7 +131,10 @@ class CLIPImagePolyfiller(object):
 					enumerator = enumerate(self.data)
 				for step, image_batch in enumerator:
 					time_dataset += time.time() - time_step
-					image_features = self.encode_image_batch(image_batch.to(self.device))
+					if self.use_tensor_cache:
+						image_fetures = image_batch
+					else:
+						image_features = self.encode_image_batch(image_batch.to(self.device))
 					
 					similarity = (100 * torch.matmul(text_features, image_features.T)).softmax(dim=-1)
 					similarity = similarity[0]
