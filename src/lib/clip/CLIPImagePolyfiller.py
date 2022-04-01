@@ -19,7 +19,7 @@ class CLIPImagePolyfiller(object):
 	def __init__(self, dataset_images, clip_model, device, cats=None, batch_size=64, use_tensor_cache=True):
 		super(CLIPImagePolyfiller, self).__init__()
 		
-		self.debug = False
+		self.debug = True
 		self.use_tensor_cache = use_tensor_cache
 		self.device = device
 		self.batch_size = batch_size
@@ -137,7 +137,7 @@ class CLIPImagePolyfiller(object):
 					time_dataset += time.time() - time_step
 					image_features = None
 					if self.use_tensor_cache:
-						image_fetures = image_batch
+						image_features = image_batch
 					else:
 						image_features = self.encode_image_batch(image_batch.to(self.device))
 					
