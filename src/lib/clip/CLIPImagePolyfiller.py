@@ -10,6 +10,7 @@ import subprocess
 from loguru import logger
 import torch
 import clip
+import human_filesize from ..polyfills.human_filesize
 
 def clear_line():
     sys.stderr.write("{}\r".format(' '*os.get_terminal_size().columns))
@@ -43,18 +44,23 @@ class CLIPImagePolyfiller(object):
 	def prefill_cache(self):
 		logger.info(f"Prefilling image tensor cache.")
 		
+		memory_used = 0
 		time_start = time.time()
 		for step, image_batch in enumerate(self.data):
-			print(torch.cuda.memory_stats())
-			self.tensor_cache[step] = self.encode_image_batch(image_batch).to(device="cpu")
+			encoded = self.encode_image_batch(image_batch).to(device="cpu")
 			del image_batch
+			
+			memory_used += encoded.nelement() * encoded.element_size()
+			print(encoded.shape)
+			self.tensor_cache[step] = encoded
+			
 			if step % 100 == 0:
 				elapsed = time.time() - time_start
 				percent = round(((step*self.batch_size)/self.dataset.length)*100, 2)
 				eta = -1
 				if step > 0:
 					eta = elapsed/(step*self.batch_size) * (self.dataset.length - step)
-				sys.stdout.write(f"Prefill tensor cache: {step} / {self.dataset.length} ({percent}%) | Time: {datetime.timedelta(seconds=elapsed)}s ETA: {datetime.timedelta(seconds=eta)}s\r")
+				print(f"Prefill tensor cache: {step} / {self.dataset.length} ({percent}%) | Time: {datetime.timedelta(seconds=elapsed)}s ETA: {datetime.timedelta(seconds=eta)}s | Memory: {human_filesize(memory_used)}\r")
 		
 		logger.info(f"Tensor cache filled in {round(time.time() - time_start, 2)}s.")
 	
