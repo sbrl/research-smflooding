@@ -19,6 +19,7 @@ class CLIPImagePolyfiller(object):
 	def __init__(self, dataset_images, clip_model, device, cats=None, batch_size=64, use_tensor_cache=True):
 		super(CLIPImagePolyfiller, self).__init__()
 		
+		self.debug = False
 		self.use_tensor_cache = use_tensor_cache
 		self.device = device
 		self.batch_size = batch_size
@@ -62,6 +63,9 @@ class CLIPImagePolyfiller(object):
 					if step > 0:
 						eta = round(elapsed/(step*self.batch_size) * (self.dataset.length - step), 3)
 					print(f"Prefill tensor cache: {step} / {self.dataset.length} ({percent}%) | Time: {datetime.timedelta(seconds=elapsed)}s ETA: {datetime.timedelta(seconds=eta)}s | Memory: {human_filesize(memory_used)}\r")
+				
+				if self.debug == True and step > 30:
+					break
 			
 			logger.info(f"Tensor cache filled in {round(time.time() - time_start, 2)}s.")
 	
@@ -131,6 +135,7 @@ class CLIPImagePolyfiller(object):
 					enumerator = enumerate(self.data)
 				for step, image_batch in enumerator:
 					time_dataset += time.time() - time_step
+					image_features = None
 					if self.use_tensor_cache:
 						image_fetures = image_batch
 					else:
