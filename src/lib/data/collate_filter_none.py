@@ -1,4 +1,4 @@
-import clip
+import torch
 
 # @source https://stackoverflow.com/a/67583699/1460422
 def do_collate_filter_none(dataset, batch):
