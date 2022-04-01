@@ -6,7 +6,6 @@ import datetime
 import sys
 import os
 import subprocess
-import gc
 
 from loguru import logger
 import torch
@@ -71,7 +70,6 @@ class CLIPImagePolyfiller(object):
 		# IMPORTANT: use with torch.no_grad(): before calling this function!!!
 		image_features = self.clip_model.encode_image(image_batch.to(self.device))
 		image_features /= image_features.norm(dim=-1, keepdim=True)
-		gc.collect()
 		return image_features
 	
 	
