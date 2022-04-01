@@ -20,7 +20,8 @@ def clear_line():
 		os.get_terminal_size().columns
 	except:
 		terminal_size = 0
-    sys.stderr.write("{}\r".format(' '*terminal_size))
+	
+	sys.stderr.write("{}\r".format(' '*terminal_size))
 
 class CLIPImagePolyfiller(object):
 	def __init__(self, dataset_images, clip_model, device, cats=None, batch_size=64, use_tensor_cache=True):
