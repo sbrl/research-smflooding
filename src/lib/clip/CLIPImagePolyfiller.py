@@ -10,6 +10,8 @@ import subprocess
 from loguru import logger
 import torch
 import clip
+import nonechucks
+
 from ..polyfills.human_filesize import human_filesize
 
 def clear_line():
@@ -27,9 +29,10 @@ class CLIPImagePolyfiller(object):
 		
 		self.cats = cats
 		self.dataset = dataset_images
+		self.dataset_safe = nonechucks.SafeDataset(self.dataset)
 		
-		self.data = torch.utils.data.DataLoader(
-			dataset_images,
+		self.data = nonechucks.SafeDataLoader(
+			self.dataset_safe,
 			batch_size=self.batch_size,
 			shuffle=False,
 			num_workers=os.cpu_count()

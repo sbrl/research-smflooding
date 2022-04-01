@@ -41,8 +41,13 @@ class CLIPImageDataset(torch.utils.data.Dataset):
 		# Note: You need to run this command to convert everything to jpeg first:
 		# find path/to/media -iname '*.png' | xargs --verbose -n3 -P "$(nproc)" mogrify -format jpg
 		# TODO: Replace png → jpg
-		with io.open(filename, "rb") as handle:
-			image = simplejpeg.decode_jpeg(handle.read(), fastdct=True, fastupsample=True)
+		image = None
+		try:
+			with io.open(filename, "rb") as handle:
+				image = simplejpeg.decode_jpeg(handle.read(), fastdct=True, fastupsample=True)
+		except Exception as error:
+			logger.warn(f"Caught error: {error}")
+			return None
 		
 		image = torch.as_tensor(image, dtype=torch.float32).permute(2, 0, 1)
 		
