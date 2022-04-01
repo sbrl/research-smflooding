@@ -15,7 +15,7 @@ def load_image(filepath, image_size, model_type="resnet"):
         color_mode="rgb"
         )
     except Exception as e:
-        logger.warn(f"Ignoring error: {e}")
+        logger.warning(f"Ignoring error: {e}")
         return None
     
     
