@@ -1,4 +1,5 @@
 import torch
+import numpy
 
 # @source https://stackoverflow.com/a/67583699/1460422
 def do_collate_filter_none(dataset, batch):
@@ -9,7 +10,7 @@ def do_collate_filter_none(dataset, batch):
         db_len = len(dataset)
         diff = len_batch - len(batch)
         while diff != 0:
-            a = dataset[np.random.randint(0, db_len)]
+            a = dataset[numpy.random.randint(0, db_len)]
             if a is None:                
                 continue
             batch.append(a)
