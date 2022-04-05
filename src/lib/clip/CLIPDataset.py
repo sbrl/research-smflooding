@@ -9,13 +9,15 @@ import clip
 
 
 class CLIPDataset(torch.utils.data.IterableDataset):
-	def __init__(self, filepath_tweets, dir_media, cats, clip_preprocess, batch_size=64, device="cpu", **kwargs):
+	def __init__(self, filepath_tweets, dir_media, cats, clip_preprocess, batch_size=64, device="cpu", clip_label_threshold=0.75, **kwargs):
 		super(CLIPDataset).__init__()
 		
 		self.filepath_tweets = filepath_tweets
 		self.device = device
 		self.dir_media = dir_media
 		self.batch_size = batch_size
+		
+		self.clip_label_threshold = clip_label_threshold
 		
 		self.cats = cats
 		self.preprocess = clip_preprocess
@@ -86,8 +88,18 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 				
 			text = obj["text"].strip()
 			
-			# TODO: Also read from media_clip
-			if "media" not in obj:
+			media_items = []
+			if "media" in obj:
+				media_items.extend(obj["media"])
+			
+			# If there's no media and we labelled it with CLIP, use that instead
+			if "media" not in obj and "media_clip" in obj and obj["media_clip"] is not None and obj["media_clip_confidence"] > self.clip_label_threshold:
+				media_items.append({
+					"type": "photo"
+					"url": obj["media_clip"]
+				})
+			
+			if not media_items:
 				continue
 			
 			cat = self.cats.get_category_index(text)
