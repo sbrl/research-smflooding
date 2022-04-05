@@ -86,6 +86,7 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 				
 			text = obj["text"].strip()
 			
+			# TODO: Also read from media_clip
 			if "media" not in obj:
 				continue
 			
