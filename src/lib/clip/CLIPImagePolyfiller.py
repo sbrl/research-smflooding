@@ -182,6 +182,5 @@ class CLIPImagePolyfiller(object):
 				logger.info(f"Tweet {i}: selected {selected_id} → "+obj["media_clip"]+f" confidence "+str(obj["media_clip_confidence"])+f" in {round(time.time() - time_start, 2)}s")
 				
 				handle_out.write(json.dumps(obj) + "\n")
-				if i % 100:
-					handle_out.flush()
+				handle_out.flush()
 			
