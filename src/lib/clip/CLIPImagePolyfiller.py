@@ -104,7 +104,11 @@ class CLIPImagePolyfiller(object):
 				continue
 			
 			if "media" in obj:
-				continue
+				for media_item in obj["media"]:
+					if obj["type"] == "photo":
+						handle_out.write(json.dumps(obj) + "\n")
+						handle_out.flush()
+						continue
 			
 			text = obj["text"].strip()
 			
@@ -114,8 +118,7 @@ class CLIPImagePolyfiller(object):
 				obj["media_clip_confidence"] = -1
 				
 				handle_out.write(json.dumps(obj) + "\n")
-				if i % 100:
-					handle_out.flush()
+				handle_out.flush()
 				continue
 			
 			with torch.no_grad():
