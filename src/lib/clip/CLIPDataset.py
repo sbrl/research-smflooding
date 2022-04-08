@@ -96,7 +96,7 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 			except Exception as error:
 				logger.warning(f"Error while reading or parsing line {self.count_total}, skipping: {error}")
 				continue
-				
+			
 			text = obj["text"].strip()
 			
 			
@@ -105,7 +105,7 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 				media_items.extend(obj["media"])
 			
 			# If there's no media and we labelled it with CLIP, use that instead
-			if "media" not in obj and "media_clip" in obj and obj["media_clip"] is not None and obj["media_clip_confidence"] > self.clip_label_threshold:
+			if "media" not in obj and "media_clip" in obj and obj["media_clip"] is not None and obj["media_clip_confidence"] >= self.clip_label_threshold:
 				media_items.append({
 					"type": "photo",
 					"url": obj["media_clip"]

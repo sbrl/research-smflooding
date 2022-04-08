@@ -4,6 +4,9 @@ output = ""
 [data]
 categories = 2
 
+# Only accept CLIP media labels from tweets with a confidence higher than this value (0 to 1)
+clip_label_threshold=0.75
+
 [data.paths]
 # Path to the tweets.jsonl file to train on
 input_train = ""

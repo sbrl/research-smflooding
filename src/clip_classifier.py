@@ -44,6 +44,7 @@ def parse_args():
 	parser.add_argument("--only-gpu",
 		help="If the GPU is not available, exit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	parser.add_argument("--batch-size", help="Sets the batch size.", type=int)
+	parser.add_argument("--clip-media-threshold", help="If a tweet has a clip-assigned image via data augmentation, any with a confidence below this value will be discarded. Must be between 0 and 1 (default: 0.75).", type=float)
 	
 	return parser.parse_args()
 
@@ -65,6 +66,8 @@ def main():
 	settings = settings_get()
 	if hasattr(args, "batch_size") and type(args.batch_size) is int:
 		settings.train.batch_size = args.batch_size
+	if hasattr(args, "clip_media_threshold"):
+		settings.data.clip_label_threshold = args.clip_media_threshold
 	# if hasattr(args, "smoteify") and args.smoteify:
 	# 	settings.train.smoteify = True
 	settings.output = args.output
@@ -126,7 +129,8 @@ def main():
 		"dir_media": settings.data.paths.dir_media,
 		"cats": cats,
 		"device": device,
-		"clip_preprocess": clip_preprocess
+		"clip_preprocess": clip_preprocess,
+		"clip_label_threshold": settings.data.clip_label_threshold
 	}
 	
 	dataset_train = CLIPDataset(
