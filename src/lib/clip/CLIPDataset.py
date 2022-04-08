@@ -38,6 +38,11 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 			self.handle_tweets.close()
 			self.handle_tweets = None
 		
+		
+		self.count_total = 0
+		self.count_withmedia = 0
+		self.count_withemoji = 0
+		
 		self.handle_tweets = io.open(self.filepath_tweets, "r")
 		
 		self.queue = []
@@ -74,19 +79,22 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 		}
 	
 	def add_to_queue(self):
-		i = 0
 		while True:
-			line = self.handle_tweets.readline()
-			if line == "" or line is None:
-				return # We've reach the end of the output
-			i = i + 1
 			try:
+				self.count_total += 1
+				line = self.handle_tweets.readline()
+				if line == "":
+					break
+				if line is None:
+					logger.info(f"total: {count_total} → withmedia: {count_withmedia} → withemoji: {count_withemoji}")
+					return # We've reach the end of the output
 				obj = json.loads(line)
 			except Exception as error:
-				logger.warning(f"Error while parsing JSON on line {i}, skipping: {error}")
+				logger.warning(f"Error while reading or parsing line {self.count_total}, skipping: {error}")
 				continue
 				
 			text = obj["text"].strip()
+			
 			
 			media_items = []
 			if "media" in obj:
@@ -102,10 +110,14 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 			if not media_items:
 				continue
 			
+			self.count_withmedia += 1
+			
 			cat = self.cats.get_category_index(text)
 			
 			if cat is None:
 				continue
+			
+			self.count_withemoji += 1
 			
 			cat = torch.as_tensor(cat, dtype=torch.int).to(self.device)
 			
