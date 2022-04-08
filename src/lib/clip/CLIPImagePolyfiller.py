@@ -91,6 +91,8 @@ class CLIPImagePolyfiller(object):
 		handle_in = io.open(filepath_input, "r")
 		handle_out = io.open(filepath_output, "w")
 		
+		count_withoutmedia = 0
+		count_withemoji = 0
 		i = 0
 		while True:
 			line = handle_in.readline()
@@ -110,6 +112,7 @@ class CLIPImagePolyfiller(object):
 						handle_out.flush()
 						continue
 			
+			count_withoutmedia += 1
 			text = obj["text"].strip()
 			
 			# If the tweet text doesn't contain any supported emojis, then don't bother either
@@ -120,6 +123,8 @@ class CLIPImagePolyfiller(object):
 				handle_out.write(json.dumps(obj) + "\n")
 				handle_out.flush()
 				continue
+			
+			count_withemoji += 1
 			
 			with torch.no_grad():
 				time_start = time.time()
@@ -186,3 +191,4 @@ class CLIPImagePolyfiller(object):
 				handle_out.write(json.dumps(obj) + "\n")
 				handle_out.flush()
 			
+		logger.info(f"labelled {count_withemoji}, out of {count_withoutmedia} with media, out of {i} total")
