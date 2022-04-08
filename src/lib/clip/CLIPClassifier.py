@@ -35,7 +35,7 @@ class CLIPClassifier(object):
             os.makedirs(self.dir_checkpoint)
         
         self.handle_metrics = open(os.path.join(self.dir_output, "metrics.tsv"), "w")
-        self.handle_metrics.write("epoch\taccuracy\tloss\tval_accuracy\tval_loss\n")
+        self.handle_metrics.write("epoch\taccuracy\tloss\tbatches\tval_accuracy\tval_loss\tval_batches\n")
         
         handle_settings = open(os.path.join(self.dir_output, "settings.txt"), "w")
         handle_settings.write(f"dir_output: {self.dir_output}\n")
@@ -68,15 +68,22 @@ class CLIPClassifier(object):
         
         for epoch_i in range(self.epochs):
             print(f"*** Epoch {epoch_i} ***")
-            loss, acc = self.__train(dataset_train)
-            val_loss, val_acc = self.__validate(dataset_validate)
+            loss, acc, batches = self.__train(dataset_train)
+            val_loss, val_acc, val_batches = self.__validate(dataset_validate)
             
-            self.handle_metrics.write(f"{epoch_i}\t{acc}\t{loss}\t{val_acc}\t{val_loss}\n")   
+            self.handle_metrics.write(f"{epoch_i}\t{acc}\t{loss}\t{batches}\t{val_acc}\t{val_loss}\t{val_batches}\n")   
             self.handle_metrics.flush()         
             self.checkpoint(
                 os.path.join(self.dir_checkpoint, f"checkpoint_e{epoch_i}_valacc={round(val_acc, 3)}.pt"),
                 epoch_i=epoch_i,
-                metrics={ "loss": loss, "acc": acc, "val_loss": val_loss, "val_acc": val_acc }
+                metrics={
+                    "loss": loss,
+                    "acc": acc,
+                    "batches": batches,
+                    "val_loss": val_loss,
+                    "val_acc": val_acc,
+                    "val_batches": val_batches
+                }
             )
         
         self.handle_metrics.close()    
@@ -126,7 +133,7 @@ class CLIPClassifier(object):
             if self.debug_tinyepochs == True and count_batches >= 10:
                 break
             
-        return (loss_total / count_batches), (correct / (count_batches * self.batch_size))
+        return (loss_total / count_batches), (correct / (count_batches * self.batch_size)), count_batches
     
     def __validate(self, dataset):
         """
@@ -151,4 +158,4 @@ class CLIPClassifier(object):
                 if self.debug_tinyepochs == True and count_batches >= 10:
                     break
         
-        return (loss_total / count_batches), (correct / (count_batches * self.batch_size))
+        return (loss_total / count_batches), (correct / (count_batches * self.batch_size)), count_batches
