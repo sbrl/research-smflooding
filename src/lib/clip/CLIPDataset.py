@@ -112,7 +112,7 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 			tweet_text = clip.tokenize(text, truncate=True).squeeze(0).to(self.device)
 			
 			added = 0
-			for media in obj["media"]:
+			for media in media_items:
 				if media["type"] != "photo":
 					continue
 				
