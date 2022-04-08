@@ -42,7 +42,7 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 			self.handle_tweets.close()
 			self.handle_tweets = None
 		
-		logger.info(f"previous | total: {count_total} → withmedia: {count_withmedia} → withemoji: {count_withemoji}")
+		logger.info(f"previous | total: {self.count_total} → withmedia: {self.count_withmedia} → withemoji: {self.count_withemoji}")
 		self.count_total = 0
 		self.count_withmedia = 0
 		self.count_withemoji = 0
