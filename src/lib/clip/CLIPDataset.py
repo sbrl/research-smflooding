@@ -43,7 +43,7 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 		self.count_withmedia = 0
 		self.count_withemoji = 0
 		
-		self.handle_tweets = io.open(self.filepath_tweets, "r")
+		self.handle_tweets = io.open(self.filepath_tweets, "r", errors="replace")
 		
 		self.queue = []
 		return self
