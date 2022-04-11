@@ -119,8 +119,10 @@ class CLIPClassifier(object):
 		if load_optimiser:
 			self.optimiser.load_state_dict(checkpoint["optimiser_state_dict"])
 		
+		epoch = checkpoint["epoch"]
+		metrics = json.dumps(checkpoint["metrics"])
 		logger.info(
-			f"Loaded checkpoint at epoch {checkpoint["epoch"]}, metrics: {json.dumps(checkpoint["metrics"])}"
+			f"Loaded checkpoint at epoch {epoch}, metrics: {metrics}"
 		)
 	
 	def predict(self, images, text):
