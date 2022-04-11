@@ -24,7 +24,8 @@ class CLIPLabeller(object):
         self.preprocess, self.clip_model = clip.load("ViT-B/32", device=self.device)
         
         self.ai = CLIPClassifier(clip_model=self.clip_model)
-        self.ai.checkpoint_load(filepath_checkpoint)
+        # HACK: Loading the optimiser currently crashes with "ValueError: loaded state dict contains a parameter group that doesn't match the size of optimizer's group"
+        self.ai.checkpoint_load(filepath_checkpoint, load_optimiser=False)
     
     
     def normalise_media_filename(self, url):

@@ -106,7 +106,7 @@ class CLIPClassifier(object):
 			"metrics": metrics
 		}, filepath_target)
 	
-	def checkpoint_load(self, filepath_source):
+	def checkpoint_load(self, filepath_source, load_optimiser=True):
 		checkpoint = torch.load(filepath_source)
 		# clip_keys = list(filter(
 		# 	lambda key: key.startswith("clip."),
@@ -116,7 +116,9 @@ class CLIPClassifier(object):
 		# 	checkpoint["model_state_dict"].pop(key)
 		
 		self.model.load_state_dict(checkpoint["model_state_dict"], False)
-		self.optimiser.load_state_dict(checkpoint["optimiser_state_dict"])
+		if load_optimiser:
+			self.optimiser.load_state_dict(checkpoint["optimiser_state_dict"])
+		
 		logger.info(
 			"Loaded checkpoint at epoch ", checkpoint["epoch_i"],
 			", metrics: ", json.dumps(checkpoint["metrics"])
