@@ -44,6 +44,8 @@ def parse_args():
 	parser.add_argument("--cats", help="Path to the categories file. If specified, only tweets that have at least 1 emoji as defined in this file will be annotated with an image with CLIP. Tweets without an emoji are passed through with the media_clip field set to null and media_clip_confidence set to -1..")
 	parser.add_argument("--only-gpu",
 		help="If the GPU is not available, exit with an error (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
+	parser.add_argument("--label-everything",
+		help="Label absolutely every tweet available. Default is to only label only those tweets which the CLIP model will train on.", action="store_true")
 	parser.add_argument("--batch-size", help="Sets the batch size.", type=int)
 	
 	return parser.parse_args()
@@ -53,6 +55,11 @@ def main():
 	"""Main entrypoint."""
 	
 	args = parse_args()
+	
+	label_everything = False
+	
+	if args.label_everything:
+		label_everything = True
 	
 	if not Path(args.config).is_file():
 		print("Error: File at '" + args.config + "' does not exist.")
@@ -138,7 +145,8 @@ def main():
 		clip_model=clip_model,
 		device=device,
 		batch_size=settings.train.batch_size,
-		cats=cats
+		cats=cats,
+		label_everything=label_everything
 	)
 	
 	polyfiller.label(settings.input, settings.output)

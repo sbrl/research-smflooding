@@ -24,10 +24,11 @@ def clear_line():
 	sys.stderr.write("{}\r".format(' '*terminal_size))
 
 class CLIPImagePolyfiller(object):
-	def __init__(self, dataset_images, clip_model, device, cats=None, batch_size=64, use_tensor_cache=True):
+	def __init__(self, dataset_images, clip_model, device, cats=None, batch_size=64, label_everything=False, use_tensor_cache=True):
 		super(CLIPImagePolyfiller, self).__init__()
 		
 		self.debug = False
+		self.label_everything = label_everything
 		self.use_tensor_cache = use_tensor_cache
 		self.device = device
 		self.batch_size = batch_size
@@ -116,7 +117,7 @@ class CLIPImagePolyfiller(object):
 			text = obj["text"].strip()
 			
 			# If the tweet text doesn't contain any supported emojis, then don't bother either
-			if self.cats and self.cats.get_category_index(text) is None:
+			if not self.label_everything and self.cats and self.cats.get_category_index(text) is None:
 				obj["media_clip"] = None
 				obj["media_clip_confidence"] = -1
 				
