@@ -96,7 +96,7 @@ def main():
 	
 	###############################################################################
 	
-	cats = CategoryCalculator(settings.data.paths.categories)
+	cats = CategoryCalculator(filepath_cats)
 	
 	labeller = CLIPLabeller(
 		cats=cats,
