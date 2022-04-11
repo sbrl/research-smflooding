@@ -1,4 +1,5 @@
 import io
+import sys
 import json
 import random
 
@@ -87,6 +88,9 @@ class CLIPLabeller(object):
                 for obj in acc:
                     handle_out.write(json.dumps(obj) + "\n")
                 acc.clear()
+            
+            if i % 250:
+                sys.stdout.write(f"Labelled tweet {i}")
             
             i += 1
     
