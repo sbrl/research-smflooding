@@ -107,11 +107,15 @@ class CLIPImagePolyfiller(object):
 				continue
 			
 			if "media" in obj:
+				do_continue = False
 				for media_item in obj["media"]:
 					if media_item["type"] == "photo":
-						handle_out.write(json.dumps(obj) + "\n")
-						handle_out.flush()
-						continue
+						do_continue = True
+						break
+				if do_continue:
+					handle_out.write(json.dumps(obj) + "\n")
+					handle_out.flush()
+					continue
 			
 			count_withoutmedia += 1
 			text = obj["text"].strip()
