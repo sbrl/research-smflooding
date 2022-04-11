@@ -22,7 +22,7 @@ class CLIPLabeller(object):
 		self.batch_size = batch_size
 		
 		self.cats = cats
-		self.preprocess, self.clip_model = clip.load("ViT-B/32", device=self.device)
+		self.clip_model, self.preprocess = clip.load("ViT-B/32", device=self.device)
 		
 		self.ai = CLIPClassifier(clip_model=self.clip_model)
 		# HACK: Loading the optimiser currently crashes with "ValueError: loaded state dict contains a parameter group that doesn't match the size of optimizer's group"
