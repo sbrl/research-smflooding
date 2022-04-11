@@ -33,7 +33,7 @@ class CLIPLabeller(object):
         """Normalises a media url to it's associated filepath."""
         return os.path.join(
             self.dir_media,
-            os.path.basename(media)
+            os.path.basename(url)
         )
     
     def extract_media_filepath(self, obj):
