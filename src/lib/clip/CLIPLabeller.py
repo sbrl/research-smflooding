@@ -75,6 +75,10 @@ class CLIPLabeller(object):
 		i = -1
 		for line in handle_in:
 			i += 1
+			
+			if i % 250 == 0:
+				sys.stdout.write(f"Labelling tweet {i}\r")
+			
 			obj = None
 			try:
 				obj = json.loads(line)
@@ -98,7 +102,5 @@ class CLIPLabeller(object):
 				acc.clear()
 				acc_media.clear()
 			
-			if i % 250 == 0:
-				sys.stdout.write(f"Labelled tweet {i}\r")
 			
 	
