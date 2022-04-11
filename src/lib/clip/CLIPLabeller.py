@@ -72,8 +72,9 @@ class CLIPLabeller(object):
 		
 		acc = []
 		acc_media = []
-		i = 0
+		i = -1
 		for line in handle_in:
+			i += 1
 			obj = None
 			try:
 				obj = json.loads(line)
@@ -100,5 +101,4 @@ class CLIPLabeller(object):
 			if i % 250 == 0:
 				sys.stdout.write(f"Labelled tweet {i}\r")
 			
-			i += 1
 	
