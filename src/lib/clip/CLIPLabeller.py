@@ -57,6 +57,9 @@ class CLIPLabeller(object):
 		text = [ clip.tokenize(obj["text"], truncate=True).squeeze(0).to(self.device) for obj in objs ]
 		images = [ self.preprocess(Image.open(filepath)).to(self.device) for filepath in filepaths_media ]
 		
+		text = torch.stack(text).int()
+		images = torch.stack(images)
+		
 		predictions = self.ai.predict(images, text)
 		
 		for i, prediction_index in enumerate(predictions):
