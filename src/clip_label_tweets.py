@@ -9,7 +9,7 @@ import json
 
 import torch
 
-from lib.io.CLIPLabeller import CLIPLabeller
+from lib.clip.CLIPLabeller import CLIPLabeller
 from lib.data.CategoryCalculator import CategoryCalculator
 
 
