@@ -86,7 +86,7 @@ class CLIPLabeller(object):
             acc.append(filepath_media)
             
             if len(acc) >= self.batch_size:
-                label_batch(acc, acc_media)
+                self.label_batch(acc, acc_media)
                 for obj in acc:
                     handle_out.write(json.dumps(obj) + "\n")
                 acc.clear()
