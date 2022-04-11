@@ -27,7 +27,7 @@ def init_logging(filepath_output):
 	
 	sys.stderr.write(f"clip_labeller: Writing logs to {filepath_output}\n")
 	logger.info("clip_labeller init! Here we go")
-	logger.info(f"This is Tensorflow {tf.__version__}")
+	logger.info(f"This is PyTorch {torch.__version__}")
 
 
 def main():
