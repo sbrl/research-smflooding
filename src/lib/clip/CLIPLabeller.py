@@ -6,7 +6,7 @@ from loguru import logger
 
 import torch
 import clip
-import PIL import Image
+from PIL import Image
 
 from .CLIPClassifier import CLIPClassifier
 
