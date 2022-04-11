@@ -63,7 +63,9 @@ class CLIPLabeller(object):
 		predictions = self.ai.predict(images, text)
 		
 		for i, prediction_index in enumerate(predictions):
-			objs[i]["label"] = self.cats.index2name(prediction_index.item())
+			objs[i]["label_clip"] = self.cats.index2name(prediction_index.item())
+		
+		return objs
 	
 	def label(self, handle_in, handle_out):
 		"""Reads all JSON objects from filepath_in, labels them with the currently loaded model, and writes them to filepath_out."""
@@ -89,8 +91,8 @@ class CLIPLabeller(object):
 			acc_media.append(filepath_media)
 			
 			if len(acc) >= self.batch_size:
-				self.label_batch(acc, acc_media)
-				for obj in acc:
+				objs_labelled = self.label_batch(acc, acc_media)
+				for obj in objs_labelled:
 					handle_out.write(json.dumps(obj) + "\n")
 				acc.clear()
 				acc_media.clear()

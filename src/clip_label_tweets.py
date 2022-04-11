@@ -111,6 +111,8 @@ def main():
 	)
 	
 	stream_out.close()
+	
+	logger.info("Labelling complete!")
 
 
 if __name__ == "__main__":
