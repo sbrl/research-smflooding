@@ -9,14 +9,14 @@ import clip
 from .CLIPModel import CLIPModel
 
 class CLIPClassifier(object):
-    def __init__(self, dir_output, epochs=50, batch_size=64, **kwargs):
+    def __init__(self, dir_output=None, epochs=50, batch_size=64, **kwargs):
         super(CLIPClassifier, self).__init__()
         
         self.__kwargs = kwargs
         
         self.dir_output = dir_output
-        
-        self.dir_checkpoint = filepath_checkpoint = os.path.join(self.dir_output, "checkpoints")
+        if self.dir_output is not None:
+            self.dir_checkpoint = filepath_checkpoint = os.path.join(self.dir_output, "checkpoints")
         
         self.epochs = epochs
         self.batch_size = batch_size
@@ -31,6 +31,10 @@ class CLIPClassifier(object):
         self.debug_tinyepochs = False
     
     def preamble(self):
+        if self.dir_output is None:
+            logger.warning("No output directory specified, so not writing preamble!")
+            return False
+        
         if not os.path.exists(self.dir_checkpoint):
             os.makedirs(self.dir_checkpoint)
         
@@ -110,6 +114,12 @@ class CLIPClassifier(object):
             "Loaded checkpoint at epoch ", checkpoint["epoch_i"],
             ", metrics: ", json.dumps(checkpoint["metrics"])
         )
+    
+    def predict(self, images, text):
+        # This assumes that the images and text are already encoded
+        with torch.no_grad():
+            predictions = self.model(images, text).argmax(1)
+            return predictions
     
     def __train(self, dataset):
         loss_total = 0
