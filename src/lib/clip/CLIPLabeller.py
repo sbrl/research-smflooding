@@ -93,6 +93,7 @@ class CLIPLabeller(object):
 				for obj in acc:
 					handle_out.write(json.dumps(obj) + "\n")
 				acc.clear()
+				acc_media.clear()
 			
 			if i % 250 == 0:
 				sys.stdout.write(f"Labelled tweet {i}\r")
