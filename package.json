@@ -1,0 +1,20 @@
+{
+  "name": "phd-social-media",
+  "version": "1.0.0",
+  "description": "Main codebase for the social media part of my PhD. This is *not* all the code written!",
+  "private": true,
+  "scripts": {
+    "test": "echo \"No tests implemented\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.starbeamrainbowlabs.com/sbrl/PhD-Social-Media.git"
+  },
+  "author": "Starbeamrainbowlabs",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "data-science-js": "^0.0.4",
+    "fscore": "^1.2.0",
+    "string-similarity": "^4.0.4"
+  }
+}
