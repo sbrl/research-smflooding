@@ -115,7 +115,7 @@ class GloVe:
 		for i, token in enumerate(self._tokenise(str)):
 			embedding = self.lookup(token)
 			if embedding is None:
-				logger.debug(f"[DEBUG] {token} was none")
+				# logger.debug(f"[DEBUG] {token} was none")
 				continue
 			
 			result.append(embedding)
