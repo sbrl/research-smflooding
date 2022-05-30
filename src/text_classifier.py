@@ -44,7 +44,7 @@ def parse_args():
 	parser.add_argument("--batchnorm", help="Enable Batch Normalisation", action="store_true")
 	parser.add_argument("--model", help="The type of model to create [training only; default: lstm].", choices=["lstm", "transformer"])
 	parser.add_argument("--batch-size", help="Sets the batch size.", type=int)
-	parser.add_argument("--no-tensorboard", help="Disables Tensorboard data generation."< action="store_true")
+	parser.add_argument("--no-tensorboard", help="Disables Tensorboard data generation.", action="store_true")
 	
 	return parser.parse_args()
 
