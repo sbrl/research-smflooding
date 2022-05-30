@@ -44,6 +44,7 @@ def parse_args():
 	parser.add_argument("--batchnorm", help="Enable Batch Normalisation", action="store_true")
 	parser.add_argument("--model", help="The type of model to create [training only; default: lstm].", choices=["lstm", "transformer"])
 	parser.add_argument("--batch-size", help="Sets the batch size.", type=int)
+	parser.add_argument("--no-tensorboard", help="Disables Tensorboard data generation."< action="store_true")
 	
 	return parser.parse_args()
 
@@ -68,6 +69,8 @@ def main():
 		settings.model.type = args.model
 	if hasattr(args, "batch_size") and type(args.batch_size) is int:
 		settings.train.batch_size = args.batch_size
+	if hasattr(args, "no_tensorboard") and args.no_tensorboard:
+		settings.train.tensorboard_enable = False
 	# if hasattr(args, "smoteify") and args.smoteify:
 	# 	settings.train.smoteify = True
 	settings.output = args.output
@@ -127,7 +130,7 @@ def main():
 		# smote=False
 	)
 	
-	ai = TweetClassifier(container)
+	ai = TweetClassifier(container, do_tensorboard=settings.train.tensorboard_enable)
 	ai.train(dataset_train, dataset_validate)
 	
 

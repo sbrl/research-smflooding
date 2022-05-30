@@ -19,9 +19,10 @@ from .LayerTransformerBlock import LayerTransformerBlock
 class TweetClassifier:
 	"""Core LSTM-based model to classify tweets."""
 	
-	def __init__(self, container, filepath_checkpoint = None):
+	def __init__(self, container, filepath_checkpoint = None, do_tensorboard = True):
 		"""Initialises a new TweetClassifier."""
 		self.container = container
+		self.do_tensorboard = do_tensorboard
 		
 		if filepath_checkpoint is None:
 			logger.info("TweetClassifier: Creating new model")
@@ -103,7 +104,7 @@ class TweetClassifier:
 	
 	def make_callbacks(self):
 		"""Generates a list of callbacks to be called when a model is training."""
-		return [
+		result = [
 			tf.keras.callbacks.ModelCheckpoint(
 				filepath=os.path.join(
 					self.dir_checkpoints,
@@ -115,14 +116,16 @@ class TweetClassifier:
 				filename=self.filepath_tsvlog,
 				separator="\t"
 			),
-			tf.keras.callbacks.ProgbarLogger(),
-			tf.keras.callbacks.TensorBoard(
+			tf.keras.callbacks.ProgbarLogger()
+		]
+		if self.do_tensorboard:
+			result.append(tf.keras.callbacks.TensorBoard(
 				log_dir=self.dir_tensorboard,
 				histogram_freq=1,
 				write_images=True,
 				update_freq=self.settings.train.tensorboard_update_freq
-			)
-		]
+			))
+		return result
 	
 	def train(self, data_train, data_validate):
 		"""Trains the model on the given data."""
