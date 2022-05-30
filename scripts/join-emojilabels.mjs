@@ -54,7 +54,7 @@ const stream_out = fs.createWriteStream(filename_out);
 let success = 0, failure = 0;
 stream_out.write(header.join("\t") + "\n");
 for(const row of csv) {
-	const found_tweet = tweets.find(tweet => tweet.id == row.id);
+	const found_tweet = tweets.find(tweet => tweet.id == row[0]);
 	
 	if(!found_tweet) {
 		console.error(`FAILED row`, row, `found_tweet`, found_tweet);
