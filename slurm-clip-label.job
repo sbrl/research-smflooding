@@ -11,20 +11,21 @@
 
 # This slurm job file labels tweets using a checkpoint from a trained CLIP model.
 # 
-# By labelling a tweets file, an extra "label" property is added to each object
-# containing the name oft he predicted category as a string. If a tweets file
-# has already been labelled is labelled again, the pre-existing labels ar
+# By labelling a tweets file, an extra "label_clip" property is added to each
+# object containing the name of the predicted category as a string. If a tweets
+# file has already been labelled is labelled again, the pre-existing labels are
 # overwritten.
 # 
 # Usage:
 # 
-# CHECKPOINT="PATH/TO/model/checkpoints/CHECKPOINT.HDF5" INPUT="path/to/tweets.jsonl" sbatch slurm-tweet-labeller.job
+# CHECKPOINT="path/to/model/checkpoints/checkpoint.hdf5" INPUT="path/to/tweets.jsonl" sbatch slurm-tweet-labeller.job
 # 
 # Environment Variables:
 #	CHECKPOINT		Filepath to the checkpoint file use to label tweets with.
 #	INPUT			Filepath to the tweets file to label.
 #	OUTPUT			Filepath to write labelled tweets to (jsonl: 1 tweet object perline, just like the input but with an extra "label" key)
-#	CONFIG			Filepath to the config file to use (specifies GloVe & category files)
+#	MEDIA			Path to the directory containing media files to use.
+#	EMOJI_CATS		Path to the emoji categories file.
 
 
 # 25600 = 25GiB memory required
