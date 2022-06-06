@@ -25,6 +25,8 @@
 #	INPUT			Filepath to the tweets file to label.
 #	OUTPUT			Filepath to write labelled tweets to (jsonl: 1 tweet object perline, just like the input but with an extra "label" key)
 #	CONFIG			Filepath to the config file to use (specifies GloVe & category files)
+#	ARGS			Any additional args to pass directly
+#	LABEL_EVERYTHING	Label everything, not just those which are useful for training models
 
 
 # 25600 = 25GiB memory required
