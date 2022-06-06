@@ -9,20 +9,14 @@
 #SBATCH --time=06:00:00
 #SBATCH --mem=25600
 
-# This slurm job file labels tweets using a checkpoint from a trained CLIP model.
-# 
-# By labelling a tweets file, an extra "label" property is added to each object
-# containing the name of the predicted category as a string. If a tweets file
-# has already been labelled is labelled again, the pre-existing labels are
-# overwritten.
+# This slurm job file annotates tweets without images as to which images best fit them
 # 
 # Usage:
 # 
 # CHECKPOINT="PATH/TO/model/checkpoints/CHECKPOINT.HDF5" INPUT="path/to/tweets.jsonl" sbatch slurm-tweet-labeller.job
 # 
 # Environment Variables:
-#	CHECKPOINT		Filepath to the checkpoint file use to label tweets with.
-#	INPUT			Filepath to the tweets file to label.
+#	INPUT			Filepath to the tweets file to polyfill.
 #	OUTPUT			Filepath to write labelled tweets to (jsonl: 1 tweet object perline, just like the input but with an extra "label" key)
 #	CONFIG			Filepath to the config file to use (specifies GloVe & category files)
 #	ARGS			Any additional args to pass directly
@@ -40,15 +34,10 @@ module load python/anaconda/4.6/miniconda/3.7
 # TODO: expand this to pull this dynamically from the model
 INPUT="${INPUT:-$HOME/data/twitter/tweets-all-new.jsonl}";
 OUTPUT="${OUTPUT}";
-CHECKPOINT="${CHECKPOINT}"; # Example: output/20220202-clip/checkpoints/checkpoint_e7_acc0.919.pt
 CONFIG="${CONFIG:-configs/clip.toml}";
 
 
 
-if [[ -z "${CHECKPOINT}" ]]; then
-	echo "Error: No checkpoint specified in the CHECKPOINT environment variable.";
-	exit 1;
-fi
 if [[ -z "${INPUT}" ]]; then
 	echo "Error: No input file specified in the INPUT environment variable.";
 	exit 1;
@@ -70,10 +59,6 @@ fi
 if [[ ! -r "${CONFIG}" ]]; then
 	echo "Error: That config file doesn't exist.";
 	exit 4;
-fi
-if [[ ! -r "${CHECKPOINT}" ]]; then
-	echo "Error: That checkpoint file doesn't exist.";
-	exit 2;
 fi
 if [[ ! -r "${INPUT}" ]]; then
 	echo "Error: That input file doesn't exist.";
@@ -98,12 +83,11 @@ echo ">>> Settings";
 
 echo "INPUT $INPUT";
 echo "OUTPUT $OUTPUT";
-echo "CHECKPOINT $CHECKPOINT";
 echo "CONFIG $CONFIG";
 echo "EXTRA ARGS: $ARGS";
 
 echo ">>> Installing requirements";
 conda run -n py38 pip install -r requirements.txt;
 echo ">>> Labelling tweets";
-/usr/bin/env time -v conda run -n py38 src/clip_label_tweets.py --input "${INPUT}" --checkpoint "${CHECKPOINT}" --output "${OUTPUT}" --config "${CONFIG}" ${ARGS};
+/usr/bin/env time -v conda run -n py38 src/clip_label_tweets.py --input "${INPUT}" --output "${OUTPUT}" --config "${CONFIG}" ${ARGS};
 echo ">>> exited with code $?";
