@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+#SBATCH -J TwtPolyfill 
+#SBATCH -N 1
+#SBATCH -n 4
+#SBATCH --gres=gpu:1
+#SBATCH -o %j.%N.%a.out
+#SBATCH -e %j.%N.%a.err
+#SBATCH -p gpu05
+#SBATCH --time=06:00:00
+#SBATCH --mem=25600
+
+# This slurm job file labels tweets using a checkpoint from a trained CLIP model.
+# 
+# By labelling a tweets file, an extra "label" property is added to each object
+# containing the name of the predicted category as a string. If a tweets file
+# has already been labelled is labelled again, the pre-existing labels are
+# overwritten.
+# 
+# Usage:
+# 
+# CHECKPOINT="PATH/TO/model/checkpoints/CHECKPOINT.HDF5" INPUT="path/to/tweets.jsonl" sbatch slurm-tweet-labeller.job
+# 
+# Environment Variables:
+#	CHECKPOINT		Filepath to the checkpoint file use to label tweets with.
+#	INPUT			Filepath to the tweets file to label.
+#	OUTPUT			Filepath to write labelled tweets to (jsonl: 1 tweet object perline, just like the input but with an extra "label" key)
+#	CONFIG			Filepath to the config file to use (specifies GloVe & category files)
+
+
+# 25600 = 25GiB memory required
+module load utilities/multi
+module load readline/7.0
+module load gcc/10.2.0
+module load cuda/11.5.0
+
+module load python/anaconda/4.6/miniconda/3.7
+
+# TODO: expand this to pull this dynamically from the model
+INPUT="${INPUT:-$HOME/data/twitter/tweets-all-new.jsonl}";
+OUTPUT="${OUTPUT}";
+CHECKPOINT="${CHECKPOINT}"; # Example: output/20220202-clip/checkpoints/checkpoint_e7_acc0.919.pt
+CONFIG="${CONFIG:-configs/clip.toml}";
+
+
+
+if [[ -z "${CHECKPOINT}" ]]; then
+	echo "Error: No checkpoint specified in the CHECKPOINT environment variable.";
+	exit 1;
+fi
+if [[ -z "${INPUT}" ]]; then
+	echo "Error: No input file specified in the INPUT environment variable.";
+	exit 1;
+fi
+if [[ -z "${OUTPUT}" ]]; then
+	OUTPUT="$(echo "${INPUT}" | sed -e 's/\.jsonl$/-labelled.jsonl/')";
+	if [[ "${INPUT}" == "${OUTPUT}" ]]; then
+		echo "Error: OUTPUT was not specified, but failed to do replacement .jsonl → -labelled.jsonl for auto-calculated output filename. Abort.";
+		exit 1;
+	fi
+	echo "Auto-calculated output filename.";
+fi
+if [[ -z "${CONFIG}" ]]; then
+	echo "Error: No config file specified in the CONFIG environment variable.";
+	exit 1;
+fi
+
+
+if [[ ! -r "${CONFIG}" ]]; then
+	echo "Error: That config file doesn't exist.";
+	exit 4;
+fi
+if [[ ! -r "${CHECKPOINT}" ]]; then
+	echo "Error: That checkpoint file doesn't exist.";
+	exit 2;
+fi
+if [[ ! -r "${INPUT}" ]]; then
+	echo "Error: That input file doesn't exist.";
+	exit 3;
+fi
+
+dir_output="$(dirname "${OUTPUT}")";
+
+if [[ ! -d "${dir_output}" ]]; then
+	mkdir -p "${dir_output}";
+fi
+
+export PATH=$HOME/software/bin:$PATH;
+
+ARGS="${ARGS:-}";
+
+if [[ ! -z "${LABEL_EVERYTHING}" ]]; then
+	ARGS="${ARGS} --label-everything";
+fi
+
+echo ">>> Settings";
+
+echo "INPUT $INPUT";
+echo "OUTPUT $OUTPUT";
+echo "CHECKPOINT $CHECKPOINT";
+echo "CONFIG $CONFIG";
+echo "EXTRA ARGS: $ARGS";
+
+echo ">>> Installing requirements";
+conda run -n py38 pip install -r requirements.txt;
+echo ">>> Labelling tweets";
+/usr/bin/env time -v conda run -n py38 src/clip_label_tweets.py --input "${INPUT}" --checkpoint "${CHECKPOINT}" --output "${OUTPUT}" --config "${CONFIG}" ${ARGS};
+echo ">>> exited with code $?";

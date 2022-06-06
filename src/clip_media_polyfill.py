@@ -40,7 +40,7 @@ def parse_args():
 	parser.add_argument("--config", "-c", help="Filepath to the TOML config file to load.", required=True)
 	parser.add_argument("--input", "-i", help="Path to the file to read tweets from.", required=True)
 	parser.add_argument("--output", "-o", help="Path to the file to write tweets to.", required=True)
-	parser.add_argument("--media", "-m", help="Directory containing media. Overrides the value defined in the config file.", required=True)
+	parser.add_argument("--media", "-m", help="Directory containing media. Overrides the value defined in the config file.")
 	parser.add_argument("--cats", help="Path to the categories file. If specified, only tweets that have at least 1 emoji as defined in this file will be annotated with an image with CLIP. Tweets without an emoji are passed through with the media_clip field set to null and media_clip_confidence set to -1..")
 	parser.add_argument("--only-gpu",
 		help="If the GPU is not available, exit with an error (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
