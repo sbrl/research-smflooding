@@ -7,8 +7,7 @@
 #SBATCH -e %j.%N.%a.err
 #SBATCH -p gpu05
 #SBATCH --time=1-00:00:00
-#SBATCH --mem=25600
-#SBATCH --exclusive
+#SBATCH --mem=50000
 
 # This slurm job file annotates tweets without images as to which images best fit them
 # 
