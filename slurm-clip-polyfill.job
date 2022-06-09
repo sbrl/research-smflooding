@@ -19,7 +19,6 @@
 # Environment Variables:
 #	INPUT			Filepath to the tweets file to polyfill.
 #	OUTPUT			Filepath to write labelled tweets to (jsonl: 1 tweet object perline, just like the input but with an extra "label" key)
-#	CONFIG			Filepath to the config file to use (specifies GloVe & category files)
 #	ARGS			Any additional args to pass directly
 #	LABEL_EVERYTHING	Label everything, not just those which are useful for training models
 
@@ -35,8 +34,8 @@ module load python/anaconda/4.6/miniconda/3.7
 # TODO: expand this to pull this dynamically from the model
 INPUT="${INPUT:-$HOME/data/twitter/tweets-all-new.jsonl}";
 OUTPUT="${OUTPUT}";
-CONFIG="${CONFIG:-configs/clip.toml}";
-
+EMOJI_CATS="${EMOJI_CATS:-/home/486016/data/twitter/emoji-cats-2.tsv}";
+MEDIA="${MEDIA:-/home/486016/data/twitter/media}";
 
 
 if [[ -z "${INPUT}" ]]; then
@@ -51,14 +50,21 @@ if [[ -z "${OUTPUT}" ]]; then
 	fi
 	echo "Auto-calculated output filename.";
 fi
-if [[ -z "${CONFIG}" ]]; then
-	echo "Error: No config file specified in the CONFIG environment variable.";
+if [[ -z "${MEDIA}" ]]; then
+	echo "Error: No media directory specified in the MEDIA environment variable.";
+	exit 1;
+fi
+if [[ -z "${EMOJI_CATS}" ]]; then
+	echo "Error: No emoji cats file specified in the EMOJI_CATS environment variable.";
 	exit 1;
 fi
 
-
-if [[ ! -r "${CONFIG}" ]]; then
-	echo "Error: That config file doesn't exist.";
+if [[ -n "${EMOJI_CATS}" ]] && [[ ! -r "${EMOJI_CATS}" ]]; then
+	echo "Error: That emoji cats file does not exist.";
+	exit 5;
+fi
+if [[ ! -d "${MEDIA}" ]]; then
+	echo "Error: That media directory doesn't exist.";
 	exit 4;
 fi
 if [[ ! -r "${INPUT}" ]]; then
@@ -84,11 +90,12 @@ echo ">>> Settings";
 
 echo "INPUT $INPUT";
 echo "OUTPUT $OUTPUT";
-echo "CONFIG $CONFIG";
+echo "MEDIA $MEDIA";
+echo "EMOJI_CATS $EMOJI_CATS";
 echo "EXTRA ARGS: $ARGS";
 
 echo ">>> Installing requirements";
 conda run -n py38 pip install -r requirements.txt;
 echo ">>> Labelling tweets";
-/usr/bin/env time -v conda run -n py38 src/clip_label_tweets.py --input "${INPUT}" --output "${OUTPUT}" --config "${CONFIG}" ${ARGS};
+/usr/bin/env time -v conda run -n py38 src/clip_media_polyfill.py --only-gpu --input "${INPUT}" --output "${OUTPUT}" --media "${MEDIA}" --cats "${EMOJI_CATS}" ${ARGS};
 echo ">>> exited with code $?";
