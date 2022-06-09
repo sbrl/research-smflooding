@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #SBATCH -J TwtPolyfill 
 #SBATCH -N 1
-#SBATCH -n 4
+#SBATCH -n 14
 #SBATCH --gres=gpu:1
 #SBATCH -o %j.%N.%a.out
 #SBATCH -e %j.%N.%a.err
