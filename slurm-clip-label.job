@@ -41,6 +41,7 @@ INPUT="${INPUT:-$HOME/data/twitter/tweets-all-new.jsonl}";
 OUTPUT="${OUTPUT}";
 CHECKPOINT="${CHECKPOINT}"; # Example: output/20220202-clip/checkpoints/checkpoint_e7_acc0.919.pt
 MEDIA="${MEDIA:-/home/486016/data/twitter/media}";
+EMOJI_CATS="${EMOJI_CATS:-/home/486016/data/twitter/emoji-cats-2.tsv}";
 
 
 if [[ -z "${CHECKPOINT}" ]]; then
@@ -63,6 +64,10 @@ if [[ -z "${MEDIA}" ]]; then
 	echo "Error: No media directory specified in the MEDIA environment variable.";
 	exit 1;
 fi
+if [[ -z "${EMOJI_CATS}" ]]; then
+	echo "Error: No emoji cats file specified in the EMOJI_CATS environment variable.";
+	exit 1;
+fi
 
 if [[ ! -d "${MEDIA}" ]]; then
 	echo "Error: That media directory doesn't exist.";
@@ -75,6 +80,10 @@ fi
 if [[ ! -r "${INPUT}" ]]; then
 	echo "Error: That input file doesn't exist.";
 	exit 3;
+fi
+if [[ -n "${EMOJI_CATS}" ]] && [[ ! -r "${EMOJI_CATS}" ]]; then
+	echo "Error: That emoji cats file does not exist.";
+	exit 5;
 fi
 
 dir_output="$(dirname "${OUTPUT}")";
@@ -91,6 +100,7 @@ echo "INPUT $INPUT";
 echo "OUTPUT $OUTPUT";
 echo "CHECKPOINT $CHECKPOINT";
 echo "MEDIA $MEDIA";
+echo "EMOJI_CATS $EMOJI_CATS";
 
 echo ">>> Installing requirements";
 conda run -n py38 pip install -r requirements.txt;
