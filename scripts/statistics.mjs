@@ -112,7 +112,7 @@ const acc = {
 		.map(obj => [ obj[key_groundtruth], obj.sentiment_resnet ])
 }
 
-console.error(`COUNTS: vader: ${acc.vader.length} bart ${acc.bart.length} transformer ${acc.transformer.length} lstm ${acc.lstm.length} resnet ${acc.resnet.length}`);
+console.error(`COUNTS: vader ${acc.vader.length} bart ${acc.bart.length} transformer ${acc.transformer.length} lstm ${acc.lstm.length} resnet ${acc.resnet.length}`);
 
 const results = {
 	vader: calculate_stats(acc.vader),
