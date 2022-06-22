@@ -38,7 +38,6 @@ def main():
 	parser.add_argument("--output", "-o", help="Filepath to write labelled tweets to. If not specified, data is written to stdout.")
 	parser.add_argument("--media", "-m", help="Path to the directory containing the associated media items.", required=True)
 	parser.add_argument("--checkpoint", help="Path to the checkpoint of the model to load.", required=True)
-	parser.add_argument("--emoji-cats", help="Filepath of the emoji category definition file used to train the model.", required=True)
 	parser.add_argument("--device", help="The device to use for compute. Defaults to auto, which uses the GPU if available, but otherwise falls back on the CPU.")
 	parser.add_argument("--only-gpu", help="If the GPU is not available, exit with an error (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	

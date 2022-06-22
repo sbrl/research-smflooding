@@ -43,9 +43,9 @@ if [[ -z "${INPUT}" ]]; then
 	exit 1;
 fi
 if [[ -z "${OUTPUT}" ]]; then
-	OUTPUT="$(echo "${INPUT}" | sed -e 's/\.jsonl$/-labelled.jsonl/')";
+	OUTPUT="$(echo "${INPUT}" | sed -e 's/\.jsonl$/-polyfilled.jsonl/')";
 	if [[ "${INPUT}" == "${OUTPUT}" ]]; then
-		echo "Error: OUTPUT was not specified, but failed to do replacement .jsonl → -labelled.jsonl for auto-calculated output filename. Abort.";
+		echo "Error: OUTPUT was not specified, but failed to do replacement .jsonl → -polyfilled.jsonl for auto-calculated output filename. Abort.";
 		exit 1;
 	fi
 	echo "Auto-calculated output filename.";
