@@ -105,5 +105,5 @@ echo "EMOJI_CATS $EMOJI_CATS";
 echo ">>> Installing requirements";
 conda run -n py38 pip install -r requirements.txt;
 echo ">>> Labelling tweets";
-/usr/bin/env time -v conda run -n py38 src/clip_label_tweets.py --input "${INPUT}" --media "${MEDIA}" --checkpoint "${CHECKPOINT}" --output "${OUTPUT}";
+/usr/bin/env time -v conda run -n py38 src/clip_label_tweets.py --input "${INPUT}" --media "${MEDIA}" --checkpoint "${CHECKPOINT}" --cats "${EMOJI_CATS}" --output "${OUTPUT}";
 echo ">>> exited with code $?";
