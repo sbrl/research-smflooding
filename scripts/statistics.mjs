@@ -91,7 +91,7 @@ data = data.slice(1)
 		obj[colname] = i > 0 ? normalise_sentiment(parts[i]) : parts[i];
 		return obj;
 	}, {}))
-	.filter(obj => obj[key_groundtruth].length > 0)
+	.filter(obj => typeof obj[key_groundtruth] === "string" && obj[key_groundtruth].length > 0)
 
 console.error(`DATA`, data.length);
 
