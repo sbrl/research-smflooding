@@ -7,7 +7,7 @@ import { plot } from 'nodeplotlib';
 import nexline from 'nexline';
 import cossim from 'cos-similarity';
 
-const words = [ "flood", "water", "rain", "tree" ];
+const words = [ "flood", "water", "rain", "unrelated" ];
 
 const glove_location = "/mnt/research-data/main/glove/glove.twitter.27B.25d.txt";
 
