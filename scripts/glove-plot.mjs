@@ -7,7 +7,7 @@ import { plot } from 'nodeplotlib';
 import nexline from 'nexline';
 import cossim from 'cos-similarity';
 
-const words = [ "flood", "flooded", "cat", "tree" ];
+const words = [ "flood", "water", "rain", "tree" ];
 
 const glove_location = "/mnt/research-data/main/glove/glove.twitter.27B.25d.txt";
 
@@ -36,12 +36,14 @@ const similarities = vectors.map(vector => {
 console.log(`similarities`, similarities);
 
 plot([
-	// {
-	// 	y: words,
-	// 	z: vectors,
-	// 	type: "heatmap",
-	// 	name: `GloVe d25 word vectors`
-	// },
+	{
+		y: words,
+		z: vectors,
+		type: "heatmap",
+		name: `GloVe d25 word vectors`
+	}
+])
+plot([
 	{
 		x: words,
 		y: words,
