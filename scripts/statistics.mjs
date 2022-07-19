@@ -91,7 +91,7 @@ data = data.slice(1)
 		obj[colname] = i > 0 ? normalise_sentiment(parts[i]) : parts[i];
 		return obj;
 	}, {}))
-	.filter(obj => typeof obj[key_groundtruth] === "string" && obj[key_groundtruth].length > 0)
+	.filter(obj => obj[key_groundtruth].length > 0)
 
 console.error(`DATA`, data.length);
 
@@ -100,27 +100,27 @@ console.error(`DATA`, data.length);
 const acc = {
 	vader: data.filter(obj => obj.sentiment_vader.length > 0)
 		.map(obj => [ obj[key_groundtruth], obj.sentiment_vader ]),
-	bart: data.filter(obj => obj.sentiment_bart.length > 0)
-		.map(obj => [ obj[key_groundtruth], obj.sentiment_bart ]),
+	roberta: data.filter(obj => obj.sentiment_roberta.length > 0)
+		.map(obj => [ obj[key_groundtruth], obj.sentiment_roberta ]),
 	transformer: data.filter(obj => obj.sentiment_transformer.length > 0)
 		.map(obj => [ obj[key_groundtruth], obj.sentiment_transformer ]),
 	lstm: data.filter(obj => obj.sentiment_lstm.length > 0)
 		.map(obj => [ obj[key_groundtruth], obj.sentiment_lstm ]),
-	// clip: data.filter(obj => obj.sentiment_clip.length > 0)
-	// 	.map(obj => [ obj[key_groundtruth], obj.sentiment_clip ]),
+	clip: data.filter(obj => obj.sentiment_clip.length > 0)
+		.map(obj => [ obj[key_groundtruth], obj.sentiment_clip ]),
 	resnet: data.filter(obj => obj.sentiment_resnet.length > 0)
 		.map(obj => [ obj[key_groundtruth], obj.sentiment_resnet ])
 }
 
-console.error(`COUNTS: vader ${acc.vader.length} bart ${acc.bart.length} transformer ${acc.transformer.length} lstm ${acc.lstm.length} resnet ${acc.resnet.length}`);
+console.error(`COUNTS: vader ${acc.vader.length} roberta ${acc.roberta.length} transformer ${acc.transformer.length} lstm ${acc.lstm.length} resnet ${acc.resnet.length}`);
 
 const results = {
 	vader: calculate_stats(acc.vader),
-	bart: calculate_stats(acc.bart),
+	roberta: calculate_stats(acc.roberta),
 	transformer: calculate_stats(acc.transformer),
 	lstm: calculate_stats(acc.lstm),
-	// clip: calculate_stats(acc.clip)
-	resnet: calculate_stats(acc.resnet),
+	clip: calculate_stats(acc.clip),
+	resnet: calculate_stats(acc.resnet)
 };
 
 
