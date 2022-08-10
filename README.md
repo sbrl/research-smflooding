@@ -1,10 +1,24 @@
-# PhD-Social-Media
+# research-smflooding
 
-Social media AI stuff for analysing the sentiment of floods. Done for my PhD.
+> Code behind the paper "Real-time social media sentiment analysis for rapid impact assessment of floods" [working title]
 
-See also https://www.npmjs.com/package/twitter-academic-downloader, which used to be called PhD-Social-Media before it turned into a twitter downloader.
+Social media artificial intelligence for analysing the sentiment of floods. Done for my PhD.
+
+ - [sbrl/twitter-academic-downloader](https://github.com/sbrl/twitter-academic-downloader): The command line program written to download the tweets from Twitter, using Twitter's Academic API. This used to be this code base, before it turned into a twitter downloader. It's recommended to install this [via npm](https://www.npmjs.com/package/twitter-academic-downloader).
+ - [jakegodsall/twitter-floods](https://github.com/jakegodsall/twitter-floods): The code written to geolocate and plot the sentiment of tweets on a map.
+ - [HuggingFace:siebert/sentiment-roberta-large-english](https://huggingface.co/siebert/sentiment-roberta-large-english): The code used for sentiment analysis with RoBERTa. **[TODO: Make sure this is the right link.]**
+ - **This repository:** The main codebase written to train and interact with the AI models tested in this paper. Contains code for the following:
+     - LSTM [Tensorflow]
+     - Transformer encoder [Tensorflow]
+     - Model based on CLIP (multimodal text + image model) [PyTorch]
+     - VADER
+
+
+**WARNING:** This codebase is a WORK IN PROGRESS and has **not been peer-reviewed yet**. I have yet to finish writing and submit the journal article for review.
+
 
 **TODO: Fill this README out with comprehensive instructions.**
+
 
 ## Entrypoints
 This project has a large number of entrypoints, depending on what you want to do. The reasoning for this is complicated, but a major factor was significant difficulties were encountered when attempting to implement a subcommand-based system.
