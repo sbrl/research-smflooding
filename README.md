@@ -126,3 +126,5 @@ convert -append $(find "${targetdir}" -mindepth 2 -maxdepth 2 -type f | sort -t 
 
 ## Licence
 This code is released under the GNU General Public License v3. The full license text is included in the `LICENSE` file in this repository. Tldr legal have a [great summary](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)) of the license if you're interested.
+
+Other licences can *potentially* be negotiated on request.
