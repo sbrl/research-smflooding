@@ -1,23 +1,35 @@
 # research-smflooding
 
-> Code behind the paper "Real-time social media sentiment analysis for rapid impact assessment of floods" [working title]
+> Some of the code behind the paper "Real-time social media sentiment analysis for rapid impact assessment of floods" [working title]
+
 
 Social media artificial intelligence for analysing the sentiment of floods. Done for my PhD.
 
+This is a work in progress. The associated paper has not been published yet.
+
+This is not all of the code. Code for other parts of the project can be found here:
+
  - [sbrl/twitter-academic-downloader](https://github.com/sbrl/twitter-academic-downloader): The command line program written to download the tweets from Twitter, using Twitter's Academic API. This used to be this code base, before it turned into a twitter downloader. It's recommended to install this [via npm](https://www.npmjs.com/package/twitter-academic-downloader).
  - [jakegodsall/twitter-floods](https://github.com/jakegodsall/twitter-floods): The code written to geolocate and plot the sentiment of tweets on a map.
- - [HuggingFace:siebert/sentiment-roberta-large-english](https://huggingface.co/siebert/sentiment-roberta-large-english): The code used for sentiment analysis with RoBERTa. **[TODO: Make sure this is the right link.]**
  - **This repository:** The main codebase written to train and interact with the AI models tested in this paper. Contains code for the following:
      - LSTM [Tensorflow]
      - Transformer encoder [Tensorflow]
      - Model based on CLIP (multimodal text + image model) [PyTorch]
-     - VADER
+     - VADER (`AMT_VADER.ipynb`)
+     - RoBERTa (`RoBERTa and BERT_Model.ipynb`)
 
 
 **WARNING:** This codebase is a WORK IN PROGRESS and has **not been peer-reviewed yet**. I have yet to finish writing and submit the journal article for review.
 
 
 **TODO: Fill this README out with comprehensive instructions.**
+
+## System Requirements
+TODO: Fill this out
+
+
+## Getting Started
+TODO: Fill this out
 
 
 ## Entrypoints
@@ -108,3 +120,7 @@ convert -append $(find "${targetdir}" -mindepth 2 -maxdepth 2 -type f | sort -t 
      - [Topic Modelling With LDA - A Hands-on Introduction](https://www.analyticsvidhya.com/blog/2021/07/topic-modelling-with-lda-a-hands-on-introduction/)
      - <https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/>
      - <https://www.tutorialspoint.com/gensim/gensim_creating_lda_topic_model.htm>
+
+
+## Licence
+This code is released under the GNU General Public License v3. The full license text is included in the `LICENSE` file in this repository. Tldr legal have a [great summary](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)) of the license if you're interested.
