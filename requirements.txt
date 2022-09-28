@@ -16,3 +16,5 @@ torchinfo
 git+https://github.com/openai/CLIP@main
 simplejpeg
 nonechucks
+
+vaderSentiment
