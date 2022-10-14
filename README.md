@@ -11,7 +11,7 @@ This is a work in progress. The associated paper has not been published yet.
 
 This is not all of the code. Code for other parts of the project can be found here:
 
- - [sbrl/twitter-academic-downloader](https://github.com/sbrl/twitter-academic-downloader): The command line program written to download the tweets from Twitter, using Twitter's Academic API. This used to be this code base, before it turned into a twitter downloader. It's recommended to install this [via npm](https://www.npmjs.com/package/twitter-academic-downloader).
+ - [sbrl/twitter-academic-downloader](https://github.com/sbrl/twitter-academic-downloader): The command line program written to download the tweets from Twitter, using Twitter's Academic API. This used to be this code base, before it turned into a twitter downloader. It's recommended to install and use this [via npm](https://www.npmjs.com/package/twitter-academic-downloader).
  - [jakegodsall/twitter-floods](https://github.com/jakegodsall/twitter-floods): The code written to geolocate and plot the sentiment of tweets on a map.
  - **This repository:** The main codebase written to train and interact with the AI models tested in this paper. Contains code for the following:
      - LSTM [Tensorflow]
@@ -21,17 +21,55 @@ This is not all of the code. Code for other parts of the project can be found he
      - RoBERTa (`RoBERTa and BERT_Model.ipynb`)
 
 
-**WARNING:** This codebase is a WORK IN PROGRESS and has **not been peer-reviewed yet**. I have yet to finish writing and submit the journal article for review.
+**WARNING:** This codebase is a WORK IN PROGRESS and has **not been peer-reviewed yet**. I am currently submitting the associated journal article for review (I'll insert a link here if and when it gets published).
 
 
 **TODO: Fill this README out with comprehensive instructions.**
 
 ## System Requirements
-TODO: Fill this out
-
+ - Linux (Windows may work, but is untested)
+ - [git](https://git-scm.com/) (`sudo apt install git`)
+ - Python 3.8+ (for Tensorflow models etc) and `pip` (`sudo apt install python3-pip`)
+ - A GPU is recommended for training models:
+     - Preferably 12GB VRAM or more, may work with less but is untested
+     - A card supported by both Tensorflow and PyTorch (currently this is just Nvidia cards. PyTorch requires [CUDA compute capability](https://developer.nvidia.com/cuda-gpus) 3.7+; Tensorflow is 3.5+)
+ - PyTorch: <https://pytorch.org/get-started/locally/> (select Package → Pip)
+ - Various other packages, but these are installed below
+ - Say ~50GiB+ disk space if you really dig into this repo a lot
+ - Optionally, for analysing data:
+     - A RECENT version of Node.js (only for scripts in the [`scripts` directory](scripts/), so omit if you don't want to use them)
+     - [`jq`](https://stedolan.github.io/jq/)
+ - Some experience using the Linux terminal
 
 ## Getting Started
-TODO: Fill this out
+This getting started tutorial assumes you are using Linux, as this is what it was developed on due in part to using the [Viper HPC at the University of Hull](https://hpc.wordpress.hull.ac.uk/).
+
+It is recommended you install and configure [`twitter-academic-downloader`](https://github.com/sbrl/twitter-academic-downloader) **before** using the programs in this repository. All of the programs in this repository assume the data is in the format that `twitter-academic-downloader` generates.
+
+First, clone this git repository:
+
+```bash
+git clone https://github.com/sbrl/research-smflooding.git
+cd research-smflooding
+```
+
+Then, install the Python dependencies:
+
+```bash
+pip3 install --user -r requirements.txt
+```
+
+Note that you must install PyTorch as per the system requirements **before** running the above command, because how you install PyTorch is dependent on your system.
+
+You are now setup to use the programs in this repository. The programs this this repository are split into multiple entrypoints. These are described below in the [entrypoints section](#entrypoints).
+
+The usage instructions for each one is shown in the command-line help. To access the command-line help for an entrypoint:
+
+```bash
+src/MY_ENTRYPOINT_NAME.py --help
+```
+
+...where `MY_ENTRYPOINT_NAME.py` is the filename of the entrypoint you want to use.
 
 
 ## Entrypoints
@@ -39,20 +77,21 @@ This project has a large number of entrypoints, depending on what you want to do
 
 In the future, a bash-based wrapper to the below scripts will be implemented.
 
- - `src/text_classifier.py`: The main LSTM (or transformer)-based text classifier
- - `src/image_classifier.py`: Using a sentiment analysis model from text_classifier.py, train a model to classify images associated with tweets.
+ - `src/text_classifier.py`: The main LSTM (or transformer)-based text classifier. **Start here.**
+ - `src/image_classifier.py`: Using a sentiment analysis model from text_classifier.py, train a ResNet50 model to classify images associated with tweets. **This does not work very well.** I was going to talk about it in the journal article, but ultimately cut it due to the word limit.
  - `src/confusion_matrix.py`: Makes a confusion matrix using a given dataset & saved model checkpoint.
  - `src/confusion_matrix_image.py`: Same as `confusion_matrix.py`, but for image classification models see `image_classifier.py`.
- - `src/data_splitter.py`: Splits the specified file of tweets up into multiple separate files based on a given category file. Used when balancing dataset.
- - `src/label_tweets.py`: Labels a JSONL tweets file using the given pre-trained sentiment analysis model (see `text_classifier.py`)
+ - `src/data_splitter.py`: Splits the specified file of tweets up into multiple separate files based on a given category file. Used when balancing a dataset.
+ - `src/label_tweets.py`: Labels a JSONL tweets file using the given pre-trained sentiment analysis model (see `text_classifier.py`). **Use this to make predictions.**
  - `src/label_images.py`: Similar to `label_tweets.py`, but for image (see `image_classifier.py`)
- - `src/label_tweets_topics.py`: Label a JSONL tweets file using a pre-trained LDA model (LSA/LSI models are NOT supported because gensim does not appear to support query trained LSIModel instances). Labels use a different key to src/label_images.py, so can coexist therewith.
- - `src/find_topics.py`: Run an LDA topic analysis over the specified tweets file.
+ - `src/label_tweets_topics.py`: Label a JSONL tweets file using a pre-trained LDA model (LSA/LSI models are NOT supported because gensim does not appear to support query trained LSIModel instances). Labels use a different key to `src/label_images.py`, so can coexist therewith. **Use `src/find_topics.py` to train an LDA topic analysis model.**
+ - `src/find_topics.py`: Run an LDA topic analysis over the specified tweets file. Originally was going to be included in the paper, but got cut 'cause of the word limit.
  - `src/glove_longest.py`: Finds the longest sequence of tokens in the input
  - `src/test_glove.py`: Simple test script to check the GloVe parsing & conversion.
 
 
 ## Useful commands
+I used a lot of Bash one-liners to analyse the data while implementing the programs in this repository. They are documented below for ease of reference.
 
 ### Tally topics against sentiment
 ```bash
@@ -122,6 +161,30 @@ convert -append $(find "${targetdir}" -mindepth 2 -maxdepth 2 -type f | sort -t 
      - [Topic Modelling With LDA - A Hands-on Introduction](https://www.analyticsvidhya.com/blog/2021/07/topic-modelling-with-lda-a-hands-on-introduction/)
      - <https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/>
      - <https://www.tutorialspoint.com/gensim/gensim_creating_lda_topic_model.htm>
+
+
+## FAQ
+
+### Can I have a copy of the data / model checkpoints / graphs / other research outputs please?
+Absolutely! Please get in touch by sending me an email.
+
+Unfortunately, I am unable to share the Twitter data though due to Twitter's terms and conditions (I anonymised the data, but Twitter only allows me to share the tweet IDs...). However, I *can* share the date ranges and searches I made to obtain the data, allowing you to redownload the data with my [`twitter-academic-downloader`](https://www.npmjs.com/package/twitter-academic-downloader) program which I implemented for this project.
+
+### Why GPL-3.0, and not MIT/Apache2?
+The code, models, and other algorithms in this repository took me a huge amount of effort to develop. To this end, I want to ensure:
+
+1. That the work here benefits everyone
+2. Future modifications to this work (either by me or others) benefits everyone
+3. Transparency
+
+### I'm confused / have some other question
+Please [open an issue](https://github.com/sbrl/research-smflooding/issues). If it's private / confidential, please send me an email.
+
+
+## Contributing
+Contributions are very welcome - both issues and pull requests! Please mention in your pull request that you release your work under the GPL-3.0 (see below).
+
+You are likely to encounter bugs in this code.
 
 
 ## Licence
