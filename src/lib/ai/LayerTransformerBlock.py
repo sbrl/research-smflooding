@@ -24,7 +24,7 @@ class LayerTransformerBlock(tf.keras.layers.Layer):
 			key_dim=units_embedding
 		)
 		self.dense = tf.keras.Sequential([
-			tf.keras.layers.Dense(units_dense, activation="relu"),
+			tf.keras.layers.Dense(units_dense, activation="gelu"),
 			tf.keras.layers.Dense(units_embedding)
 		])
 		self.layer_normalisation_a = tf.keras.layers.LayerNormalization(epsilon=1e-6)

@@ -45,10 +45,10 @@ def make_model_transformer(settings, container):
 	layer_next = tf.keras.layers.Dropout(settings.model.dropout)(layer_next)
 	layer_next = tf.keras.layers.Dense(
 		settings.model.transformer_units_last,
-		activation="relu"
+		activation="gelu"
 	)(layer_next)
 	logger.info(f"make_model_transformer: Adding dropout layer (rate = {settings.model.dropout}")
-	logger.info(f"make_model_transformer: Adding dense layer (units = {settings.model.transformer_units_last}, activation = relu)")
+	logger.info(f"make_model_transformer: Adding dense layer (units = {settings.model.transformer_units_last}, activation = gelu)")
 	
 	layer_next = tf.keras.layers.Dropout(settings.model.dropout)(layer_next)
 	layer_next = tf.keras.layers.Dense(
