@@ -62,7 +62,7 @@ class CategoryCalculator:
 		return max_i
 	
 	def strip_markers(self, text: str):
-		"""Removes all the markers from the given stringt that we use to decide on which category a string goes in."""
+		"""Removes all the markers from the given string that we use to decide on which category a string goes in."""
 		return text.translate(text.maketrans("", "", self.markers))
 	
 	def get_category_name(self, text: str):
