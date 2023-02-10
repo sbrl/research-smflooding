@@ -3,8 +3,8 @@
 #SBATCH -N 1
 #SBATCH -n 4
 #SBATCH --gres=gpu:1
-#SBATCH -o %j.%N.%a.out
-#SBATCH -e %j.%N.%a.err
+#SBATCH -o %j.%N.%a.imagelabeller.out.log
+#SBATCH -e %j.%N.%a.imagelabeller.err.log
 #SBATCH -p gpu05,gpu,compute
 #SBATCH --time=04:00:00
 #SBATCH --mem=25600

@@ -3,8 +3,8 @@
 #SBATCH -N 1
 #SBATCH -n 4
 #SBATCH --gres=gpu:1
-#SBATCH -o %j.%N.%a.out
-#SBATCH -e %j.%N.%a.err
+#SBATCH -o %j.%N.%a.train.out.log
+#SBATCH -e %j.%N.%a.train.err.log
 #SBATCH -p gpu05,gpu
 #SBATCH --time=5-00:00:00
 #SBATCH --mem=25600

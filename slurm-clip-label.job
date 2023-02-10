@@ -3,8 +3,8 @@
 #SBATCH -N 1
 #SBATCH -n 4
 #SBATCH --gres=gpu:1
-#SBATCH -o %j.%N.%a.out
-#SBATCH -e %j.%N.%a.err
+#SBATCH -o %j.%N.%a.clip-label.out.log
+#SBATCH -e %j.%N.%a.clip-label.err.log
 #SBATCH -p gpu05
 #SBATCH --time=06:00:00
 #SBATCH --mem=25600

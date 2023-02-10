@@ -2,8 +2,8 @@
 #SBATCH -J TweetLDA
 #SBATCH -N 1
 #SBATCH -n 8
-#SBATCH -o %j.%N.%a.out
-#SBATCH -e %j.%N.%a.err
+#SBATCH -o %j.%N.%a.topicanalyser.out.log
+#SBATCH -e %j.%N.%a.topicanalyser.err.log
 #SBATCH -p compute
 #SBATCH --time=04:00:00
 #SBATCH --mem=20000
