@@ -7,7 +7,7 @@
 #SBATCH -e %j.%N.%a.clip-polyfill.err.log
 #SBATCH -p gpu05
 #SBATCH --time=1-00:00:00
-#SBATCH --mem=75000
+# Remove memory limit, since SLURM seems to count memory shared across multiple processes multiple times
 
 # This slurm job file annotates tweets without images as to which images best fit them
 # 
