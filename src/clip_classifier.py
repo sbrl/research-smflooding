@@ -116,8 +116,8 @@ def main():
 		print(f"Error: No such file or directory {settings.data.paths.dir_media}")
 		sys.exit(2)
 	
-	if type(settings.data.clip_media_threshold) is not float:
-		print(f"Error: clip_media_threshold is not of type float.")
+	if type(settings.data.clip_label_threshold) is not float:
+		print(f"Error: clip_label_threshold is not of type float.")
 		sys.exit(3)
 	
 	###############################################################################
