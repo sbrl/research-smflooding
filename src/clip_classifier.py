@@ -66,7 +66,7 @@ def main():
 	settings = settings_get()
 	if hasattr(args, "batch_size") and type(args.batch_size) is int:
 		settings.train.batch_size = args.batch_size
-	if hasattr(args, "clip_media_threshold"):
+	if hasattr(args, "clip_media_threshold") and type(args.clip_media_threshold) is float:
 		settings.data.clip_label_threshold = args.clip_media_threshold
 	# if hasattr(args, "smoteify") and args.smoteify:
 	# 	settings.train.smoteify = True
@@ -116,6 +116,9 @@ def main():
 		print(f"Error: No such file or directory {settings.data.paths.dir_media}")
 		sys.exit(2)
 	
+	if type(settings.data.clip_media_threshold) is not float:
+		print(f"Error: clip_media_threshold is not of type float.")
+		sys.exit(3)
 	
 	###############################################################################
 	
