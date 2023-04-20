@@ -7,11 +7,11 @@ import fs from 'fs';
 import { fOneScoreMacro as f1score } from 'data-science-js';
 
 const filepath = process.argv[2];
-const key_groundtruth = "sentiment_emoji";
+const key_groundtruth = "label_emoji";
 const groundtruth_contains_neutral = false;
 const mode = process.env.OUTPUT_MODE ? process.env.OUTPUT_MODE : "csv";
 const decimal_places = process.env.DECIMAL_PLACES ? parseInt(process.env.DECIMAL_PLACES) : 3;
-const collapse_neutral_positive = process.env.COLLAPSE_NEUPOS ? true : false;
+const collapse_neutral_positive = true;
 
 console.error(`Collapse neutral/positive is ${collapse_neutral_positive?"ON":"OFF"}`);
 
@@ -19,12 +19,15 @@ function normalise_sentiment(sentiment) {
 	let result = sentiment.toLowerCase().replace(/slightly\s+/, "");
 	switch(result) {
 		case "neu":
+		case "0":
 			result = "neutral";
 			break;
 		case "pos":
+		case "1":
 			result = "positive";
 			break;
 		case "neg":
+		case "-1":
 			result = "negative";
 			break;
 	}
@@ -42,11 +45,13 @@ function calculate_stats(arr) {
 	
 	// 1: Convert to numbers
 	let numerical = arr.map(row => row.map(cell => {
-		if(typeof cell !== "string" || typeof trans_table[cell] !== "number") {
-			console.error("trans_table failure | ROW", row, "CELL", cell);
+		const tmp = normalise_sentiment(cell);
+		if(typeof cell !== "string" || typeof trans_table[tmp] !== "number") {
+			console.error("trans_table failure | ROW", row, "CELL", cell, "TMP", tmp);
+			console.trace();
 			process.exit();
 		}
-		return trans_table[cell];
+		return trans_table[tmp];
 	}));
 	
 	if(!groundtruth_contains_neutral) {
@@ -66,7 +71,7 @@ function calculate_stats(arr) {
 	if(typeof result.accuracy !== "undefined")
 		throw new Error(`Accuracy exists when it shouldn't`);
 	// if(contains_neutral)
-	result.accuracy = arr.filter(row => row[0] === row[1]).length / arr.length;
+	result.accuracy = numerical.filter(row => row[0] === row[1]).length / numerical.length;
 	// else
 	// 	result.accuracy = arr.filter(row => row[0] !== `neutral`)
 	// 		.filter(row => row[0] === row[1]).length / arr.length;
@@ -83,33 +88,24 @@ function calculate_stats(arr) {
 
 let data = fs.readFileSync(filepath, "utf-8").split(`\n`)
 	.filter(line => line.length > 0)
-	.map(line => line.split(`\t`));
-
-const header = data[0];
-data = data.slice(1)
-	.map(parts => header.reduce((obj, colname, i) => {
-		obj[colname] = i > 0 ? normalise_sentiment(parts[i]) : parts[i];
-		return obj;
-	}, {}))
-	.filter(obj => obj[key_groundtruth].length > 0)
-
-console.error(`DATA`, data.length);
-
-// const data_noneutral = data.filter(obj => obj[key_groundtruth] !== "neutral");
+	.map(JSON.parse)
+	.filter(t => typeof t.label_emoji === "string" && t.label_emoji.length > 0);
 
 const acc = {
-	vader: data.filter(obj => obj.sentiment_vader.length > 0)
-		.map(obj => [ obj[key_groundtruth], obj.sentiment_vader ]),
-	roberta: data.filter(obj => obj.sentiment_roberta.length > 0)
-		.map(obj => [ obj[key_groundtruth], obj.sentiment_roberta ]),
-	transformer: data.filter(obj => obj.sentiment_transformer.length > 0)
-		.map(obj => [ obj[key_groundtruth], obj.sentiment_transformer ]),
-	lstm: data.filter(obj => obj.sentiment_lstm.length > 0)
-		.map(obj => [ obj[key_groundtruth], obj.sentiment_lstm ]),
-	clip: data.filter(obj => obj.sentiment_clip.length > 0)
-		.map(obj => [ obj[key_groundtruth], obj.sentiment_clip ]),
-	resnet: data.filter(obj => obj.sentiment_resnet.length > 0)
-		.map(obj => [ obj[key_groundtruth], obj.sentiment_resnet ])
+	vader: data.filter(obj => typeof obj.label_vader == "string" && obj.label_vader.length > 0)
+		.map(obj => [ obj[key_groundtruth], obj.label_vader ]),
+	roberta: data.filter(obj => typeof obj.label_bart == "string" && obj.label_bart.length > 0)
+		.map(obj => [obj[key_groundtruth], obj.label_bart ]),
+	transformer: data.filter(obj => typeof obj.label_transformer == "string" && obj.label_transformer.length > 0)
+		.map(obj => [ obj[key_groundtruth], obj.label_transformer ]),
+	lstm: data.filter(obj => typeof obj.label_lstm == "string" && obj.label_lstm.length > 0)
+		.map(obj => [obj[key_groundtruth], obj.label_lstm]),
+	clipNA: data.filter(obj => typeof obj.label_clip_augment == "string" && obj.label_clip_augment.length > 0)
+		.map(obj => [obj[key_groundtruth], obj.label_clip_augment]),
+	clipA: data.filter(obj => typeof obj.label_clip_noaugment == "string" && obj.label_clip_noaugment.length > 0)
+		.map(obj => [obj[key_groundtruth], obj.label_clip_augment]),
+	resnet: data.filter(obj => typeof obj.label_resnet == "string" && obj.label_resnet.length > 0)
+		.map(obj => [ obj[key_groundtruth], obj.label_resnet ])
 }
 
 console.error(`COUNTS: vader ${acc.vader.length} roberta ${acc.roberta.length} transformer ${acc.transformer.length} lstm ${acc.lstm.length} resnet ${acc.resnet.length}`);
@@ -119,7 +115,8 @@ const results = {
 	roberta: calculate_stats(acc.roberta),
 	transformer: calculate_stats(acc.transformer),
 	lstm: calculate_stats(acc.lstm),
-	clip: calculate_stats(acc.clip),
+	clipA: calculate_stats(acc.clipA),
+	clipNA: calculate_stats(acc.clipNA),
 	resnet: calculate_stats(acc.resnet)
 };
 
