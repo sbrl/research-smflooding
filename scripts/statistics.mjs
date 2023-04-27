@@ -8,6 +8,7 @@ import { fOneScoreMacro as f1score } from 'data-science-js';
 
 const filepath = process.argv[2];
 const key_groundtruth = "label_emoji";
+// const key_groundtruth = "sentiment_human";
 const groundtruth_contains_neutral = false;
 const mode = process.env.OUTPUT_MODE ? process.env.OUTPUT_MODE : "csv";
 const decimal_places = process.env.DECIMAL_PLACES ? parseInt(process.env.DECIMAL_PLACES) : 3;
@@ -37,11 +38,14 @@ function normalise_sentiment(sentiment) {
 }
 
 function calculate_stats(arr) {
+	if(arr.length === 0) { console.error(`No items, so can't calculate statistics`); return {}; }
 	const trans_table = {
 		positive: 1,
 		neutral: 0,
 		negative: -1
 	};
+	
+	// console.log("arr", arr);
 	
 	// 1: Convert to numbers
 	let numerical = arr.map(row => row.map(cell => {
@@ -60,6 +64,8 @@ function calculate_stats(arr) {
 			if(row[1] == 0) row[1] = 1;
 		}
 	}
+	// console.log("numerical", numerical);
+	// console.trace();
 	
 	// 2: Do calculation
 	const result = f1score(
@@ -89,7 +95,15 @@ function calculate_stats(arr) {
 let data = fs.readFileSync(filepath, "utf-8").split(`\n`)
 	.filter(line => line.length > 0)
 	.map(JSON.parse)
-	.filter(t => typeof t.label_emoji === "string" && t.label_emoji.length > 0);
+	.filter(t => typeof t[key_groundtruth] === "string" && t[key_groundtruth].length > 0);
+
+// TEMPORARY: Filtering tweets to analyse by whether they have valid media or not.
+
+console.error(`>>> BEFORE FILTERING: ${data.length} items`);
+// data = data.filter(tw => tw.media instanceof Array && typeof tw.media.find(media => media.type == "photo") !== "undefined");
+// data = data.filter(tw => (tw.media instanceof Array && typeof tw.media.find(media => media.type == "photo") == "undefined") || !(tw.media instanceof Array));
+console.error(`>>> AFTER FILTERING: ${data.length} items`);
+
 
 const acc = {
 	vader: data.filter(obj => typeof obj.label_vader == "string" && obj.label_vader.length > 0)
@@ -103,9 +117,23 @@ const acc = {
 	clipNA: data.filter(obj => typeof obj.label_clip_augment == "string" && obj.label_clip_augment.length > 0)
 		.map(obj => [obj[key_groundtruth], obj.label_clip_augment]),
 	clipA: data.filter(obj => typeof obj.label_clip_noaugment == "string" && obj.label_clip_noaugment.length > 0)
-		.map(obj => [obj[key_groundtruth], obj.label_clip_augment]),
+		.map(obj => [obj[key_groundtruth], obj.label_clip_noaugment]),
 	resnet: data.filter(obj => typeof obj.label_resnet == "string" && obj.label_resnet.length > 0)
-		.map(obj => [ obj[key_groundtruth], obj.label_resnet ])
+		.map(obj => [obj[key_groundtruth], obj.label_resnet ])
+	// vader: data.filter(obj => typeof obj.sentiment_vader == "string" && obj.sentiment_vader.length > 0)
+	// 	.map(obj => [ obj[key_groundtruth], obj.sentiment_vader ]),
+	// roberta: data.filter(obj => typeof obj.sentiment_bart == "string" && obj.sentiment_bart.length > 0)
+	// 	.map(obj => [obj[key_groundtruth], obj.sentiment_bart ]),
+	// transformer: data.filter(obj => typeof obj.sentiment_transformer == "string" && obj.sentiment_transformer.length > 0)
+	// 	.map(obj => [ obj[key_groundtruth], obj.sentiment_transformer ]),
+	// lstm: data.filter(obj => typeof obj.sentiment_lstm == "string" && obj.sentiment_lstm.length > 0)
+	// 	.map(obj => [obj[key_groundtruth], obj.sentiment_lstm]),
+	// clipNA: data.filter(obj => typeof obj.sentiment_clipA == "string" && obj.sentiment_clipA.length > 0)
+	// 	.map(obj => [obj[key_groundtruth], obj.sentiment_clipA]),
+	// clipA: data.filter(obj => typeof obj.sentiment_clipNA == "string" && obj.sentiment_clipNA.length > 0)
+	// 	.map(obj => [obj[key_groundtruth], obj.sentiment_clipNA]),
+	// resnet: data.filter(obj => typeof obj.sentiment_resnet == "string" && obj.sentiment_resnet.length > 0)
+	// 	.map(obj => [obj[key_groundtruth], obj.sentiment_resnet ])
 }
 
 console.error(`COUNTS: vader ${acc.vader.length} roberta ${acc.roberta.length} transformer ${acc.transformer.length} lstm ${acc.lstm.length} resnet ${acc.resnet.length}`);
