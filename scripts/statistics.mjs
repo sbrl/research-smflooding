@@ -101,7 +101,7 @@ let data = fs.readFileSync(filepath, "utf-8").split(`\n`)
 
 console.error(`>>> BEFORE FILTERING: ${data.length} items`);
 // data = data.filter(tw => tw.media instanceof Array && typeof tw.media.find(media => media.type == "photo") !== "undefined");
-// data = data.filter(tw => (tw.media instanceof Array && typeof tw.media.find(media => media.type == "photo") == "undefined") || !(tw.media instanceof Array));
+data = data.filter(tw => (tw.media instanceof Array && typeof tw.media.find(media => media.type == "photo") == "undefined") || !(tw.media instanceof Array));
 console.error(`>>> AFTER FILTERING: ${data.length} items`);
 
 
@@ -114,10 +114,10 @@ const acc = {
 		.map(obj => [ obj[key_groundtruth], obj.label_transformer ]),
 	lstm: data.filter(obj => typeof obj.label_lstm == "string" && obj.label_lstm.length > 0)
 		.map(obj => [obj[key_groundtruth], obj.label_lstm]),
-	clipNA: data.filter(obj => typeof obj.label_clip_augment == "string" && obj.label_clip_augment.length > 0)
-		.map(obj => [obj[key_groundtruth], obj.label_clip_augment]),
-	clipA: data.filter(obj => typeof obj.label_clip_noaugment == "string" && obj.label_clip_noaugment.length > 0)
-		.map(obj => [obj[key_groundtruth], obj.label_clip_noaugment]),
+	clipNA: data.filter(obj => typeof obj.label_clipA == "string" && obj.label_clipA.length > 0)
+		.map(obj => [obj[key_groundtruth], obj.label_clipA]),
+	clipA: data.filter(obj => typeof obj.label_clipNA == "string" && obj.label_clipNA.length > 0)
+		.map(obj => [obj[key_groundtruth], obj.label_clipNA]),
 	resnet: data.filter(obj => typeof obj.label_resnet == "string" && obj.label_resnet.length > 0)
 		.map(obj => [obj[key_groundtruth], obj.label_resnet ])
 	// vader: data.filter(obj => typeof obj.sentiment_vader == "string" && obj.sentiment_vader.length > 0)
