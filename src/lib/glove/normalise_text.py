@@ -47,7 +47,7 @@ def re_sub(pattern, repl, text):
 
 def normalise(text):
 	"""
-	Preprocesses the given input textto make it suitable for GloVe.
+	Preprocesses the given input text to make it suitable for GloVe.
 	This is the main function you want to import.
 	:param	str		text: The text to normalise.
 	"""
