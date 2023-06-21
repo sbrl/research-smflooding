@@ -8,6 +8,16 @@ from ..polyfills.string import removeprefix, removesuffix
 
 from .normalise_text import normalise as normalise_text
 
+# Yes, this is also in handle_open. But also yes, this needs to be portable.
+def handle_open(filepath, mode, force_textwrite_gzip=True):
+	if mode == "w" and mode.endswith(".gz") and force_textwrite_gzip:
+		mode = "wt"
+	
+	if filepath.endswith(".gz"):
+		return gzip.open(filepath, mode)
+	else:
+		return io.open(filepath, mode)
+
 
 class GloVe:
 	"""
@@ -33,7 +43,7 @@ class GloVe:
 		"""Loads the GloVe database from a given file."""
 		sys.stderr.write("\n")
 		start = time.time()
-		handle = io.open(self.filepath, "r")
+		handle = handle_open(self.filepath, "r")
 		for i, line in enumerate(handle):
 			parts = line.split(" ", maxsplit=1)
 			
