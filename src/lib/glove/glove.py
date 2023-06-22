@@ -1,6 +1,8 @@
 import time
 import io
 import sys
+import gzip
+
 from loguru import logger
 import numpy
 import tensorflow as tf
@@ -45,6 +47,8 @@ class GloVe:
 		start = time.time()
 		handle = handle_open(self.filepath, "r")
 		for i, line in enumerate(handle):
+			if type(line) is bytes:
+				line = line.decode()
 			parts = line.split(" ", maxsplit=1)
 			
 			# We do NOT strip < and > here, because we do a lookup later on that.
