@@ -174,22 +174,16 @@ logger.info("UMAP conversion complete")
 # ██      ██      ██    ██    ██       ██    ██ ██  ██ ██ ██    ██
 # ██      ███████  ██████     ██       ██    ██ ██   ████  ██████
 
-def plot(filepath_target, umapped, words, dim):
+def plot(filepath_target, umapped, dim):
 	if dim == 2:
-		df_points = pd.DataFrame(umapped)
-		df_labels = pd.DataFrame(words)
-		df_labels.columns = [ "word" ]
-		df_points.columns = ["x", "y"]
+		df = pd.DataFrame(umapped)
+		df.columns = ["x", "y"]
 		
-		df = pd.concat([ df_labels, df_points ])
-		
-		print(df_points)
-		print(df_labels)
 		print(df)
 		
-		canvas_tsne = ds.Canvas(plot_width=850, plot_height=850)
-		points_tsne = canvas_tsne.points(df_tsne, "x", "y")
-		result = ds.tf.set_background(ds.tf.shade(points_tsne), color="white")
+		canvas = ds.Canvas(plot_width=850, plot_height=850)
+		points = canvas.points(df, "x", "y")
+		result = ds.tf.set_background(ds.tf.shade(points), color="white")
 		ds.utils.export_image(
 			result,
 			filepath_target
@@ -202,7 +196,8 @@ def save_tsv(filepath_target, umapped, words):
 		df_points = pd.DataFrame(umapped)
 		df_labels = pd.DataFrame(words)
 		df_labels.columns = ["word"]
-
+		
+		# BUG: a dataframe can only have 1 type IIRC
 		df = pd.concat([df_labels, df_points])
 		
 		df.to_csv(handle, sep="\t")
