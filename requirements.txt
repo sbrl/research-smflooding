@@ -7,6 +7,7 @@ loguru
 gensim
 Pyro4
 
+umap-learn[plot]
 ftfy
 regex
 tqdm
