@@ -211,7 +211,8 @@ def save_tsv(filepath_target, umapped, words):
 		rows = [ [ row[0], *row[1] ] for row in zip(words, umapped) ]
 		
 		for row in rows:
-			handle.write("\t".join([str(item) for item in row]) + "\n")
+			payload = "\t".join([str(item) for item in row]) + "\n"
+			handle.write(payload.encode() if filepath_target.endswith(".gz") else payload)
 	
 	logger.info(f"Written values to {filepath_target}")
 
