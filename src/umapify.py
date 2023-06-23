@@ -163,7 +163,10 @@ words_glove_source = [ item[0] for item in words_glove ]
 #  ██████  ██      ██ ██   ██ ██      
 
 logger.info("UMAPing...")
-umapped = umap.UMAP(min_dist=0.05).fit_transform(words_glove_embed)
+umapped = umap.UMAP(
+	min_dist=0.05,
+	n_components=DIM
+).fit_transform(words_glove_embed)
 logger.info("UMAP conversion complete")
 
 
