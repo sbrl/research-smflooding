@@ -1,7 +1,5 @@
 # research-smflooding
 
-# ⚠️⚠️⚠️ WORK IN PROGRESS!!! ⚠️⚠️⚠️
-
 > Some of the code behind the paper "Real-time social media sentiment analysis for rapid impact assessment of floods" [working title]
 
 
@@ -188,6 +186,6 @@ You are likely to encounter bugs in this code.
 
 
 ## Licence
-This code is released under the GNU General Public License v3. The full license text is included in the `LICENSE` file in this repository. Tldr legal have a [great summary](https://tldrlegal.com/license/gnu-general-public-license-v3-(gpl-3)) of the license if you're interested.
+All the code in this repository is released under the GNU Affero General Public License unless otherwise specified. The full license text is included in the [`LICENSE.md` file](./LICENSE.md) in this repository. GNU [have a great summary of the licence](https://www.gnu.org/licenses/#AGPL) which I strongly recommend reading before using this software.
 
 Other licences can *potentially* be negotiated on request.

@@ -11,7 +11,7 @@
     "url": "https://git.starbeamrainbowlabs.com/sbrl/PhD-Social-Media.git"
   },
   "author": "Starbeamrainbowlabs",
-  "license": "GPL-3.0-or-later",
+  "license": "AGPL-3.0-or-later",
   "dependencies": {
     "cos-similarity": "^1.1.0",
     "data-science-js": "^0.0.4",
