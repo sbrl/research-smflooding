@@ -49,7 +49,12 @@ FILEPATH_GLOVE = os.environ["GLOVE"] if "GLOVE" in os.environ else None
 DIM = int(os.environ["DIM"]) if "DIM" in os.environ else 2
 FILEPATH_STOPWORDS = os.environ["STOPWORDS"] if "STOPWORDS" in os.environ else None
 
-filepath_output_image = os.path.splitext(os.path.basename(FILEPATH_OUTPUT))[0]+".png"
+filepath_output_image = os.path.join(
+	os.path.dirname(FILEPATH_OUTPUT),
+	os.path.splitext(os.path.basename(
+		FILEPATH_OUTPUT.replace(".gz", "")
+	))[0] # The .png is added automatically by datashader
+)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -63,7 +68,7 @@ if FILEPATH_OUTPUT is None or FILEPATH_OUTPUT == "":
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 logger.info("Wordlist → UMAP convertificator and plotificator 9000")
-for env_name in ["FILEPATH_INPUT", "FILEPATH_OUTPUT", "FILEPATH_GLOVE", "FILEPATH_STOPWORDS", "DIM"]:
+for env_name in ["FILEPATH_INPUT", "FILEPATH_OUTPUT", "filepath_output_image", "FILEPATH_GLOVE", "FILEPATH_STOPWORDS", "DIM"]:
 	logger.info(f"> {env_name} {str(globals()[env_name])}")
 
 
@@ -142,9 +147,9 @@ def flatten(values):
 
 words_glove = [[row, glove.lookup(row)] for row in words]
 words_glove = list(filter(lambda row: len(row) == 2 and row[1] is not None, words_glove))
-print("UNIQ", set([ len(row) for row in words_glove ]))
-print(len(words_glove))
-print(words_glove[0:10])
+# print("UNIQ", set([ len(row) for row in words_glove ]))
+# print(len(words_glove))
+# print(words_glove[0:10])
 
 logger.info(f"{len(words_glove)} words mapped using GloVe")
 
@@ -158,7 +163,10 @@ words_glove_source = [ item[0] for item in words_glove ]
 #  ██████  ██      ██ ██   ██ ██      
 
 logger.info("UMAPing...")
-umapped = umap.UMAP(min_dist=0.05).fit_transform(words_glove_embed)
+umapped = umap.UMAP(
+	min_dist=0.05,
+	n_components=DIM
+).fit_transform(words_glove_embed)
 logger.info("UMAP conversion complete")
 
 
@@ -175,6 +183,7 @@ logger.info("UMAP conversion complete")
 # ██      ███████  ██████     ██       ██    ██ ██   ████  ██████
 
 def plot(filepath_target, umapped, dim):
+	logger.info("Plotting")
 	if dim == 2:
 		df = pd.DataFrame(umapped)
 		df.columns = ["x", "y"]
@@ -188,23 +197,31 @@ def plot(filepath_target, umapped, dim):
 			result,
 			filepath_target
 		)
+		print("canvas", canvas, "points", points, "result", result)
+		logger.info(f"Written plot with 2 dimensions to {filepath_target}.png")
 	else:
 		logger.info(f"Warning: Not exporting a plot, since a dim of {dim} is not supported (supported values: 2).")
 
 def save_tsv(filepath_target, umapped, words):
+	logger.info("Writing tsv")
 	with handle_open(filepath_target, "w") as handle:
-		df_points = pd.DataFrame(umapped)
-		df_labels = pd.DataFrame(words)
-		df_labels.columns = ["word"]
+		print(umapped[0:10])
+		print(words[0:10])
+		# df_points = pd.DataFrame(umapped)
+		# df_labels = pd.DataFrame(words)
+		# df_labels.columns = ["word"]
 		
-		# BUG: a dataframe can only have 1 type IIRC
-		df = pd.concat([df_labels, df_points])
+		rows = [ [ row[0], *row[1] ] for row in zip(words, umapped) ]
 		
-		df.to_csv(handle, sep="\t")
+		for row in rows:
+			payload = "\t".join([str(item) for item in row]) + "\n"
+			handle.write(payload.encode() if filepath_target.endswith(".gz") else payload)
+	
+	logger.info(f"Written values to {filepath_target}")
 
 plot(
 	filepath_target=filepath_output_image,
 	umapped=umapped,
-	words=words_glove_source,
 	dim=DIM
 )
+save_tsv(FILEPATH_OUTPUT, umapped, words_glove_source)
