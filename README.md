@@ -5,7 +5,9 @@
 
 Social media artificial intelligence for analysing the sentiment of floods. Done for my PhD.
 
-This is a work in progress. The associated paper has not been published yet.
+~~This is a work in progress. The associated paper has not been published yet.~~
+
+We've been published! View it here: <https://doi.org/10.1016/j.cageo.2023.105405>
 
 This is not all of the code. Code for other parts of the project can be found here:
 
@@ -168,12 +170,15 @@ Absolutely! Please get in touch by sending me an email.
 
 Unfortunately, I am unable to share the Twitter data though due to Twitter's terms and conditions (I anonymised the data, but Twitter only allows me to share the tweet IDs...). However, I *can* share the date ranges and searches I made to obtain the data, allowing you to redownload the data with my [`twitter-academic-downloader`](https://www.npmjs.com/package/twitter-academic-downloader) program which I implemented for this project.
 
-### Why GPL-3.0, and not MIT/Apache2?
+### Why AGPL-3.0, and not MIT/Apache2?
 The code, models, and other algorithms in this repository took me a huge amount of effort to develop. To this end, I want to ensure:
 
 1. That the work here benefits everyone
 2. Future modifications to this work (either by me or others) benefits everyone
 3. Transparency
+
+### Does this work apply to other social media platforms?
+It should. While I've worked with Twitter data here, the approach should be generalisable to all platforms that consist of short posts, potentially associated with images.
 
 ### I'm confused / have some other question
 Please [open an issue](https://github.com/sbrl/research-smflooding/issues). If it's private / confidential, please send me an email.
