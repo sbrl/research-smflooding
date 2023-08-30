@@ -7,7 +7,7 @@ with translation to Python by Motoki Wu
 updated to Python 3 by Phil Pope (@ppope)
 with bugfixes and improvements by Starbeamrainbowlabs (@sbrl)
 	• Tidy up code with help of linters
-	• Add spaces surrounding punctation and <token_blocks>
+	• Add spaces surrounding punctuation and <token_blocks>
 	• Limit runs of whitespace to a single space
 	• Transliterate ’ to '
 
