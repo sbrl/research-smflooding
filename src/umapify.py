@@ -24,14 +24,15 @@ Usage:
 	[ENV_VAR=value ....] path/to/umapify.py
 
 Environment variables:
-	INPUT   The path to the wordlist file. See the command below for more info.
-	OUTPUT  The path to the output tsv file. Will have DIM+1 columns in the form '[ word, dim_1, dim_2, ... dim_x ] @ tsv'. A sister file will be placed with the file extension .png with a Cool Plot™
-	DIM		The number of output dimensions to UMAP to.
-	GLOVE	The filepath to the glove model to use.
+	INPUT   	The path to the wordlist file. See the command below for more info.
+	OUTPUT  	The path to the output tsv file. Will have DIM+1 columns in the form '[ word, dim_1, dim_2, ... dim_x ] @ tsv'. A sister file will be placed with the file extension .png with a Cool Plot™
+	STOPWORDS	Filepath to the list of stop words to filter out
+	GLOVE		The filepath to the glove model to use.
+	DIM			The number of output dimensions to UMAP to.
 
 Extra info:
 	Make a wordlist from a tweet .jsonl file like so:
-		 jq --raw-output -c .text tweets-all-new-20220117.jsonl | fmt -w1 | sort -n | uniq -c | less | sort -n >UMAP-tweets-all-new-20220117-wordlist.txt
+		 jq --raw-output -c .text tweets-all-new-20220117.jsonl | fmt -w1 | sort -n | uniq -c | less | sort -n | gzip >UMAP-tweets-all-new-20220117-wordlist.txt.gz
 		 
 		The output is in the form "^[0-9]+\\t.*$", in which [0-9]+ is the frequency (not used), and .* is the word itself.
 """)
