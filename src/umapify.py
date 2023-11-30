@@ -15,6 +15,7 @@ import colorcet
 
 from lib.io.handle_open import handle_open
 from lib.glove.glove import GloVe
+from lib.glove.normalise_text import normalise as normalise_text
 
 if "--help" in sys.argv:
 	print("""Wordlist → UMAP convertificator and plotificator 9000
@@ -24,14 +25,15 @@ Usage:
 	[ENV_VAR=value ....] path/to/umapify.py
 
 Environment variables:
-	INPUT   The path to the wordlist file. See the command below for more info.
-	OUTPUT  The path to the output tsv file. Will have DIM+1 columns in the form '[ word, dim_1, dim_2, ... dim_x ] @ tsv'. A sister file will be placed with the file extension .png with a Cool Plot™
-	DIM		The number of output dimensions to UMAP to.
-	GLOVE	The filepath to the glove model to use.
+	INPUT   	The path to the wordlist file. See the command below for more info.
+	OUTPUT  	The path to the output tsv file. Will have DIM+1 columns in the form '[ word, dim_1, dim_2, ... dim_x ] @ tsv'. A sister file will be placed with the file extension .png with a Cool Plot™
+	STOPWORDS	Filepath to the list of stop words to filter out
+	GLOVE		The filepath to the glove model to use.
+	DIM			The number of output dimensions to UMAP to.
 
 Extra info:
 	Make a wordlist from a tweet .jsonl file like so:
-		 jq --raw-output -c .text tweets-all-new-20220117.jsonl | fmt -w1 | sort -n | uniq -c | less | sort -n >UMAP-tweets-all-new-20220117-wordlist.txt
+		 jq --raw-output -c .text tweets-all-new-20220117.jsonl | fmt -w1 | sort -n | uniq -c | less | sort -n | gzip >UMAP-tweets-all-new-20220117-wordlist.txt.gz
 		 
 		The output is in the form "^[0-9]+\\t.*$", in which [0-9]+ is the frequency (not used), and .* is the word itself.
 """)
@@ -48,6 +50,7 @@ FILEPATH_OUTPUT = os.environ["OUTPUT"] if "OUTPUT" in os.environ else None
 FILEPATH_GLOVE = os.environ["GLOVE"] if "GLOVE" in os.environ else None
 DIM = int(os.environ["DIM"]) if "DIM" in os.environ else 2
 FILEPATH_STOPWORDS = os.environ["STOPWORDS"] if "STOPWORDS" in os.environ else None
+INPUT_FORMAT = "single" if "INPUT_SINGLE" in os.environ else "double"
 
 filepath_output_image = os.path.join(
 	os.path.dirname(FILEPATH_OUTPUT),
@@ -109,17 +112,20 @@ with handle_open(FILEPATH_INPUT, "r") as handle:
 		if type(line) is bytes:
 			line = line.decode()
 		row = line.split("\t", maxsplit=1)
-		if row == "" or len(row) < 2:
-			continue
-		try:
-			row[0] = int(row[0])
-		except:
-			continue
-		row[1] = row[1].rstrip("\n")
-		if stop_words is not None and row[1] in stop_words:
+		word = row[0]
+		if INPUT_FORMAT == "double":
+			if line == "" or len(row) < 2:
+				continue
+			try:
+				row[0] = int(row[0])
+			except:
+				continue
+			word = row[1]
+		word = word.rstrip("\n")
+		if stop_words is not None and word in stop_words:
 			stop_words_skipped += 1
 			continue
-		words.append(row[1])
+		words.append(normalise_text(word))
 		words_read += 1
 		if words_read % 1000 == 0:
 			sys.stderr.write(f"Reading words: {words_read} words read so far\r")
