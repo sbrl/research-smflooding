@@ -22,7 +22,8 @@ class CLIPModel(torch.nn.Module):
 			text_encoded = self.clip.encode_text(text.int().to(self.device))
 			images_encoded = self.clip.encode_image(images.to(self.device))
 		
-		# NOTE: We *may* need to run this through the model itself, but whether we need to do this or not is curently unclear.
+		# Q: >> We *may* need to run this through the model itself, but whether we need to do this or not is currently unclear.
+		# 2024-06-13 A: No, we don't need to run it through the 'model itself'. CLIP works by projecting images and text into the same shared latent space. This is simply taking advantage of that for classification purposes.
 		
 		# text_encoded and images_encoded should look like [ batch_size, 512 ]
 		result = torch.stack([text_encoded, images_encoded], -1)
