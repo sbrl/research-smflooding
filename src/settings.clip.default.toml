@@ -12,6 +12,8 @@ clip_label_threshold=0.75
 input_train = ""
 # Same as input_train, but for validation
 input_validate = ""
+# Same as input_test, but for the ssplit/test data
+input_test = ""
 # Path to the categories.tsv file
 categories = ""
 # Path to the directory that holds the media files

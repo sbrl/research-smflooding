@@ -1,5 +1,14 @@
 {
 	"cSpell.words": [
 		"jakegodsall"
+	],
+	"spellright.language": [
+		"en-US-10-1."
+	],
+	"spellright.documentTypes": [
+		"markdown",
+		"latex",
+		"plaintext",
+		"javascript"
 	]
 }

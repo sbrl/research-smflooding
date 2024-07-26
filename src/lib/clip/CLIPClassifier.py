@@ -67,7 +67,7 @@ class CLIPClassifier(object):
 		handle_summary.write(str(summary))
 		handle_summary.close()
 	
-	def train(self, dataset_train, dataset_validate):
+	def train(self, dataset_train, dataset_validate, dataset_test=None):
 		self.preamble()
 		
 		for epoch_i in range(self.epochs):
@@ -75,19 +75,31 @@ class CLIPClassifier(object):
 			loss, acc, batches = self.__train(dataset_train)
 			val_loss, val_acc, val_batches = self.__validate(dataset_validate)
 			
-			self.handle_metrics.write(f"{epoch_i}\t{acc}\t{loss}\t{batches}\t{val_acc}\t{val_loss}\t{val_batches}\n")   
-			self.handle_metrics.flush()         
+			test_loss = None
+			test_acc = None
+			test_batches = None
+			if dataset_test is not None:
+				test_loss, test_acc, test_batches = self.__validate(dataset_test)
+			
+			self.handle_metrics.write(f"{epoch_i}\t{acc}\t{loss}\t{batches}\t{val_acc}\t{val_loss}\t{val_batches}\n")
+			self.handle_metrics.flush()
+			metrics = {
+				"loss": loss,
+				"acc": acc,
+				"batches": batches,
+				"val_loss": val_loss,
+				"val_acc": val_acc,
+				"val_batches": val_batches,
+			}
+			if dataset_test is not None:
+				metrics["test_loss"] = test_loss
+				metrics["test_acc"] = test_acc
+				metrics["test_batches"] = test_batches
+			
 			self.checkpoint(
 				os.path.join(self.dir_checkpoint, f"checkpoint_e{epoch_i}_valacc={round(val_acc, 3)}.pt"),
 				epoch_i=epoch_i,
-				metrics={
-					"loss": loss,
-					"acc": acc,
-					"batches": batches,
-					"val_loss": val_loss,
-					"val_acc": val_acc,
-					"val_batches": val_batches
-				}
+				metrics=metrics
 			)
 		
 		self.handle_metrics.close()    
