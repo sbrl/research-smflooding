@@ -85,7 +85,6 @@
 			color: var(--header-color);
 			border-bottom: 2px solid var(--header-border);
 			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-			text-transform: uppercase;
 			letter-spacing: 2px;
 		}
 
@@ -187,41 +186,63 @@
 			);
 
 			// Create the header
-			let table = '+-' + '-'.repeat(maxSizeWidth) + '-+';
+			let result = '+-' + '-'.repeat(maxSizeWidth) + '-+';
 			maxSplitWidths.forEach(width => {
-				table += '-'.repeat(width + 2) + '+';
+				result += '-'.repeat(width + 2) + '+';
 			});
-			table += '\n';
+			result += '\n';
 
-			table += '| ' + 'Dataset Size'.padEnd(maxSizeWidth) + ' |';
+			result += '| ' + 'Dataset Size'.padEnd(maxSizeWidth) + ' |';
 			maxSplitWidths.forEach((width, i) => {
-				table += ` Split ${i + 1}`.padEnd(width + 1) + ' |';
+				result += ` Split ${i + 1}`.padEnd(width + 1) + ' |';
 			});
-			table += '\n';
+			result += '\n';
 
 			// Add separator
-			table += '+-' + '-'.repeat(maxSizeWidth) + '-+';
+			result += '+-' + '-'.repeat(maxSizeWidth) + '-+';
 			maxSplitWidths.forEach(width => {
-				table += '-'.repeat(width + 2) + '+';
+				result += '-'.repeat(width + 2) + '+';
 			});
-			table += '\n';
+			result += '\n';
 
 			// Add data rows
 			sizes.forEach((size, i) => {
-				table += '| ' + size.toString().padEnd(maxSizeWidth) + ' |';
+				result += '| ' + size.toString().padEnd(maxSizeWidth) + ' |';
 				splitvals[i].forEach((split, j) => {
-					table += ' ' + split.toString().padEnd(maxSplitWidths[j]) + ' |';
+					result += ' ' + split.toString().padEnd(maxSplitWidths[j]) + ' |';
 				});
-				table += '\n';
+				result += '\n';
 			});
 
 			// Add bottom border
-			table += '+-' + '-'.repeat(maxSizeWidth) + '-+';
+			result += '+-' + '-'.repeat(maxSizeWidth) + '-+';
 			maxSplitWidths.forEach(width => {
-				table += '-'.repeat(width + 2) + '+';
+				result += '-'.repeat(width + 2) + '+';
 			});
+			
+			
+			
+			// Add bash commands for extracting lines
+			result += '\n\nBash commands to extract lines:\n\n';
+			let startLine = 1;
+			for (const [i, size] of sizes.entries()) {
+				result += `# Dataset Size ${size}:\n`;
+				for (const [j, split] of splitvals[i].entries()) {
+					const endLine = startLine + split - 1;
+					if (j === 0) {
+						result += `head -n ${endLine} input_file.txt | tail -n ${split} > output_split_${j + 1}.txt\n`;
+					} else if (j === splitvals[i].length - 1) {
+						result += `tail -n +${startLine} input_file.txt > output_split_${j + 1}.txt\n`;
+					} else {
+						result += `sed -n '${startLine},${endLine}p' input_file.txt > output_split_${j + 1}.txt\n`;
+					}
+					startLine = endLine + 1;
+				}
+				result += '\n';
+				startLine = 1; // Reset for the next dataset size
+			}
 
-			return table;
+			return result;
 		}
 
 		function handle_update() {
