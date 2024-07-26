@@ -17,6 +17,13 @@ from lib.clip.CLIPDataset import CLIPDataset
 from lib.clip.CLIPClassifier import CLIPClassifier
 
 
+"""
+This program trains a CLIP-based classifier for multimodal data (images and text).
+It provides functionality for training and validating using a CLIP model.
+The CLIPClassifier class encapsulates the model, loss function, and optimization process.
+It supports checkpointing and logging metrics during training.
+"""
+
 
 def init_logging(filepath_output):
 	"""Initialises the logging subsystem."""

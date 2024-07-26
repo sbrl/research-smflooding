@@ -11,6 +11,13 @@ from lib.io.settings import settings_get, settings_load
 from lib.io.TweetCatsLabeller import TweetCatsLabeller
 from lib.data.CategoryCalculator import CategoryCalculator
 
+"""
+This file contains the main script for labeling tweets using predefined emoji categories.
+It uses the TweetCatsLabeller class from src/lib/io/TweetCatsLabeller.py to process
+input tweets, assign labels based on categories, and output the labeled tweets.
+The script handles command-line arguments, file I/O, and logging.
+"""
+
 
 def init_logging(filepath_output):
 	"""Initialises the logging subsystem."""
