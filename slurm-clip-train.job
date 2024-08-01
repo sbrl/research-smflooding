@@ -30,6 +30,7 @@ show_help() {
 	echo -e "....where:" >&2;
 	echo -e "    CONFIG  The filepath to the config file containing the parameters for this run" >&2;
 	echo -e "    POSTFIX Optional. A suffix to apply to the run code name." >&2;
+	echo -e "    ARGS    Optional. Any other CLI args to pass directly to the experiment runner." >&2;
 	echo -e "" >&2;
 	echo -e "The code used to identify the run is taken automatically from the filename of the config file." >&2;
 	exit;
