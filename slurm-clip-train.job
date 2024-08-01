@@ -15,12 +15,22 @@
 # below, and the Tesla K40m GPUs have an index of 3.5 :-(
 # Ref https://github.com/pytorch/pytorch/issues/24205
 
-module load utilities/multi
-module load readline/7.0
-module load gcc/10.2.0
-module load cuda/11.5.0
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+	return $?;
+}
 
-module load python/anaconda/4.6/miniconda/3.7
+
+if command_exists module; then
+	module load utilities/multi
+	module load readline/7.0
+	module load gcc/10.2.0
+	module load cuda/11.5.0
+
+	module load python/anaconda/4.6/miniconda/3.7
+else
+	echo "Warning: module command not found, not loading modules" >&2;
+fi
 
 
 show_help() {
@@ -70,5 +80,11 @@ export PATH=$HOME/software/bin:$PATH;
 echo ">>> Installing requirements";
 conda run -n py38 pip install -r requirements.txt;
 echo ">>> Training model";
-/usr/bin/env time -v conda run -n py38 src/clip_classifier.py --config "${CONFIG}" --output "${dir_output}" ${ARGS};
+if command_exists conda; then
+	echo ">>> Running under conda";
+	/usr/bin/env time -v conda run -n py38 src/clip_classifier.py --config "${CONFIG}" --output "${dir_output}" ${ARGS};
+else
+	echo ">>> Warning: conda not found, executing experiment harness directly";
+	/usr/bin/env time -v src/clip_classifier.py --config "${CONFIG}" --output "${dir_output}" ${ARGS};
+fi
 echo ">>> exited with code $?";
