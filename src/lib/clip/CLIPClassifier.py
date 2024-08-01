@@ -39,7 +39,7 @@ class CLIPClassifier(object):
 			os.makedirs(self.dir_checkpoint)
 		
 		self.handle_metrics = open(os.path.join(self.dir_output, "metrics.tsv"), "w")
-		self.handle_metrics.write("epoch\taccuracy\tloss\tbatches\tval_accuracy\tval_loss\tval_batches\n")
+		self.handle_metrics.write("epoch\taccuracy\tloss\tbatches\tval_accuracy\tval_loss\tval_batches\ttest_acc\ttest_loss\ttest_batches\n")
 		
 		handle_settings = open(os.path.join(self.dir_output, "settings.txt"), "w")
 		handle_settings.write(f"dir_output: {self.dir_output}\n")
@@ -81,14 +81,14 @@ class CLIPClassifier(object):
 			if dataset_test is not None:
 				test_loss, test_acc, test_batches = self.__validate(dataset_test)
 			
-			self.handle_metrics.write(f"{epoch_i}\t{acc}\t{loss}\t{batches}\t{val_acc}\t{val_loss}\t{val_batches}\n")
+			self.handle_metrics.write(f"{epoch_i}\t{acc}\t{loss}\t{batches}\t{val_acc}\t{val_loss}\t{val_batches}\t{test_acc}\t{test_loss}\t{test_batches}\n")
 			self.handle_metrics.flush()
 			metrics = {
-				"loss": loss,
 				"acc": acc,
+				"loss": loss,
 				"batches": batches,
-				"val_loss": val_loss,
 				"val_acc": val_acc,
+				"val_loss": val_loss,
 				"val_batches": val_batches,
 			}
 			if dataset_test is not None:

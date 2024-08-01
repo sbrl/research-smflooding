@@ -116,6 +116,10 @@ def main():
 	if not os.path.exists(settings.data.paths.input_validate):
 		print(f"Error: No such file or directory {settings.data.paths.input_validate}")
 		sys.exit(2)
+	if settings.data.paths.input_test and len(settings.data.paths.input_test) > 0 and not os.path.exists(settings.data.paths.input_test):
+		print(f"Error: data.paths.input_test was specified, but no such file or directory '{settings.data.paths.input_test}' exists.")
+		sys.exit(2)
+		
 	if not os.path.exists(settings.data.paths.categories):
 		print(f"Error: No such file or directory {settings.data.paths.categories}")
 		sys.exit(2)
@@ -151,6 +155,13 @@ def main():
 		filepath_tweets=settings.data.paths.input_validate,
 		**dataset_settings_common
 	)
+	dataset_test = None
+	if settings.data.paths.input_test and len(settings.data.paths.input_test) > 0:
+		dataset_test = CLIPDataset(
+			filepath_tweets=settings.data.paths.input_test,
+			**dataset_settings_common
+		)
+	
 	
 	###
 	## 2: Create AI model & train
@@ -162,8 +173,7 @@ def main():
 		clip_model=clip_model,
 		device=device
 	)
-	
-	ai.train(dataset_train, dataset_validate)
+	ai.train(dataset_train, dataset_validate, dataset_test)
 
 if __name__ == "__main__":
 	main()
