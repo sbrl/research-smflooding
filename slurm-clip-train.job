@@ -41,6 +41,7 @@ show_help() {
 	echo -e "    CONFIG  The filepath to the config file containing the parameters for this run" >&2;
 	echo -e "    POSTFIX Optional. A suffix to apply to the run code name." >&2;
 	echo -e "    ARGS    Optional. Any other CLI args to pass directly to the experiment runner." >&2;
+	echo -e "    NO_INSTALL_REQUIREMENTS    Set to any value to disable automatic installation of pip dependencies from requirements.txt" >&2;
 	echo -e "" >&2;
 	echo -e "The code used to identify the run is taken automatically from the filename of the config file." >&2;
 	exit;
@@ -78,7 +79,15 @@ dir_output="output/$(date -u --rfc-3339=date)_${CODE}";
 export PATH=$HOME/software/bin:$PATH;
 
 echo ">>> Installing requirements";
-conda run -n py38 pip install -r requirements.txt;
+if [[ -z "${NO_INSTALL_REQUIREMENTS}" ]]; then
+	if command_exists conda; then
+		echo ">>> Installing inside conda environment";
+		conda run -n py38 pip install -r requirements.txt;
+	else
+		echo ">>> Condaa not detected, installing directly"l
+		pip install -r requirements.txt;
+	fi
+fi
 echo ">>> Training model";
 if command_exists conda; then
 	echo ">>> Running under conda";
