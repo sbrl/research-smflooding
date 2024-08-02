@@ -9,16 +9,20 @@ import clip
 
 
 class CLIPDataset(torch.utils.data.IterableDataset):
-	def __init__(self, filepath_tweets, dir_media, cats, clip_preprocess, batch_size=64, device="cpu", clip_label_threshold=0.75, **kwargs):
+	def __init__(self, filepath_tweets, dir_media, cats, clip_preprocess, batch_size=64, device="cpu", clip_label_threshold=0.75, do_images=True, **kwargs):
 		super(CLIPDataset).__init__()
 		
 		self.filepath_tweets = filepath_tweets
 		self.device = device
 		self.dir_media = dir_media
 		self.batch_size = batch_size
+		self.do_images = do_images
 		
 		self.clip_label_threshold = clip_label_threshold
 		
+		logger.info(f"START with:\n* filepath_tweets {self.filepath_tweets}\n* device {self.device}\n* dir_media {self.dir_media}\n* batch_size {self.batch_size}\n* do_images {self.do_images}\n* clip_label_threshold {self.clip_label_threshold}")
+
+		logger.info(f"START with:\n* filepath_tweets {self.filepath_tweets}\n* batch_size {self.batch_size}\n* cats {self.cats}\n* clip_sequence_length {self.clip_sequence_length}")		
 		self.cats = cats
 		self.preprocess = clip_preprocess
 		self.clip_sequence_length = clip.tokenize.__defaults__[0]
