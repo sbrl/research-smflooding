@@ -52,6 +52,7 @@ def parse_args():
 		help="If the GPU is not available, exit with an error  (useful on shared HPC systems to avoid running out of memory & affecting other users)", action="store_true")
 	parser.add_argument("--batch-size", help="Sets the batch size.", type=int)
 	parser.add_argument("--clip-media-threshold", help="If a tweet has a clip-assigned image via data augmentation, any with a confidence below this value will be discarded. Must be between 0 and 1 (default: 0.75).", type=float)
+	parser.add_argument("--no-do-images", help="You do not want this option. Set all images to a blank white image instead of loading the actual images from disk. Useful only in ablative studies etc.", action="store_true")
 	
 	return parser.parse_args()
 
@@ -144,7 +145,8 @@ def main():
 		"cats": cats,
 		"device": device,
 		"clip_preprocess": clip_preprocess,
-		"clip_label_threshold": settings.data.clip_label_threshold
+		"clip_label_threshold": settings.data.clip_label_threshold,
+		"do_images": args.do_images # SHOULD default to False - TODO test this
 	}
 	
 	dataset_train = CLIPDataset(

@@ -38,6 +38,9 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 		self.count_total = 0
 		self.count_withmedia = 0
 		self.count_withemoji = 0
+		
+		if not self.do_images:
+			self.image_blank = Image.new("RGB", (224, 224), (225, 225, 225))
 	
 	
 	def __iter__(self):
@@ -144,7 +147,12 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 				if not os.path.exists(filename):
 					continue
 				
-				image = self.preprocess(Image.open(filename)).to(self.device)
+				if self.do_images:
+					image = Image.open(filename)
+				else:
+					image = self.image_blank
+				
+				image = self.preprocess(image).to(self.device)
 				
 				self.queue.append({
 					"label": cat.to(device=self.device),
