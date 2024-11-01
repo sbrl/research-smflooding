@@ -72,6 +72,7 @@ class CLIPClassifier(object):
 		
 		for epoch_i in range(self.epochs):
 			print(f"*** Epoch {epoch_i} ***")
+			logger.info(f"*** Epoch {epoch_i} ***")
 			loss, acc, batches = self.__train(dataset_train)
 			val_loss, val_acc, val_batches = self.__validate(dataset_validate)
 			

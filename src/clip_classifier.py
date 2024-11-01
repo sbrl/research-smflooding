@@ -146,8 +146,10 @@ def main():
 		"device": device,
 		"clip_preprocess": clip_preprocess,
 		"clip_label_threshold": settings.data.clip_label_threshold,
-		"do_images": args.do_images # SHOULD default to False - TODO test this
+		"do_images": not args.no_do_images
 	}
+	
+	logger.info(f"DEBUG:dataset_settings_common {str(dataset_settings_common)}")
 	
 	dataset_train = CLIPDataset(
 		filepath_tweets=settings.data.paths.input_train,
