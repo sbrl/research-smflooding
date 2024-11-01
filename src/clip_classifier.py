@@ -53,6 +53,7 @@ def parse_args():
 	parser.add_argument("--batch-size", help="Sets the batch size.", type=int)
 	parser.add_argument("--clip-media-threshold", help="If a tweet has a clip-assigned image via data augmentation, any with a confidence below this value will be discarded. Must be between 0 and 1 (default: 0.75).", type=float)
 	parser.add_argument("--no-do-images", help="You do not want this option. Set all images to a blank white image instead of loading the actual images from disk. Useful only in ablative studies etc.", action="store_true")
+	parser.add_argument("--seed", "-s", help="Set the global random seed. You do not want this option. Useful only for direct comparative studies, but basically useless since the ONNX runtime scrambles the determinism and reproduceablility anyway.", type=int)
 	
 	return parser.parse_args()
 
@@ -76,6 +77,7 @@ def main():
 		settings.train.batch_size = args.batch_size
 	if hasattr(args, "clip_media_threshold") and type(args.clip_media_threshold) is float:
 		settings.data.clip_label_threshold = args.clip_media_threshold
+	
 	# if hasattr(args, "smoteify") and args.smoteify:
 	# 	settings.train.smoteify = True
 	settings.output = args.output
@@ -86,6 +88,12 @@ def main():
 			settings.output,
 			"this_run.log"
 		))
+	
+	
+	if hasattr(args, "seed") and type(args.seed) is int:
+		torch.manual_seed(args.seed)
+		logger.warning(f"Randomness seed set to {str(args.seed)}.")
+	
 	
 	device = "cuda" if torch.cuda.is_available() else "cpu"
 	if settings.model.device != "auto":
