@@ -22,13 +22,14 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 		
 		logger.info(f"START with:\n* filepath_tweets {self.filepath_tweets}\n* device {self.device}\n* dir_media {self.dir_media}\n* batch_size {self.batch_size}\n* do_images {self.do_images}\n* clip_label_threshold {self.clip_label_threshold}")
 
-		logger.info(f"START with:\n* filepath_tweets {self.filepath_tweets}\n* batch_size {self.batch_size}\n* cats {self.cats}\n* clip_sequence_length {self.clip_sequence_length}")		
 		self.cats = cats
 		self.preprocess = clip_preprocess
 		self.clip_sequence_length = clip.tokenize.__defaults__[0]
 		if type(self.clip_sequence_length) != int:
 			self.clip_sequence_length = 77
 		
+		logger.info(f"START with:\n* filepath_tweets {self.filepath_tweets}\n* batch_size {self.batch_size}\n* cats {self.cats}\n* clip_sequence_length {self.clip_sequence_length}")	
+			
 		###
 		## State-specific member variables
 		###
