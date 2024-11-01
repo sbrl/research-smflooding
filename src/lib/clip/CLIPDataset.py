@@ -150,7 +150,7 @@ class CLIPDataset(torch.utils.data.IterableDataset):
 				if self.do_images:
 					image = Image.open(filename)
 				else:
-					image = self.image_blank
+					image = self.image_blank # Should be fine given self.preprocess shouldn't mutate it
 				
 				image = self.preprocess(image).to(self.device)
 				
