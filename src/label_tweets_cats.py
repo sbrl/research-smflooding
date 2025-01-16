@@ -2,12 +2,12 @@
 import io
 import sys
 import os
-from pathlib import Path
+# from pathlib import Path
 import argparse
 from loguru import logger
-import json
+# import json
 
-from lib.io.settings import settings_get, settings_load
+# from lib.io.settings import settings_get, settings_load
 from lib.io.TweetCatsLabeller import TweetCatsLabeller
 from lib.data.CategoryCalculator import CategoryCalculator
 

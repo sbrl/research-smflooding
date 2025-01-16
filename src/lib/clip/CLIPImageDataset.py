@@ -4,11 +4,10 @@ import io
 from loguru import logger
 
 import torch
-import torchvision
+from torchvision.transforms import Compose, Resize, CenterCrop, Normalize #, ToTensor
+from torchvision.transforms import InterpolationMode
 import simplejpeg
 
-from torchvision.transforms import Compose, Resize, CenterCrop, ToTensor, Normalize
-from torchvision.transforms import InterpolationMode
 
 class CLIPImageDataset(torch.utils.data.Dataset):
 	

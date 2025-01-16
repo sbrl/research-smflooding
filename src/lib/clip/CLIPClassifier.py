@@ -16,7 +16,7 @@ class CLIPClassifier(object):
 		
 		self.dir_output = dir_output
 		if self.dir_output is not None:
-			self.dir_checkpoint = filepath_checkpoint = os.path.join(self.dir_output, "checkpoints")
+			self.dir_checkpoint = os.path.join(self.dir_output, "checkpoints")
 		
 		self.epochs = epochs
 		self.batch_size = batch_size
@@ -45,7 +45,7 @@ class CLIPClassifier(object):
 		handle_settings.write(f"dir_output: {self.dir_output}\n")
 		handle_settings.write(f"epochs:     {self.epochs}\n")
 		handle_settings.write(f"batch_size: {self.batch_size}\n")
-		handle_settings.write(f"kwargs:")
+		handle_settings.write( "kwargs:")
 		handle_settings.write(json.dumps(
 			self.__kwargs,
 			indent="\t",
@@ -112,7 +112,7 @@ class CLIPClassifier(object):
 		The recommended file extension is apparently ".pt".
 		"""
 		logger.info(f"CHECKPOINT to {filepath_target}")
-		script = torch.save({
+		_script = torch.save({
 			"epoch": epoch_i,
 			"model_state_dict": self.model.state_dict(),
 			"optimiser_state_dict": self.optimiser.state_dict(),
@@ -163,7 +163,7 @@ class CLIPClassifier(object):
 			correct += (predictions.argmax(1) == data["labels"]).type(torch.float).sum().item()
 			count_batches += 1
 			
-			if self.debug_tinyepochs == True and count_batches >= 10:
+			if self.debug_tinyepochs == True and count_batches >= 10: # noqa: E712
 				break
 			
 		return (loss_total / count_batches), (correct / (count_batches * self.batch_size)), count_batches
@@ -188,7 +188,7 @@ class CLIPClassifier(object):
 				
 				count_batches += 1
 				
-				if self.debug_tinyepochs == True and count_batches >= 10:
+				if self.debug_tinyepochs == True and count_batches >= 10: # noqa: E712
 					break
 		
 		return (loss_total / count_batches), (correct / (count_batches * self.batch_size)), count_batches

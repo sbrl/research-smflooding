@@ -1,6 +1,6 @@
 import torch
 
-from PIL import Image
+# from PIL import Image
 
 class CLIPModel(torch.nn.Module):
 	def __init__(self, clip_model, units=512, classes=2, device="cpu", **kwargs):

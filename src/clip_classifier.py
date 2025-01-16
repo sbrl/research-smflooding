@@ -5,7 +5,6 @@ import os
 from pathlib import Path
 import argparse
 from loguru import logger
-import json
 
 import torch
 import clip
@@ -137,7 +136,7 @@ def main():
 		sys.exit(2)
 	
 	if type(settings.data.clip_label_threshold) is not float:
-		print(f"Error: clip_label_threshold is not of type float.")
+		print("Error: clip_label_threshold is not of type float.")
 		sys.exit(3)
 	
 	###############################################################################
