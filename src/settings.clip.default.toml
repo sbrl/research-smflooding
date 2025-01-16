@@ -26,8 +26,12 @@ dir_media = ""
 device = "auto"
 # The CLIP model name to use.
 # Note that support for values other than the default value is not necessarily implemented yet.
-# See https://github.com/openai/CLIP for mroe information.
+# See https://github.com/openai/CLIP for more information.
 clip = "ViT-B/32"
+
+# The default # of units/params/etc in the tail end model we tacked on to CLIP as early fusion.
+# You can change this value freely because units_in - which is set separately internally - manages the input shape of the submodel
+units = 512
 
 [train]
 batch_size = 64					# The batch size

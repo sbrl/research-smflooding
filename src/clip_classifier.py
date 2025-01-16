@@ -53,6 +53,7 @@ def parse_args():
 	parser.add_argument("--clip-media-threshold", help="If a tweet has a clip-assigned image via data augmentation, any with a confidence below this value will be discarded. Must be between 0 and 1 (default: 0.75).", type=float)
 	parser.add_argument("--no-do-images", help="You do not want this option. Set all images to a blank white image instead of loading the actual images from disk. Useful only in ablative studies etc.", action="store_true")
 	parser.add_argument("--seed", "-s", help="Set the global random seed. You do not want this option. Useful only for direct comparative studies, but basically useless since the ONNX runtime scrambles the determinism and reproduceablility anyway.", type=int)
+	parser.add_argument("--units", "-u", help="The number of units/params/etc to use INSIDE the tail-end model we've tacked onto CLIP. You can freely change this value, because the units in to our little submodel is set separately internally.", type=int)
 	
 	return parser.parse_args()
 
@@ -76,6 +77,8 @@ def main():
 		settings.train.batch_size = args.batch_size
 	if hasattr(args, "clip_media_threshold") and type(args.clip_media_threshold) is float:
 		settings.data.clip_label_threshold = args.clip_media_threshold
+	if hasattr(args, "units") and type(args.units) is int:
+		settings.model.units = args.units # Default: 512, set in settings.clip.default.toml
 	
 	# if hasattr(args, "smoteify") and args.smoteify:
 	# 	settings.train.smoteify = True
@@ -182,7 +185,8 @@ def main():
 		epochs=settings.train.epochs,
 		batch_size=settings.train.batch_size,
 		clip_model=clip_model,
-		device=device
+		device=device,
+		units=settings.model.units
 	)
 	ai.train(dataset_train, dataset_validate, dataset_test)
 
