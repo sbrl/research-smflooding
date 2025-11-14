@@ -1,0 +1,24 @@
+[project]
+name = "research-smflooding"
+version = "1.0.0"
+license = { file = "LICENSE.md" }
+dependencies = [
+	"tensorflow>=2.5",
+	# "tensorflow_addons", # deprecated should prob migrate away from this
+	"toml",
+	"numpy",
+	"matplotlib",
+	"loguru",
+	# "gensim", # uv doesn't like it
+	"umap-learn[plot]",
+	"ftfy", # unicode problem fixer
+	"tqdm", # progress bars
+	"torch>=1.7.1",
+	"torchvision",
+	"torchinfo",
+	# todo find better clip that's more specific ala <https://www.nomic.ai/blog/posts/nomic-embed-text-v1> but that's text-only and not both
+	"clip@git+https://github.com/openai/CLIP@main",
+	"simplejpeg",
+	"nonechucks",
+	"vaderSentiment"
+]
