@@ -30,7 +30,7 @@ Environment variables:
 Extra info:
 	The input file should be in a .jsonl file, with 1 object per line. The following properties are recognised as the embedding vector and the associated label:
 	EMBEDDING: embed, clip
-	LABEL: label, filepath
+	LABEL: label, filepath, filename
 
 """)
     exit(0)
@@ -57,15 +57,13 @@ filepath_output_image = os.path.join(
 
 if FILEPATH_INPUT is None or not os.path.exists(FILEPATH_INPUT):
 	raise Exception(f"Error: No file found at '{FILEPATH_INPUT}'. Either it doesn't exist, or you don't have permission to read it.")
-if FILEPATH_GLOVE is None or not os.path.exists(FILEPATH_GLOVE):
-	raise Exception(f"Error: No file found at '{FILEPATH_GLOVE}'. Either it doesn't exist, or you don't have permission to read it.")
 if FILEPATH_OUTPUT is None or FILEPATH_OUTPUT == "":
 	raise Exception(f"Error: No output filepath specified.")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-logger.info("Wordlist → UMAP convertificator and plotificator 9000")
-for env_name in ["FILEPATH_INPUT", "FILEPATH_OUTPUT", "filepath_output_image", "FILEPATH_GLOVE", "FILEPATH_STOPWORDS", "DIM"]:
+logger.info("Embeddings → UMAP convertificator and plotificator 9001")
+for env_name in ["FILEPATH_INPUT", "FILEPATH_OUTPUT", "filepath_output_image", "DIM"]:
 	logger.info(f"> {env_name} {str(globals()[env_name])}")
 
 
@@ -100,8 +98,9 @@ with handle_open(FILEPATH_INPUT, "r") as handle:
 		
 		obj = json.loads(line)
 		
-		label = find_properties(obj, ["label", "filepath"])
+		label = find_properties(obj, ["label", "filepath", "filename"])
 		if label is None:
+			print(obj)
 			raise Exception(f"Error: For line {i_read} found None for label")
 		embed = find_properties(obj, ["embed", "clip"])
 		if embed is None:
