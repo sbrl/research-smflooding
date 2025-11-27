@@ -84,7 +84,7 @@ def find_properties(obj, props: list):
 
 
 labels: list = []
-embed: list = []
+embeds: list = []
 
 i_read = 0
 with handle_open(FILEPATH_INPUT, "r") as handle:
@@ -107,7 +107,7 @@ with handle_open(FILEPATH_INPUT, "r") as handle:
 			raise Exception(f"Error: For line {i_read} found None for embed")
 		
 		labels.append(label)
-		embed.append(embed)
+		embeds.append(embed)
 		
 		if i_read % 1000 == 0:
 			sys.stderr.write(f"Reading lines: {i_read} items read so far\r")
@@ -115,8 +115,7 @@ with handle_open(FILEPATH_INPUT, "r") as handle:
 
 logger.info(f"{i_read} items read in {round(time.time() - start, 3)}s")
 
-
-embed_np = np.array(embed)
+embeds_np = np.array(embeds)
 
 # ██    ██ ███    ███  █████  ██████  
 # ██    ██ ████  ████ ██   ██ ██   ██ 
@@ -128,7 +127,7 @@ logger.info("UMAPing...")
 umapped = umap.UMAP(
 	min_dist=0.05,
 	n_components=DIM
-).fit_transform(embed_np)
+).fit_transform(embeds_np)
 logger.info("UMAP conversion complete")
 
 
